@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -77,10 +76,6 @@ const router = createBrowserRouter([
         path: "freight",
         element: <Freight />,
         children: [
-          {
-            path: "",
-            element: <FreightOrders />
-          },
           {
             path: "orders",
             element: <FreightOrders />

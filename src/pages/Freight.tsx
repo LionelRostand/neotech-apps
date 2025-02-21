@@ -35,14 +35,16 @@ const Freight = () => {
     setActiveTab(value);
     switch (value) {
       case 'overview':
-        navigate('/freight/orders');
+        navigate('/freight/orders', { replace: true });
         break;
       case 'routes':
-        navigate('/freight/routes');
+        navigate('/freight/routes', { replace: true });
         break;
       case 'tracking':
-        navigate('/freight/tracking');
+        navigate('/freight/tracking', { replace: true });
         break;
+      default:
+        navigate('/freight/orders', { replace: true });
     }
   };
 

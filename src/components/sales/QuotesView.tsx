@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -33,6 +32,7 @@ import {
 import { getQuotes, createQuote, updateQuote, deleteQuote } from '../../services/quoteService';
 import type { Quote } from '../../types/sales';
 import { QuoteFormDialog } from './QuoteForm';
+import { GeneralSettings } from '../settings/GeneralSettings';
 
 const QuotesView = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -221,6 +221,9 @@ const QuotesView = () => {
         quote={selectedQuote}
         onSubmit={handleCreateOrUpdateQuote}
       />
+      <TabsContent value="settings" className="space-y-4">
+        <GeneralSettings />
+      </TabsContent>
     </div>
   );
 };

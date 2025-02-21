@@ -1,17 +1,24 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add authentication logic here
-    navigate('/');
+    setLoading(true);
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      console.error('Erreur de connexion:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,6 +44,7 @@ const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-neotech-500 focus:border-transparent"
               placeholder="vous@exemple.com"
+              disabled={loading}
             />
           </div>
 
@@ -50,14 +58,16 @@ const Auth = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-neotech-500 focus:border-transparent"
               placeholder="••••••••"
+              disabled={loading}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-neotech-600 text-white py-2 px-4 rounded-lg hover:bg-neotech-700 transition-colors duration-200"
+            className="w-full bg-neotech-600 text-white py-2 px-4 rounded-lg hover:bg-neotech-700 transition-colors duration-200 disabled:opacity-50"
+            disabled={loading}
           >
-            Se connecter
+            {loading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
         </form>
 

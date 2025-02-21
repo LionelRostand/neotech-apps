@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bank, FileText, TrendingUp, DollarSign } from 'lucide-react';
+import { FileText, TrendingUp, DollarSign } from 'lucide-react';
 import QuotesView from '@/components/sales/QuotesView';
 import { getQuotes } from '@/services';
 import type { Quote } from '@/types/sales';
@@ -76,7 +76,7 @@ const Sales = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Devis en attente</CardTitle>
-            <Bank className="h-4 w-4 text-muted-foreground" />
+            <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingQuotes}</div>

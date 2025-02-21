@@ -31,7 +31,8 @@ import {
   Globe,
   DollarSign,
   Clock,
-  Users2
+  Users2,
+  Cog
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -89,6 +90,12 @@ const menuItems = [
     label: 'Paramètres', 
     path: '/settings',
     subItems: [
+      { 
+        icon: Cog, 
+        label: 'Paramètres généraux', 
+        path: '/settings/general', 
+        description: 'Configuration générale du système' 
+      },
       { 
         icon: Building, 
         label: 'Société', 

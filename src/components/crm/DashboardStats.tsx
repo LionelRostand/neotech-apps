@@ -1,6 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { getClients, getOpportunities } from '../../services/crm';
+import { getClients, getOpportunities } from '../../services';
+import type { Client, Opportunity } from '../../types/crm';
 import StatCard from '../dashboard/StatCard';
 import { Users, TrendingUp, CheckCircle2, Timer } from 'lucide-react';
 import {
@@ -14,12 +15,12 @@ import {
 } from 'recharts';
 
 const DashboardStats = () => {
-  const { data: clients = [] } = useQuery({
+  const { data: clients = [] } = useQuery<Client[]>({
     queryKey: ['clients'],
     queryFn: getClients
   });
 
-  const { data: opportunities = [] } = useQuery({
+  const { data: opportunities = [] } = useQuery<Opportunity[]>({
     queryKey: ['opportunities'],
     queryFn: getOpportunities
   });

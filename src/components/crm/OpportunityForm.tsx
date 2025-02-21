@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createOpportunity, updateOpportunity, Opportunity } from '../../services/crm';
+import { createOpportunity, updateOpportunity } from '../../services';
+import type { Opportunity } from '../../types/crm';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 

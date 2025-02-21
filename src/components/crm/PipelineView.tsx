@@ -9,7 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getOpportunities, deleteOpportunity, updateOpportunity, Opportunity } from '../../services/crm';
+import { getOpportunities, deleteOpportunity, updateOpportunity } from '../../services';
+import type { Opportunity } from '../../types/crm';
 import { OpportunityFormDialog } from './OpportunityForm';
 import { toast } from 'sonner';
 import {
@@ -31,7 +32,7 @@ type OpportunityStage = typeof STAGES[number];
 
 const PipelineView = () => {
   const queryClient = useQueryClient();
-  const { data: opportunities = [], isLoading } = useQuery({
+  const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ['opportunities'],
     queryFn: getOpportunities,
   });

@@ -11,7 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UserPlus, Search, Download, Upload, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { getClients, deleteClient, Client } from '../../services/crm';
+import { getClients, deleteClient } from '../../services';
+import type { Client } from '../../types/crm';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ClientFormDialog } from './ClientForm';

@@ -29,8 +29,10 @@ export interface QuoteItem {
 export interface Quote {
   id?: string;
   number: string;
+  title: string;
   clientId: string;
   clientName: string;
+  description: string;
   status: QuoteStatus;
   items: QuoteItem[];
   subtotal: number;

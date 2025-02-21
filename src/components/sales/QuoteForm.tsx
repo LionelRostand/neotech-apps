@@ -16,16 +16,48 @@ interface QuoteFormProps {
   onClose: () => void;
 }
 
+interface QuoteFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  quote?: Quote;
+  onSubmit: (data: Partial<Quote>) => Promise<void>;
+}
+
+export const QuoteFormDialog = ({
+  open,
+  onOpenChange,
+  quote,
+  onSubmit
+}: QuoteFormDialogProps) => {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{quote ? 'Modifier le devis' : 'Nouveau devis'}</DialogTitle>
+        </DialogHeader>
+        <QuoteForm quote={quote} onClose={() => onOpenChange(false)} />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export const QuoteForm = ({ quote, onClose }: QuoteFormProps) => {
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useState<Partial<Quote>>(quote || {
+  const initialData: Partial<Quote> = quote || {
     title: '',
     clientId: '',
     clientName: '',
     description: '',
     total: 0,
-    status: 'draft',
-  });
+    status: 'draft' as const,
+    items: [],
+    subtotal: 0,
+    taxTotal: 0,
+    validUntil: new Date(),
+    number: `DEV-${Date.now()}`,
+  };
+
+  const [formData, setFormData] = useState<Partial<Quote>>(initialData);
 
   const handleClientChange = (clientId: string) => {
     const selectedClient = queryClient.getQueryData<any>(['clients'])?.find(
@@ -103,7 +135,7 @@ export const QuoteForm = ({ quote, onClose }: QuoteFormProps) => {
           <Label htmlFor="status">Statut</Label>
           <Select
             value={formData.status}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+            onValueChange={(value: Quote['status']) => setFormData(prev => ({ ...prev, status: value }))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Sélectionner un statut" />

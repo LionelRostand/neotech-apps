@@ -1,5 +1,5 @@
 
-import { QuotesView } from '@/components/sales/QuotesView';
+import QuotesView from '@/components/sales/QuotesView';
 
 const Sales = () => {
   return (

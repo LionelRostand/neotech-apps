@@ -4,12 +4,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "neotech-apps.firebaseapp.com",
-  projectId: "neotech-apps",
-  storageBucket: "neotech-apps.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyAp8SJ4DT3-uDRKjU-rpoVMVVORQrPfFls",
+  authDomain: "neotech-4a0f2.firebaseapp.com",
+  projectId: "neotech-4a0f2",
+  storageBucket: "neotech-4a0f2.firebasestorage.app",
+  messagingSenderId: "231121595048",
+  appId: "1:231121595048:web:e53c8312ce951db4b1f09d"
 };
 
 const app = initializeApp(firebaseConfig);

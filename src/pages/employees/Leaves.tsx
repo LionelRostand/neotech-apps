@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface Leave {
   id: string;
@@ -49,11 +52,49 @@ const mockLeaves: Leave[] = [
 const EmployeeLeaves = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [leaves] = useState<Leave[]>(mockLeaves);
+  const [isNewLeaveDialogOpen, setIsNewLeaveDialogOpen] = useState(false);
+  const [newLeave, setNewLeave] = useState({
+    employeeName: '',
+    type: '',
+    startDate: '',
+    endDate: '',
+  });
 
   const filteredLeaves = leaves.filter(leave =>
     leave.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     leave.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleCreateLeave = () => {
+    if (!newLeave.employeeName || !newLeave.type || !newLeave.startDate || !newLeave.endDate) {
+      toast.error("Veuillez remplir tous les champs obligatoires");
+      return;
+    }
+
+    // Calculer le nombre de jours entre les dates
+    const start = new Date(newLeave.startDate);
+    const end = new Date(newLeave.endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const daysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    // Simuler l'ajout d'une nouvelle demande
+    const leave: Leave = {
+      id: (leaves.length + 1).toString(),
+      ...newLeave,
+      status: 'pending',
+      daysCount
+    };
+
+    // Dans un cas réel, on appellerait ici l'API pour sauvegarder la demande
+    toast.success("Demande de congé créée avec succès");
+    setIsNewLeaveDialogOpen(false);
+    setNewLeave({
+      employeeName: '',
+      type: '',
+      startDate: '',
+      endDate: '',
+    });
+  };
 
   return (
     <div className="p-6">
@@ -72,7 +113,7 @@ const EmployeeLeaves = () => {
             className="pl-8"
           />
         </div>
-        <Button>
+        <Button onClick={() => setIsNewLeaveDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Nouvelle demande
         </Button>
@@ -127,6 +168,70 @@ const EmployeeLeaves = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isNewLeaveDialogOpen} onOpenChange={setIsNewLeaveDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Nouvelle demande de congé</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="employeeName" className="text-right">
+                Employé
+              </Label>
+              <Input
+                id="employeeName"
+                className="col-span-3"
+                value={newLeave.employeeName}
+                onChange={(e) => setNewLeave({ ...newLeave, employeeName: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">
+                Type de congé
+              </Label>
+              <Input
+                id="type"
+                className="col-span-3"
+                value={newLeave.type}
+                onChange={(e) => setNewLeave({ ...newLeave, type: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="startDate" className="text-right">
+                Date de début
+              </Label>
+              <Input
+                id="startDate"
+                type="date"
+                className="col-span-3"
+                value={newLeave.startDate}
+                onChange={(e) => setNewLeave({ ...newLeave, startDate: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="endDate" className="text-right">
+                Date de fin
+              </Label>
+              <Input
+                id="endDate"
+                type="date"
+                className="col-span-3"
+                value={newLeave.endDate}
+                onChange={(e) => setNewLeave({ ...newLeave, endDate: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setIsNewLeaveDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button type="button" onClick={handleCreateLeave}>
+              Créer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -32,9 +32,9 @@ const Freight = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === 'overview') {
-      navigate('orders');
+      navigate('./orders');
     } else {
-      navigate(value);
+      navigate(`./${value}`);
     }
   };
 

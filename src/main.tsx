@@ -54,7 +54,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        index: true,
+        path: "",
         element: <Dashboard />
       },
       {
@@ -73,6 +73,10 @@ const router = createBrowserRouter([
         path: "purchases",
         element: <Purchases />,
         children: [
+          {
+            path: "",
+            element: <Suppliers />
+          },
           {
             path: "suppliers",
             element: <Suppliers />
@@ -114,7 +118,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "auth",
+    path: "/auth",
     element: <Providers><Auth /></Providers>
   }
 ]);

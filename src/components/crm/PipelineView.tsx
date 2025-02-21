@@ -42,7 +42,7 @@ const PipelineView = () => {
   const queryClient = useQueryClient();
   const [draggedOverStage, setDraggedOverStage] = useState<OpportunityStage | null>(null);
   const [minValue, setMinValue] = useState(0);
-  const [selectedClient, setSelectedClient] = useState('');
+  const [selectedClient, setSelectedClient] = useState('all');
   
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ['opportunities'],
@@ -53,7 +53,7 @@ const PipelineView = () => {
   
   const filteredOpportunities = opportunities.filter(opp => {
     const meetsValueCriteria = opp.value >= minValue;
-    const meetsClientCriteria = !selectedClient || opp.clientName === selectedClient;
+    const meetsClientCriteria = selectedClient === 'all' || opp.clientName === selectedClient;
     return meetsValueCriteria && meetsClientCriteria;
   });
 

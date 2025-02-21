@@ -37,7 +37,7 @@ const PipelineFilters = ({
             <SelectValue placeholder="Tous les clients" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous les clients</SelectItem>
+            <SelectItem value="all">Tous les clients</SelectItem>
             {clients.map((client) => (
               <SelectItem key={client} value={client}>
                 {client}

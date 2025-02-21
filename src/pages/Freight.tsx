@@ -12,17 +12,21 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    // If we're at the root freight path, redirect to orders
-    if (location.pathname === '/freight') {
-      navigate('/freight/orders', { replace: true });
+    const currentPath = location.pathname;
+    
+    // Handle root freight path
+    if (currentPath === '/freight') {
+      navigate('orders', { replace: true });
       return;
     }
 
     // Set active tab based on current path
-    const path = location.pathname.split('/').pop() || '';
-    if (path === 'routes') {
+    const pathSegments = currentPath.split('/');
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    
+    if (lastSegment === 'routes') {
       setActiveTab('routes');
-    } else if (path === 'tracking') {
+    } else if (lastSegment === 'tracking') {
       setActiveTab('tracking');
     } else {
       setActiveTab('overview');
@@ -39,9 +43,9 @@ const Freight = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === 'overview') {
-      navigate('/freight/orders', { replace: true });
+      navigate('orders', { replace: true });
     } else {
-      navigate(`/freight/${value}`, { replace: true });
+      navigate(value, { replace: true });
     }
   };
 

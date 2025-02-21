@@ -1,8 +1,11 @@
 
-import { Bell, Search, User } from 'lucide-react';
+import { Bell, Search, User, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 
 const Header = () => {
+  const { signOut, user } = useAuth();
+
   return (
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
@@ -27,10 +30,19 @@ const Header = () => {
         </button>
         
         <div className="flex items-center gap-3 pl-4 border-l">
-          <span className="text-sm font-medium">John Doe</span>
-          <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-            <User className="w-5 h-5 text-gray-600" />
-          </button>
+          <span className="text-sm font-medium">{user?.email || 'Utilisateur'}</span>
+          <div className="flex items-center gap-2">
+            <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-gray-600" />
+            </button>
+            <button 
+              onClick={() => signOut()} 
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              title="Se déconnecter"
+            >
+              <LogOut className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
         </div>
       </div>
     </motion.header>
@@ -38,3 +50,4 @@ const Header = () => {
 };
 
 export default Header;
+

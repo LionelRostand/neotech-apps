@@ -48,8 +48,8 @@ const QuotesView = () => {
   });
 
   const filteredQuotes = quotes.filter(quote =>
-    quote.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    quote.number.toLowerCase().includes(searchTerm.toLowerCase())
+    (quote.clientName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (quote.number?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   const handleCreateOrUpdateQuote = async (quoteData: Omit<Quote, 'id' | 'createdAt' | 'updatedAt'>) => {

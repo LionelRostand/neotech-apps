@@ -12,34 +12,37 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    // Handle initial navigation
-    if (location.pathname === '/freight' || location.pathname === '/freight/') {
-      navigate('/freight/orders', { replace: true });
+    // Handle root path navigation
+    const path = location.pathname;
+    if (path === '/freight' || path === '/freight/') {
+      navigate('/freight/orders');
       return;
     }
 
-    // Extract the current route to set the active tab
-    const currentPath = location.pathname.split('/freight/')[1];
-    
-    if (currentPath === 'routes') {
+    // Set active tab based on current path
+    if (path.includes('/freight/routes')) {
       setActiveTab('routes');
-    } else if (currentPath === 'tracking') {
+    } else if (path.includes('/freight/tracking')) {
       setActiveTab('tracking');
-    } else {
+    } else if (path.includes('/freight/orders')) {
       setActiveTab('overview');
     }
   }, [location.pathname, navigate]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    const routes = {
-      overview: '/freight/orders',
-      routes: '/freight/routes',
-      tracking: '/freight/tracking'
-    };
-    
-    // Use absolute paths for navigation
-    navigate(routes[value as keyof typeof routes], { replace: true });
+    switch (value) {
+      case 'routes':
+        navigate('/freight/routes');
+        break;
+      case 'tracking':
+        navigate('/freight/tracking');
+        break;
+      case 'overview':
+      default:
+        navigate('/freight/orders');
+        break;
+    }
   };
 
   const stats = {

@@ -1,11 +1,12 @@
 
-import { Home, Users, ShoppingCart, Package, FileText, Settings, BarChart2 } from 'lucide-react';
+import { Home, Users, ShoppingCart, Package, FileText, Settings, BarChart2, UserCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 
 const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/' },
   { icon: Users, label: 'CRM', path: '/crm' },
+  { icon: UserCircle, label: 'Clients', path: '/clients' },
   { icon: ShoppingCart, label: 'Ventes', path: '/sales' },
   { icon: Package, label: 'Achats', path: '/purchases' },
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },

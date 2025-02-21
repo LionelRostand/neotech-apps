@@ -54,7 +54,7 @@ const menuItems = [
 
 const Sidebar = () => {
   const location = useLocation();
-
+  
   return (
     <motion.aside 
       initial={{ x: -250 }}
@@ -93,7 +93,7 @@ const Sidebar = () => {
                     return (
                       <Link
                         key={`${index}-${subIndex}`}
-                        to={subItem.path}
+                        to={subItem.path.startsWith('/') ? subItem.path : `/${subItem.path}`}
                         className={`
                           flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200 group
                           ${isSubActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
@@ -122,4 +122,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-

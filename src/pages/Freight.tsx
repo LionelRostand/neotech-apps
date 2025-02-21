@@ -13,12 +13,12 @@ const Freight = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('/freight/routes')) {
-      setActiveTab('routes');
-    } else if (path.includes('/freight/tracking')) {
-      setActiveTab('tracking');
-    } else {
+    if (path === '/freight' || path === '/freight/orders') {
       setActiveTab('overview');
+    } else if (path === '/freight/routes') {
+      setActiveTab('routes');
+    } else if (path === '/freight/tracking') {
+      setActiveTab('tracking');
     }
   }, [location.pathname]);
 
@@ -31,18 +31,10 @@ const Freight = () => {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    switch (value) {
-      case 'overview':
-        navigate('/freight/orders');
-        break;
-      case 'routes':
-        navigate('/freight/routes');
-        break;
-      case 'tracking':
-        navigate('/freight/tracking');
-        break;
-      default:
-        navigate('/freight/orders');
+    if (value === 'overview') {
+      navigate('/freight/orders', { replace: true });
+    } else {
+      navigate(`/freight/${value}`, { replace: true });
     }
   };
 
@@ -145,4 +137,3 @@ const Freight = () => {
 };
 
 export default Freight;
-

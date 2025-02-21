@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, Route, Scan, TrendingUp, Truck } from 'lucide-react';
@@ -8,7 +8,20 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Freight = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    // Set initial active tab based on current path
+    const path = location.pathname;
+    if (path.includes('/routes')) {
+      setActiveTab('routes');
+    } else if (path.includes('/tracking')) {
+      setActiveTab('tracking');
+    } else {
+      setActiveTab('overview');
+    }
+  }, [location.pathname]);
 
   // Données simulées pour les statistiques
   const stats = {

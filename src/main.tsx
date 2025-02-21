@@ -78,7 +78,7 @@ const router = createBrowserRouter([
         element: <Freight />,
         children: [
           {
-            index: true,
+            path: "",
             element: <FreightOrders />
           },
           {

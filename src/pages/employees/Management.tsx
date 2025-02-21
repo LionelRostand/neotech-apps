@@ -149,7 +149,12 @@ const EmployeeManagement = () => {
           <TableBody>
             {filteredEmployees.map((employee) => (
               <TableRow key={employee.id}>
-                <TableCell>{employee.firstName} {employee.name}</TableCell>
+                <TableCell>
+                  <div>
+                    <div className="font-medium">{employee.name}</div>
+                    <div className="text-sm text-gray-500">{employee.firstName}</div>
+                  </div>
+                </TableCell>
                 <TableCell>{employee.position}</TableCell>
                 <TableCell>{employee.department}</TableCell>
                 <TableCell>{new Date(employee.startDate).toLocaleDateString('fr-FR')}</TableCell>

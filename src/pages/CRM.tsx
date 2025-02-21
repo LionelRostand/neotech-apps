@@ -2,17 +2,11 @@
 import { useState } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Users, Briefcase, FileText, BarChart2 } from 'lucide-react';
 import ClientList from '../components/crm/ClientList';
 import PipelineView from '../components/crm/PipelineView';
 import DashboardStats from '../components/crm/DashboardStats';
+import ContractsView from '../components/crm/ContractsView';
 
 const CRM = () => {
   return (
@@ -60,19 +54,7 @@ const CRM = () => {
           </TabsContent>
 
           <TabsContent value="contracts">
-            <Card>
-              <CardHeader>
-                <CardTitle>Contrats</CardTitle>
-                <CardDescription>
-                  Gérez vos contrats et documents commerciaux
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Fonctionnalité en cours de développement...
-                </p>
-              </CardContent>
-            </Card>
+            <ContractsView />
           </TabsContent>
         </Tabs>
       </div>

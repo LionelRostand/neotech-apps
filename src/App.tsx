@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "./hooks/useAuth";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import CRM from "./pages/CRM";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,14 @@ const App = () => (
               element={
                 <PrivateRoute>
                   <Dashboard />
+                </PrivateRoute>
+              } 
+            />
+            <Route 
+              path="/crm" 
+              element={
+                <PrivateRoute>
+                  <CRM />
                 </PrivateRoute>
               } 
             />

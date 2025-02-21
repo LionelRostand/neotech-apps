@@ -12,6 +12,13 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
+    // If we're at the root freight path, redirect to orders
+    if (location.pathname === '/freight') {
+      navigate('/freight/orders', { replace: true });
+      return;
+    }
+
+    // Set active tab based on current path
     const path = location.pathname.split('/').pop() || '';
     if (path === 'routes') {
       setActiveTab('routes');
@@ -20,7 +27,7 @@ const Freight = () => {
     } else {
       setActiveTab('overview');
     }
-  }, [location.pathname]);
+  }, [location.pathname, navigate]);
 
   const stats = {
     activeOrders: 48,
@@ -32,9 +39,9 @@ const Freight = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === 'overview') {
-      navigate('/freight/orders');
+      navigate('/freight/orders', { replace: true });
     } else {
-      navigate(`/freight/${value}`);
+      navigate(`/freight/${value}`, { replace: true });
     }
   };
 
@@ -121,13 +128,13 @@ const Freight = () => {
               Suivi
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="overview">
+          <TabsContent value="overview" className="space-y-4">
             <Outlet />
           </TabsContent>
-          <TabsContent value="routes">
+          <TabsContent value="routes" className="space-y-4">
             <Outlet />
           </TabsContent>
-          <TabsContent value="tracking">
+          <TabsContent value="tracking" className="space-y-4">
             <Outlet />
           </TabsContent>
         </Tabs>

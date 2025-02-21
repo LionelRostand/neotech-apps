@@ -28,7 +28,8 @@ const FreightOrders = () => {
     reference: '',
     client: '',
     carrier: '',
-    deliveryDate: ''
+    deliveryDate: '',
+    receptionDate: ''
   });
 
   const handleNewOrder = (e: React.FormEvent) => {
@@ -41,7 +42,8 @@ const FreightOrders = () => {
       reference: '',
       client: '',
       carrier: '',
-      deliveryDate: ''
+      deliveryDate: '',
+      receptionDate: ''
     });
   };
 
@@ -94,6 +96,16 @@ const FreightOrders = () => {
                   value={newOrder.carrier}
                   onChange={(e) => setNewOrder({...newOrder, carrier: e.target.value})}
                   placeholder="Nom du transporteur"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="receptionDate">Date de réception</Label>
+                <Input
+                  id="receptionDate"
+                  type="date"
+                  value={newOrder.receptionDate}
+                  onChange={(e) => setNewOrder({...newOrder, receptionDate: e.target.value})}
                   required
                 />
               </div>

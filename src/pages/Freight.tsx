@@ -1,12 +1,13 @@
 
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, Route, Scan, TrendingUp, Truck } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Freight = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
   // Données simulées pour les statistiques
@@ -15,6 +16,21 @@ const Freight = () => {
     deliveriesInProgress: 12,
     parcelsScanned: 156,
     onTimeDelivery: 94.5
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    switch (value) {
+      case 'overview':
+        navigate('orders');
+        break;
+      case 'routes':
+        navigate('routes');
+        break;
+      case 'tracking':
+        navigate('tracking');
+        break;
+    }
   };
 
   return (
@@ -85,7 +101,7 @@ const Freight = () => {
           </Card>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
           <TabsList>
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Package className="h-4 w-4" />

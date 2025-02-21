@@ -32,6 +32,10 @@ import Inventory from './pages/purchases/Inventory';
 import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
 
+// Freight management routes
+import FreightOrders from './pages/freight/FreightOrders';
+import RouteTracking from './pages/freight/RouteTracking';
+
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -68,6 +72,19 @@ const router = createBrowserRouter([
       {
         path: "sales",
         element: <Sales />
+      },
+      {
+        path: "freight",
+        children: [
+          {
+            path: "orders",
+            element: <FreightOrders />
+          },
+          {
+            path: "routes",
+            element: <RouteTracking />
+          }
+        ]
       },
       {
         path: "purchases",

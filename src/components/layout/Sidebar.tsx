@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Users, 
@@ -21,7 +20,13 @@ import {
   BookOpen,
   PackageSearch,
   Warehouse,
-  Calculator
+  Calculator,
+  MapPin,
+  Route,
+  Scan,
+  Database,
+  BarChart,
+  FileSpreadsheet
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -47,9 +52,46 @@ const menuItems = [
       { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics', description: 'Rapports et analyses' }
     ]
   },
+  { 
+    icon: Truck, 
+    label: 'Transport', 
+    path: '/freight',
+    subItems: [
+      { 
+        icon: Box, 
+        label: 'Commandes Transport', 
+        path: '/freight/orders', 
+        description: 'Gestion des commandes de transport' 
+      },
+      { 
+        icon: Route, 
+        label: 'Itinéraires', 
+        path: '/freight/routes', 
+        description: 'Planification et suivi des trajets' 
+      },
+      { 
+        icon: Scan, 
+        label: 'Suivi Colis', 
+        path: '/freight/tracking', 
+        description: 'Suivi des colis via CR-CODE' 
+      },
+      { 
+        icon: Database, 
+        label: 'Intégration', 
+        path: '/freight/integration', 
+        description: 'Intégration avec les modules existants' 
+      },
+      { 
+        icon: FileSpreadsheet, 
+        label: 'Rapports', 
+        path: '/freight/reports', 
+        description: 'Rapports et tableaux de bord' 
+      }
+    ]
+  },
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },
   { icon: BarChart2, label: 'Rapports', path: '/reports' },
-  { icon: Settings, label: 'Paramètres', path: '/settings' },
+  { icon: Settings, label: 'Paramètres', path: '/settings' }
 ];
 
 const Sidebar = () => {

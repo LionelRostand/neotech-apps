@@ -17,7 +17,7 @@ const Freight = () => {
     
     // If we're at the root freight path or just /freight, redirect to orders
     if (pathSegments.length === 0 || (pathSegments.length === 1 && pathSegments[0] === 'freight')) {
-      navigate('freight/orders');
+      navigate('/freight/orders');
       return;
     }
 
@@ -44,15 +44,15 @@ const Freight = () => {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     
-    // Construct the target path
-    let path = 'freight/orders';
+    // Construct the target path with leading slash
+    let path = '/freight/orders';
     if (tab === 'routes') {
-      path = 'freight/routes';
+      path = '/freight/routes';
     } else if (tab === 'tracking') {
-      path = 'freight/tracking';
+      path = '/freight/tracking';
     }
 
-    // Navigate without {replace: true} to allow proper history
+    // Navigate with absolute path
     navigate(path);
   };
 

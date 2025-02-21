@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createClient, updateClient } from '../../services';
-import type { Client } from '../../types/crm';
+import type { Client, ClientStatus, ClientPriority, ClientSegment, ClientOrigin } from '../../types/crm';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -22,10 +22,12 @@ export const ClientForm = ({ client, onClose }: ClientFormProps) => {
     company: '',
     email: '',
     phone: '',
-    status: 'Lead',
-    industry: '',
-    category: '',
-    score: 0
+    status: 'Prospect',
+    segment: 'PME',
+    priority: 'Moyenne',
+    origin: 'Direct',
+    contacts: [],
+    interactions: [],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,25 +98,69 @@ export const ClientForm = ({ client, onClose }: ClientFormProps) => {
           <Label htmlFor="status">Statut</Label>
           <Select
             value={formData.status}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, status: value as Client['status'] }))}
+            onValueChange={(value: ClientStatus) => setFormData(prev => ({ ...prev, status: value }))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Sélectionner un statut" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Lead">Lead</SelectItem>
               <SelectItem value="Prospect">Prospect</SelectItem>
-              <SelectItem value="Client">Client</SelectItem>
+              <SelectItem value="Actif">Actif</SelectItem>
+              <SelectItem value="Inactif">Inactif</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="industry">Secteur d'activité</Label>
-          <Input
-            id="industry"
-            value={formData.industry}
-            onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
-          />
+          <Label htmlFor="priority">Priorité</Label>
+          <Select
+            value={formData.priority}
+            onValueChange={(value: ClientPriority) => setFormData(prev => ({ ...prev, priority: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sélectionner une priorité" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Basse">Basse</SelectItem>
+              <SelectItem value="Moyenne">Moyenne</SelectItem>
+              <SelectItem value="Haute">Haute</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="segment">Segment</Label>
+          <Select
+            value={formData.segment}
+            onValueChange={(value: ClientSegment) => setFormData(prev => ({ ...prev, segment: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sélectionner un segment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="PME">PME</SelectItem>
+              <SelectItem value="Grand Compte">Grand Compte</SelectItem>
+              <SelectItem value="Particulier">Particulier</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="origin">Origine</Label>
+          <Select
+            value={formData.origin}
+            onValueChange={(value: ClientOrigin) => setFormData(prev => ({ ...prev, origin: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sélectionner une origine" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Référence">Référence</SelectItem>
+              <SelectItem value="Web">Web</SelectItem>
+              <SelectItem value="Direct">Direct</SelectItem>
+              <SelectItem value="Partenaire">Partenaire</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

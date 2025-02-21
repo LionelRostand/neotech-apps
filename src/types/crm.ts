@@ -1,3 +1,25 @@
+export type ClientStatus = 'Prospect' | 'Actif' | 'Inactif';
+export type ClientPriority = 'Basse' | 'Moyenne' | 'Haute';
+export type ClientSegment = 'PME' | 'Grand Compte' | 'Particulier';
+export type ClientOrigin = 'Référence' | 'Web' | 'Direct' | 'Partenaire';
+
+export interface ClientContact {
+  id?: string;
+  name: string;
+  role: string;
+  email: string;
+  phone: string;
+  isMain: boolean;
+}
+
+export interface ClientInteraction {
+  id?: string;
+  type: 'Appel' | 'Rendez-vous' | 'Email';
+  date: Date;
+  notes: string;
+  contactId?: string;
+  userId: string;
+}
 
 export interface Client {
   id?: string;
@@ -5,10 +27,17 @@ export interface Client {
   company: string;
   email: string;
   phone: string;
-  status: 'Client' | 'Prospect' | 'Lead';
-  category?: string;
-  industry?: string;
-  score?: number;
+  status: ClientStatus;
+  segment: ClientSegment;
+  priority: ClientPriority;
+  origin: ClientOrigin;
+  contacts: ClientContact[];
+  interactions: ClientInteraction[];
+  paymentTerms?: string;
+  creditLimit?: number;
+  salesRevenue?: number;
+  lastPurchaseDate?: Date;
+  notes?: string;
   createdAt: Date;
   updatedAt: Date;
 }

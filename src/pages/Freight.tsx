@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +11,6 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    // Set initial active tab based on current path
     const path = location.pathname;
     if (path.includes('/routes')) {
       setActiveTab('routes');
@@ -23,7 +21,6 @@ const Freight = () => {
     }
   }, [location.pathname]);
 
-  // Données simulées pour les statistiques
   const stats = {
     activeOrders: 48,
     deliveriesInProgress: 12,
@@ -35,16 +32,16 @@ const Freight = () => {
     setActiveTab(value);
     switch (value) {
       case 'overview':
-        navigate('/freight/orders', { replace: true });
+        navigate('orders');
         break;
       case 'routes':
-        navigate('/freight/routes', { replace: true });
+        navigate('routes');
         break;
       case 'tracking':
-        navigate('/freight/tracking', { replace: true });
+        navigate('tracking');
         break;
       default:
-        navigate('/freight/orders', { replace: true });
+        navigate('orders');
     }
   };
 

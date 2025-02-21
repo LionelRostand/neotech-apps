@@ -22,13 +22,13 @@ const Freight = () => {
     setActiveTab(value);
     switch (value) {
       case 'overview':
-        navigate('orders');
+        navigate('/freight/orders');
         break;
       case 'routes':
-        navigate('routes');
+        navigate('/freight/routes');
         break;
       case 'tracking':
-        navigate('tracking');
+        navigate('/freight/tracking');
         break;
     }
   };

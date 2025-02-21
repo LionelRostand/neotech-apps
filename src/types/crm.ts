@@ -1,3 +1,4 @@
+
 export type ClientStatus = 'Prospect' | 'Actif' | 'Inactif';
 export type ClientPriority = 'Basse' | 'Moyenne' | 'Haute';
 export type ClientSegment = 'PME' | 'Grand Compte' | 'Particulier';
@@ -58,6 +59,8 @@ export interface Opportunity {
 
 export interface Contract {
   id?: string;
+  reference: string;
+  supplier: string;
   title: string;
   clientId: string;
   clientName: string;

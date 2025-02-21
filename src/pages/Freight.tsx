@@ -16,7 +16,7 @@ const Freight = () => {
     
     // Handle root freight path
     if (currentPath === '/freight') {
-      navigate('orders', { replace: true });
+      navigate('/freight/orders');
       return;
     }
 
@@ -43,9 +43,9 @@ const Freight = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === 'overview') {
-      navigate('orders', { replace: true });
+      navigate('/freight/orders');
     } else {
-      navigate(value, { replace: true });
+      navigate(`/freight/${value}`);
     }
   };
 

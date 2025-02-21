@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from 'sonner';
-import { Save } from 'lucide-react';
+import { Save, Building2, Globe2, DollarSign, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 export const GeneralSettings = () => {
@@ -26,13 +26,59 @@ export const GeneralSettings = () => {
   });
 
   const handleSave = () => {
-    // Ici nous simulerons la sauvegarde pour l'instant
     console.log('Saving settings:', settings);
     toast.success("Paramètres sauvegardés avec succès");
   };
 
+  const stats = [
+    {
+      title: "Configuration Société",
+      icon: Building2,
+      value: settings.companyName || "Non configuré",
+      description: "Paramètres de l'entreprise"
+    },
+    {
+      title: "Localisation",
+      icon: Globe2,
+      value: settings.language === 'fr' ? 'Français' : 'English',
+      description: "Langue et région"
+    },
+    {
+      title: "Devise",
+      icon: DollarSign,
+      value: settings.currency,
+      description: "Configuration monétaire"
+    },
+    {
+      title: "Fuseau Horaire",
+      icon: Clock,
+      value: settings.timezone,
+      description: "Configuration horaire"
+    }
+  ];
+
   return (
     <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={index} className="hover:border-primary/50 transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <Icon className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">
+                  {stat.description}
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Paramètres généraux</CardTitle>

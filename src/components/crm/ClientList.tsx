@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -11,39 +11,31 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UserPlus, Search, Download, Upload } from 'lucide-react';
-
-// Types temporaires pour la démonstration
-interface Client {
-  id: string;
-  name: string;
-  company: string;
-  email: string;
-  phone: string;
-  status: string;
-}
-
-const MOCK_CLIENTS: Client[] = [
-  {
-    id: '1',
-    name: 'Jean Dupont',
-    company: 'Tech Solutions',
-    email: 'jean@techsolutions.fr',
-    phone: '01 23 45 67 89',
-    status: 'Client',
-  },
-  {
-    id: '2',
-    name: 'Marie Martin',
-    company: 'Digital Agency',
-    email: 'marie@digitalagency.fr',
-    phone: '01 23 45 67 90',
-    status: 'Prospect',
-  },
-];
+import { getClients, Client } from '../../services/crm';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const ClientList = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [clients] = useState<Client[]>(MOCK_CLIENTS);
+  
+  const { 
+    data: clients = [], 
+    isLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['clients'],
+    queryFn: getClients,
+  });
+
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (error) {
+    toast.error("Erreur lors du chargement des clients");
+  }
 
   return (
     <div className="space-y-4">
@@ -87,15 +79,29 @@ const ClientList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {clients.map((client) => (
-              <TableRow key={client.id}>
-                <TableCell>{client.name}</TableCell>
-                <TableCell>{client.company}</TableCell>
-                <TableCell>{client.email}</TableCell>
-                <TableCell>{client.phone}</TableCell>
-                <TableCell>{client.status}</TableCell>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  Chargement...
+                </TableCell>
               </TableRow>
-            ))}
+            ) : filteredClients.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  Aucun client trouvé
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredClients.map((client) => (
+                <TableRow key={client.id}>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.company}</TableCell>
+                  <TableCell>{client.email}</TableCell>
+                  <TableCell>{client.phone}</TableCell>
+                  <TableCell>{client.status}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

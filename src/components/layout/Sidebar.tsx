@@ -36,15 +36,15 @@ const menuItems = [
     label: 'Achats', 
     path: '/purchases',
     subItems: [
-      { icon: Store, label: 'Fournisseurs', path: '/purchases/suppliers', description: 'Gestion des fournisseurs' },
-      { icon: FileText, label: 'Demandes de prix', path: '/purchases/rfq', description: 'Création et suivi des demandes de prix' },
-      { icon: Box, label: 'Bons de commande', path: '/purchases/orders', description: 'Gestion des commandes' },
-      { icon: Truck, label: 'Réceptions', path: '/purchases/receipts', description: 'Suivi des livraisons' },
-      { icon: CreditCard, label: 'Factures', path: '/purchases/invoices', description: 'Gestion des factures fournisseurs' },
-      { icon: TrendingDown, label: 'Contrats', path: '/purchases/contracts', description: 'Gestion des contrats fournisseurs' },
-      { icon: PackageSearch, label: 'Stocks', path: '/purchases/inventory', description: 'Gestion des stocks' },
-      { icon: Calculator, label: 'Comptabilité', path: '/purchases/accounting', description: 'Intégration comptable' },
-      { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics', description: 'Rapports et analyses' }
+      { icon: Store, label: 'Fournisseurs', path: 'suppliers', description: 'Gestion des fournisseurs' },
+      { icon: FileText, label: 'Demandes de prix', path: 'rfq', description: 'Création et suivi des demandes de prix' },
+      { icon: Box, label: 'Bons de commande', path: 'orders', description: 'Gestion des commandes' },
+      { icon: Truck, label: 'Réceptions', path: 'receipts', description: 'Suivi des livraisons' },
+      { icon: CreditCard, label: 'Factures', path: 'invoices', description: 'Gestion des factures fournisseurs' },
+      { icon: TrendingDown, label: 'Contrats', path: 'contracts', description: 'Gestion des contrats fournisseurs' },
+      { icon: PackageSearch, label: 'Stocks', path: 'inventory', description: 'Gestion des stocks' },
+      { icon: Calculator, label: 'Comptabilité', path: 'accounting', description: 'Intégration comptable' },
+      { icon: FileBarChart, label: 'Analyses', path: 'analytics', description: 'Rapports et analyses' }
     ]
   },
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },
@@ -88,12 +88,13 @@ const Sidebar = () => {
                 <div className="ml-6 border-l border-gray-200">
                   {item.subItems.map((subItem, subIndex) => {
                     const SubIcon = subItem.icon;
-                    const isSubActive = location.pathname === subItem.path;
+                    const fullPath = `${item.path}/${subItem.path}`;
+                    const isSubActive = location.pathname === fullPath;
                     
                     return (
                       <Link
                         key={`${index}-${subIndex}`}
-                        to={subItem.path.startsWith('/') ? subItem.path : `/${subItem.path}`}
+                        to={fullPath}
                         className={`
                           flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200 group
                           ${isSubActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}

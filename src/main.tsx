@@ -78,39 +78,39 @@ const router = createBrowserRouter([
         element: <Purchases />,
         children: [
           {
-            path: "/purchases/suppliers",
+            path: "suppliers",
             element: <Suppliers />,
           },
           {
-            path: "/purchases/rfq",
+            path: "rfq",
             element: <RFQ />,
           },
           {
-            path: "/purchases/orders",
+            path: "orders",
             element: <PurchaseOrders />,
           },
           {
-            path: "/purchases/receipts",
+            path: "receipts",
             element: <Receipts />,
           },
           {
-            path: "/purchases/invoices",
+            path: "invoices",
             element: <Invoices />,
           },
           {
-            path: "/purchases/contracts",
+            path: "contracts",
             element: <Contracts />,
           },
           {
-            path: "/purchases/inventory",
+            path: "inventory",
             element: <Inventory />,
           },
           {
-            path: "/purchases/accounting",
+            path: "accounting",
             element: <Accounting />,
           },
           {
-            path: "/purchases/analytics",
+            path: "analytics",
             element: <Analytics />,
           },
         ],

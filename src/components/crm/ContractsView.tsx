@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ContractForm from './ContractForm';
 
 interface Contract {
   id: string;
@@ -51,11 +52,28 @@ const mockContracts: Contract[] = [
 
 const ContractsView = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
   const filteredContracts = mockContracts.filter(contract =>
     contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     contract.clientName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEdit = (contract: Contract) => {
+    setSelectedContract(contract);
+    setIsFormOpen(true);
+  };
+
+  const handleDelete = (contractId: string) => {
+    // TODO: Implement delete logic
+    console.log('Delete contract:', contractId);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+    setSelectedContract(undefined);
+  };
 
   return (
     <div className="space-y-4">
@@ -80,7 +98,7 @@ const ContractsView = () => {
             <Download className="h-4 w-4 mr-2" />
             Exporter
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setIsFormOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Nouveau contrat
           </Button>
@@ -134,11 +152,14 @@ const ContractsView = () => {
                         <Eye className="h-4 w-4 mr-2" />
                         Voir
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleEdit(contract)}>
                         <Pencil className="h-4 w-4 mr-2" />
                         Modifier
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
+                      <DropdownMenuItem 
+                        className="text-red-600"
+                        onClick={() => handleDelete(contract.id)}
+                      >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Supprimer
                       </DropdownMenuItem>
@@ -150,6 +171,12 @@ const ContractsView = () => {
           </TableBody>
         </Table>
       </div>
+
+      <ContractForm
+        isOpen={isFormOpen}
+        onClose={handleFormClose}
+        contract={selectedContract}
+      />
     </div>
   );
 };

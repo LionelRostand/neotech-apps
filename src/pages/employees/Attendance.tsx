@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface Attendance {
   id: string;
@@ -48,11 +49,59 @@ const mockAttendance: Attendance[] = [
 
 const EmployeeAttendance = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [attendance] = useState<Attendance[]>(mockAttendance);
+  const [attendance, setAttendance] = useState<Attendance[]>(mockAttendance);
 
   const filteredAttendance = attendance.filter(record =>
     record.employeeName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleClockIn = () => {
+    const now = new Date();
+    const currentTime = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const currentDate = now.toISOString().split('T')[0];
+
+    // Simulate adding a new attendance record
+    const newRecord: Attendance = {
+      id: (attendance.length + 1).toString(),
+      employeeName: 'Employé Test', // In a real app, this would be the logged-in user
+      date: currentDate,
+      timeIn: currentTime,
+      timeOut: '',
+      status: currentTime > '09:00' ? 'late' : 'present',
+      hoursWorked: 0,
+    };
+
+    setAttendance([...attendance, newRecord]);
+    toast.success('Arrivée enregistrée à ' + currentTime);
+  };
+
+  const handleClockOut = () => {
+    const now = new Date();
+    const currentTime = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+    // Find the most recent record for the current user (in a real app, would filter by user ID)
+    const updatedAttendance = attendance.map(record => {
+      if (record.timeIn && !record.timeOut) {
+        const timeIn = new Date();
+        timeIn.setHours(parseInt(record.timeIn.split(':')[0]), parseInt(record.timeIn.split(':')[1]));
+        
+        const timeOut = new Date();
+        timeOut.setHours(parseInt(currentTime.split(':')[0]), parseInt(currentTime.split(':')[1]));
+        
+        const hoursWorked = Math.round((timeOut.getTime() - timeIn.getTime()) / (1000 * 60 * 60) * 10) / 10;
+
+        return {
+          ...record,
+          timeOut: currentTime,
+          hoursWorked
+        };
+      }
+      return record;
+    });
+
+    setAttendance(updatedAttendance);
+    toast.success('Départ enregistré à ' + currentTime);
+  };
 
   return (
     <div className="p-6">
@@ -72,10 +121,10 @@ const EmployeeAttendance = () => {
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleClockIn}>
             Pointer l'arrivée
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleClockOut}>
             Pointer le départ
           </Button>
         </div>
@@ -131,3 +180,4 @@ const EmployeeAttendance = () => {
 };
 
 export default EmployeeAttendance;
+

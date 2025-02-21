@@ -1,9 +1,9 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { getClients, getOpportunities } from '../../services';
-import type { Client, Opportunity } from '../../types/crm';
-import StatCard from '../dashboard/StatCard';
-import { Users, TrendingUp, CheckCircle2, Timer } from 'lucide-react';
+import { getClients } from '../../services';
+import type { Client } from '../../types/crm';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, TrendingUp, UserCheck, UserPlus } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -11,8 +11,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const DashboardStats = () => {
   const { data: clients = [] } = useQuery<Client[]>({
@@ -20,71 +25,123 @@ const DashboardStats = () => {
     queryFn: getClients
   });
 
-  const { data: opportunities = [] } = useQuery<Opportunity[]>({
-    queryKey: ['opportunities'],
-    queryFn: getOpportunities
-  });
-
   // Calcul des statistiques
   const totalClients = clients.length;
-  const activeOpportunities = opportunities.filter(opp => 
-    !['Gagné', 'Perdu'].includes(opp.stage)
-  ).length;
-  const wonOpportunities = opportunities.filter(opp => opp.stage === 'Gagné').length;
-  const totalPipeline = opportunities.reduce((sum, opp) => 
-    !['Gagné', 'Perdu'].includes(opp.stage) ? sum + opp.value : sum, 0
-  );
+  const activeClients = clients.filter(client => client.status === 'Actif').length;
+  const prospects = clients.filter(client => client.status === 'Prospect').length;
+  const totalRevenue = clients.reduce((sum, client) => sum + (client.salesRevenue || 0), 0);
 
-  // Préparation des données pour le graphique
-  const opportunitiesByStage = [
-    { name: 'Qualification', value: opportunities.filter(opp => opp.stage === 'Qualification').length },
-    { name: 'Proposition', value: opportunities.filter(opp => opp.stage === 'Proposition').length },
-    { name: 'Négociation', value: opportunities.filter(opp => opp.stage === 'Négociation').length },
-    { name: 'Gagné', value: opportunities.filter(opp => opp.stage === 'Gagné').length },
-    { name: 'Perdu', value: opportunities.filter(opp => opp.stage === 'Perdu').length },
+  // Données pour le graphique par segment
+  const clientsBySegment = [
+    { name: 'PME', value: clients.filter(c => c.segment === 'PME').length },
+    { name: 'Grand Compte', value: clients.filter(c => c.segment === 'Grand Compte').length },
+    { name: 'Particulier', value: clients.filter(c => c.segment === 'Particulier').length },
+  ];
+
+  // Données pour le graphique par origine
+  const clientsByOrigin = [
+    { name: 'Web', value: clients.filter(c => c.origin === 'Web').length },
+    { name: 'Direct', value: clients.filter(c => c.origin === 'Direct').length },
+    { name: 'Référence', value: clients.filter(c => c.origin === 'Référence').length },
+    { name: 'Partenaire', value: clients.filter(c => c.origin === 'Partenaire').length },
   ];
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title="Clients"
-          value={totalClients}
-          icon={Users}
-        />
-        <StatCard
-          title="Opportunités actives"
-          value={activeOpportunities}
-          icon={Timer}
-        />
-        <StatCard
-          title="Opportunités gagnées"
-          value={wonOpportunities}
-          icon={CheckCircle2}
-        />
-        <StatCard
-          title="Pipeline total"
-          value={totalPipeline.toLocaleString('fr-FR', {
-            style: 'currency',
-            currency: 'EUR',
-          })}
-          icon={TrendingUp}
-        />
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalClients}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Clients Actifs</CardTitle>
+            <UserCheck className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activeClients}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Prospects</CardTitle>
+            <UserPlus className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{prospects}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Chiffre d'affaires</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {totalRevenue.toLocaleString('fr-FR', {
+                style: 'currency',
+                currency: 'EUR'
+              })}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Distribution des opportunités par étape</h3>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={opportunitiesByStage}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#3b82f6" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Répartition par segment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={clientsBySegment}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    label
+                  >
+                    {clientsBySegment.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Distribution par origine</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={clientsByOrigin}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#3b82f6" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

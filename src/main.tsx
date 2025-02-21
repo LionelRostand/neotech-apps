@@ -47,85 +47,35 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 );
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Providers>
-        <App />
-      </Providers>
-    ),
-    errorElement: <NotFound />,
-    children: [
-      {
-        index: true,
-        element: <Dashboard />,
-      },
-      {
-        path: "crm",
-        element: <CRM />,
-      },
-      {
-        path: "clients",
-        element: <Clients />,
-      },
-      {
-        path: "sales",
-        element: <Sales />,
-      },
-      {
-        path: "purchases",
-        element: <Purchases />,
-        children: [
-          {
-            path: "suppliers",
-            element: <Suppliers />,
-          },
-          {
-            path: "rfq",
-            element: <RFQ />,
-          },
-          {
-            path: "orders",
-            element: <PurchaseOrders />,
-          },
-          {
-            path: "receipts",
-            element: <Receipts />,
-          },
-          {
-            path: "invoices",
-            element: <Invoices />,
-          },
-          {
-            path: "contracts",
-            element: <Contracts />,
-          },
-          {
-            path: "inventory",
-            element: <Inventory />,
-          },
-          {
-            path: "accounting",
-            element: <Accounting />,
-          },
-          {
-            path: "analytics",
-            element: <Analytics />,
-          },
-        ],
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      path="/"
+      element={
+        <Providers>
+          <App />
+        </Providers>
       }
-    ],
-  },
-  {
-    path: "/auth",
-    element: (
-      <Providers>
-        <Auth />
-      </Providers>
-    ),
-  },
-]);
+      errorElement={<NotFound />}
+    >
+      <Route index element={<Dashboard />} />
+      <Route path="crm" element={<CRM />} />
+      <Route path="clients" element={<Clients />} />
+      <Route path="sales" element={<Sales />} />
+      <Route path="purchases" element={<Purchases />}>
+        <Route path="suppliers" element={<Suppliers />} />
+        <Route path="rfq" element={<RFQ />} />
+        <Route path="orders" element={<PurchaseOrders />} />
+        <Route path="receipts" element={<Receipts />} />
+        <Route path="invoices" element={<Invoices />} />
+        <Route path="contracts" element={<Contracts />} />
+        <Route path="inventory" element={<Inventory />} />
+        <Route path="accounting" element={<Accounting />} />
+        <Route path="analytics" element={<Analytics />} />
+      </Route>
+    </Route>
+  )
+);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

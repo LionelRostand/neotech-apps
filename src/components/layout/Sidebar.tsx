@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   Users, 
@@ -140,19 +141,22 @@ const Sidebar = () => {
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
-          const isSubMenuOpen = location.pathname.startsWith(item.path);
+          const isSubMenuOpen = item.subItems && location.pathname.startsWith(item.path);
           
           return (
-            <div key={index}>
+            <div key={index} className="group">
               <Link
                 to={item.path}
                 className={`
                   flex items-center px-6 py-3 text-gray-700 transition-all duration-200
                   ${isActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
+                  ${isSubMenuOpen ? 'bg-gray-50' : ''}
                 `}
               >
                 <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
-                <span className={isActive ? 'font-medium text-neotech-700' : ''}>{item.label}</span>
+                <span className={`${isActive ? 'font-medium text-neotech-700' : ''} ${isSubMenuOpen ? 'font-medium' : ''}`}>
+                  {item.label}
+                </span>
               </Link>
               
               {item.subItems && isSubMenuOpen && (
@@ -164,7 +168,7 @@ const Sidebar = () => {
                     return (
                       <Link
                         key={`${index}-${subIndex}`}
-                        to={subItem.path.startsWith('/') ? subItem.path : `/${subItem.path}`}
+                        to={subItem.path}
                         className={`
                           flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200 group
                           ${isSubActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}

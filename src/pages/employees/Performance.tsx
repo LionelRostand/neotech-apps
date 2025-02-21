@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface Performance {
   id: string;
@@ -48,7 +51,14 @@ const mockPerformance: Performance[] = [
 
 const EmployeePerformance = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [performance] = useState<Performance[]>(mockPerformance);
+  const [performance, setPerformance] = useState<Performance[]>(mockPerformance);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [newEvaluation, setNewEvaluation] = useState({
+    employeeName: '',
+    position: '',
+    score: 3,
+    reviewerName: '',
+  });
 
   const filteredPerformance = performance.filter(record =>
     record.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,6 +95,35 @@ const EmployeePerformance = () => {
     }
   };
 
+  const getStatusFromScore = (score: number): Performance['status'] => {
+    if (score >= 4.5) return 'excellent';
+    if (score >= 3.5) return 'good';
+    if (score >= 2.5) return 'average';
+    return 'needs_improvement';
+  };
+
+  const handleCreateEvaluation = () => {
+    const newRecord: Performance = {
+      id: (performance.length + 1).toString(),
+      employeeName: newEvaluation.employeeName,
+      position: newEvaluation.position,
+      evaluationDate: new Date().toISOString().split('T')[0],
+      score: newEvaluation.score,
+      status: getStatusFromScore(newEvaluation.score),
+      reviewerName: newEvaluation.reviewerName,
+    };
+
+    setPerformance([...performance, newRecord]);
+    setDialogOpen(false);
+    setNewEvaluation({
+      employeeName: '',
+      position: '',
+      score: 3,
+      reviewerName: '',
+    });
+    toast.success("Nouvelle évaluation créée avec succès");
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center gap-2 mb-6">
@@ -102,7 +141,7 @@ const EmployeePerformance = () => {
             className="pl-8"
           />
         </div>
-        <Button>
+        <Button onClick={() => setDialogOpen(true)}>
           <TrendingUp className="w-4 h-4 mr-2" />
           Nouvelle évaluation
         </Button>
@@ -147,8 +186,62 @@ const EmployeePerformance = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nouvelle évaluation de performance</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Nom de l'employé</Label>
+              <Input
+                value={newEvaluation.employeeName}
+                onChange={(e) => setNewEvaluation({ ...newEvaluation, employeeName: e.target.value })}
+                placeholder="Nom de l'employé"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Poste</Label>
+              <Input
+                value={newEvaluation.position}
+                onChange={(e) => setNewEvaluation({ ...newEvaluation, position: e.target.value })}
+                placeholder="Poste de l'employé"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Note (1-5)</Label>
+              <Input
+                type="number"
+                min="1"
+                max="5"
+                step="0.5"
+                value={newEvaluation.score}
+                onChange={(e) => setNewEvaluation({ ...newEvaluation, score: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Évaluateur</Label>
+              <Input
+                value={newEvaluation.reviewerName}
+                onChange={(e) => setNewEvaluation({ ...newEvaluation, reviewerName: e.target.value })}
+                placeholder="Nom de l'évaluateur"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleCreateEvaluation}>
+              Créer l'évaluation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 export default EmployeePerformance;
+

@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Users, 
@@ -27,7 +26,12 @@ import {
   Scan,
   Database,
   BarChart,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Building,
+  Globe,
+  DollarSign,
+  Clock,
+  Users2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -75,24 +79,48 @@ const menuItems = [
         label: 'Suivi Colis', 
         path: '/freight/tracking', 
         description: 'Suivi des colis via CR-CODE' 
-      },
-      { 
-        icon: Database, 
-        label: 'Intégration', 
-        path: '/freight/integration', 
-        description: 'Intégration avec les modules existants' 
-      },
-      { 
-        icon: FileSpreadsheet, 
-        label: 'Rapports', 
-        path: '/freight/reports', 
-        description: 'Rapports et tableaux de bord' 
       }
     ]
   },
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },
   { icon: BarChart2, label: 'Rapports', path: '/reports' },
-  { icon: Settings, label: 'Paramètres', path: '/settings' }
+  { 
+    icon: Settings, 
+    label: 'Paramètres', 
+    path: '/settings',
+    subItems: [
+      { 
+        icon: Building, 
+        label: 'Société', 
+        path: '/settings/company', 
+        description: 'Paramètres de la société' 
+      },
+      { 
+        icon: Globe, 
+        label: 'Localisation', 
+        path: '/settings/localization', 
+        description: 'Langue et format régional' 
+      },
+      { 
+        icon: DollarSign, 
+        label: 'Devise', 
+        path: '/settings/currency', 
+        description: 'Configuration des devises' 
+      },
+      { 
+        icon: Clock, 
+        label: 'Fuseau horaire', 
+        path: '/settings/timezone', 
+        description: 'Configuration du fuseau horaire' 
+      },
+      { 
+        icon: Users2, 
+        label: 'Multi-société', 
+        path: '/settings/multicompany', 
+        description: 'Gestion multi-sociétés' 
+      }
+    ]
+  }
 ];
 
 const Sidebar = () => {

@@ -7,32 +7,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from 'lucide-react';
-
-interface Opportunity {
-  id: string;
-  title: string;
-  client: string;
-  value: number;
-  stage: string;
-}
-
-const MOCK_OPPORTUNITIES: Opportunity[] = [
-  {
-    id: '1',
-    title: 'Projet de développement web',
-    client: 'Tech Solutions',
-    value: 15000,
-    stage: 'Qualification',
-  },
-  {
-    id: '2',
-    title: 'Refonte application mobile',
-    client: 'Digital Agency',
-    value: 25000,
-    stage: 'Proposition',
-  },
-];
+import { PlusCircle, MoreHorizontal, Trash2 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getOpportunities, deleteOpportunity, updateOpportunity, Opportunity } from '../../services/crm';
+import { OpportunityFormDialog } from './OpportunityForm';
+import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const STAGES = [
   'Qualification',
@@ -40,42 +25,108 @@ const STAGES = [
   'Négociation',
   'Gagné',
   'Perdu',
-];
+] as const;
 
 const PipelineView = () => {
-  const [opportunities] = useState<Opportunity[]>(MOCK_OPPORTUNITIES);
+  const queryClient = useQueryClient();
+  const { data: opportunities = [], isLoading } = useQuery({
+    queryKey: ['opportunities'],
+    queryFn: getOpportunities,
+  });
+
+  const handleDeleteOpportunity = async (id: string) => {
+    try {
+      await deleteOpportunity(id);
+      queryClient.invalidateQueries({ queryKey: ['opportunities'] });
+      toast.success('Opportunité supprimée avec succès');
+    } catch (error) {
+      toast.error('Erreur lors de la suppression');
+    }
+  };
+
+  const handleDragStart = (e: React.DragEvent, opportunity: Opportunity) => {
+    e.dataTransfer.setData('opportunityId', opportunity.id!);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (e: React.DragEvent, stage: string) => {
+    e.preventDefault();
+    const opportunityId = e.dataTransfer.getData('opportunityId');
+    try {
+      await updateOpportunity(opportunityId, { stage });
+      queryClient.invalidateQueries({ queryKey: ['opportunities'] });
+      toast.success('Opportunité déplacée avec succès');
+    } catch (error) {
+      toast.error('Erreur lors du déplacement');
+    }
+  };
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Pipeline Commercial</h2>
-        <Button>
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Nouvelle opportunité
-        </Button>
+        <OpportunityFormDialog />
       </div>
 
       <div className="grid grid-cols-5 gap-4">
         {STAGES.map((stage) => (
-          <div key={stage} className="space-y-4">
+          <div
+            key={stage}
+            className="space-y-4"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, stage)}
+          >
             <div className="flex justify-between items-center">
               <h3 className="font-medium">{stage}</h3>
               <span className="text-sm text-gray-500">
                 {opportunities.filter((opp) => opp.stage === stage).length}
               </span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 min-h-[200px]">
               {opportunities
                 .filter((opp) => opp.stage === stage)
                 .map((opportunity) => (
-                  <Card key={opportunity.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                  <Card
+                    key={opportunity.id}
+                    className="cursor-move hover:shadow-md transition-shadow"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, opportunity)}
+                  >
                     <CardHeader className="p-4">
-                      <CardTitle className="text-sm font-medium">
-                        {opportunity.title}
-                      </CardTitle>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-sm font-medium">
+                          {opportunity.title}
+                        </CardTitle>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <OpportunityFormDialog opportunity={opportunity} />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-red-600"
+                              onClick={() => handleDeleteOpportunity(opportunity.id!)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Supprimer
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
-                      <p className="text-sm text-gray-500">{opportunity.client}</p>
+                      <p className="text-sm text-gray-500">{opportunity.clientName}</p>
                       <p className="text-sm font-medium mt-1">
                         {opportunity.value.toLocaleString('fr-FR', {
                           style: 'currency',

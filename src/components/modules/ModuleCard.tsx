@@ -1,22 +1,34 @@
 
 import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ModuleCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
   value?: string | number;
+  path?: string;
   onClick?: () => void;
 }
 
-const ModuleCard = ({ icon: Icon, title, description, value, onClick }: ModuleCardProps) => {
+const ModuleCard = ({ icon: Icon, title, description, value, path, onClick }: ModuleCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (path) {
+      navigate(path);
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className="glass-card p-6 cursor-pointer transition-all duration-200"
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div className="flex items-start justify-between">
         <div className="p-3 bg-neotech-100 rounded-lg">

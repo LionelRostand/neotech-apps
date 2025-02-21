@@ -12,4 +12,61 @@ const EmployeeReports = () => {
         <h2 className="text-xl font-semibold">Rapports RH</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart className="w-5 h-5" />
+              Effectifs par département
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Chart placeholder */}
+            <div className="h-[200px] flex items-center justify-center bg-gray-100 rounded-lg">
+              Chart: Effectifs par département
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <PieChart className="w-5 h-5" />
+              Distribution des postes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Chart placeholder */}
+            <div className="h-[200px] flex items-center justify-center bg-gray-100 rounded-lg">
+              Chart: Distribution des postes
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <LineChart className="w-5 h-5" />
+              Évolution des effectifs
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Chart placeholder */}
+            <div className="h-[200px] flex items-center justify-center bg-gray-100 rounded-lg">
+              Chart: Évolution des effectifs
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <Button variant="outline">
+          <Download className="mr-2 h-4 w-4" />
+          Exporter les rapports
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default EmployeeReports;

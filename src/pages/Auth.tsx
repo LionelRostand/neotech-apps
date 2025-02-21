@@ -4,18 +4,23 @@ import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 const Auth = () => {
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await signIn(email, password);
+      if (isLogin) {
+        await signIn(email, password);
+      } else {
+        await signUp(email, password);
+      }
     } catch (error) {
-      console.error('Erreur de connexion:', error);
+      console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }
@@ -30,7 +35,9 @@ const Auth = () => {
       >
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">NEOTECH</h1>
-          <p className="mt-2 text-gray-600">Connectez-vous à votre compte</p>
+          <p className="mt-2 text-gray-600">
+            {isLogin ? 'Connectez-vous à votre compte' : 'Créez votre compte'}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -67,9 +74,18 @@ const Auth = () => {
             className="w-full bg-neotech-600 text-white py-2 px-4 rounded-lg hover:bg-neotech-700 transition-colors duration-200 disabled:opacity-50"
             disabled={loading}
           >
-            {loading ? 'Connexion en cours...' : 'Se connecter'}
+            {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : 'S\'inscrire')}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => setIsLogin(!isLogin)}
+            className="text-neotech-600 hover:text-neotech-700 text-sm font-medium"
+          >
+            {isLogin ? 'Pas encore de compte ? Inscrivez-vous' : 'Déjà un compte ? Connectez-vous'}
+          </button>
+        </div>
 
         <p className="mt-4 text-center text-sm text-gray-500">
           Un problème de connexion ?{' '}

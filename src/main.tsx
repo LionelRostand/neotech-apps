@@ -20,6 +20,7 @@ import Purchases from './pages/Purchases';
 import Clients from './pages/Clients';
 import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
+import Freight from './pages/Freight';
 
 // Purchase module routes
 import Suppliers from './pages/purchases/Suppliers';
@@ -76,7 +77,12 @@ const router = createBrowserRouter([
       },
       {
         path: "freight",
+        element: <Freight />,
         children: [
+          {
+            index: true,
+            element: <FreightOrders />
+          },
           {
             path: "orders",
             element: <FreightOrders />
@@ -150,4 +156,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
-

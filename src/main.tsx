@@ -16,6 +16,7 @@ import App from './App';
 import Dashboard from './pages/Dashboard';
 import CRM from './pages/CRM';
 import Sales from './pages/Sales';
+import Purchases from './pages/Purchases';
 import Clients from './pages/Clients';
 import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
@@ -23,7 +24,6 @@ import './index.css';
 
 const queryClient = new QueryClient();
 
-// Create a component that wraps the app with providers
 const Providers = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -61,10 +61,9 @@ const router = createBrowserRouter([
         path: "/sales",
         element: <Sales />,
       },
-      // Important : rediriger /purchases vers /sales pour la rétrocompatibilité
       {
         path: "/purchases",
-        element: <Sales />,
+        element: <Purchases />,
       }
     ],
   },

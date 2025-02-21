@@ -13,19 +13,18 @@ const Freight = () => {
 
   useEffect(() => {
     // Get the current path without leading or trailing slashes
-    const path = location.pathname.split('/').filter(Boolean);
+    const currentPath = location.pathname.replace(/^\/+|\/+$/g, '');
     
     // If we're at the root freight path, redirect to orders
-    if (path.length === 1 && path[0] === 'freight') {
-      navigate('/freight/orders');
+    if (currentPath === 'freight') {
+      navigate('/freight/orders', { replace: true });
       return;
     }
 
     // Set active tab based on current path
-    const currentSection = path[path.length - 1];
-    if (currentSection === 'routes') {
+    if (currentPath.includes('routes')) {
       setActiveTab('routes');
-    } else if (currentSection === 'tracking') {
+    } else if (currentPath.includes('tracking')) {
       setActiveTab('tracking');
     } else {
       setActiveTab('overview');
@@ -41,19 +40,16 @@ const Freight = () => {
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    switch (tab) {
-      case 'overview':
-        navigate('/freight/orders');
-        break;
-      case 'routes':
-        navigate('/freight/routes');
-        break;
-      case 'tracking':
-        navigate('/freight/tracking');
-        break;
-      default:
-        navigate('/freight/orders');
+    const basePath = '/freight';
+    
+    let targetPath = `${basePath}/orders`;
+    if (tab === 'routes') {
+      targetPath = `${basePath}/routes`;
+    } else if (tab === 'tracking') {
+      targetPath = `${basePath}/tracking`;
     }
+
+    navigate(targetPath, { replace: true });
   };
 
   return (
@@ -155,4 +151,3 @@ const Freight = () => {
 };
 
 export default Freight;
-

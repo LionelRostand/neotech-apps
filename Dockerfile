@@ -33,7 +33,7 @@ COPY --from=build /neotech-apps/dist ./dist
 ENV NODE_ENV=production
 
 # Exposer le port par défaut utilisé par serve
-EXPOSE 3000
+EXPOSE 3008
 
 # Lancer l'application avec serve
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "3008"]

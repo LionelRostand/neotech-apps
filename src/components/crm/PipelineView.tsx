@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -44,20 +44,28 @@ const PipelineView = () => {
   const [minValue, setMinValue] = useState(0);
   const [selectedClient, setSelectedClient] = useState('all');
   
-  const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
+  const { data: opportunities = [], isLoading } = useQuery({
     queryKey: ['opportunities'],
     queryFn: getOpportunities,
+    staleTime: 60000, // Cache valide pendant 1 minute
+    cacheTime: 300000, // Garde en cache pendant 5 minutes
   });
 
-  const clients = [...new Set(opportunities.map(opp => opp.clientName))];
+  const clients = useMemo(() => 
+    [...new Set(opportunities.map(opp => opp.clientName))],
+    [opportunities]
+  );
   
-  const filteredOpportunities = opportunities.filter(opp => {
-    const meetsValueCriteria = opp.value >= minValue;
-    const meetsClientCriteria = selectedClient === 'all' || opp.clientName === selectedClient;
-    return meetsValueCriteria && meetsClientCriteria;
-  });
+  const filteredOpportunities = useMemo(() => 
+    opportunities.filter(opp => {
+      const meetsValueCriteria = opp.value >= minValue;
+      const meetsClientCriteria = selectedClient === 'all' || opp.clientName === selectedClient;
+      return meetsValueCriteria && meetsClientCriteria;
+    }),
+    [opportunities, minValue, selectedClient]
+  );
 
-  const handleDeleteOpportunity = async (id: string) => {
+  const handleDeleteOpportunity = useCallback(async (id: string) => {
     try {
       await deleteOpportunity(id);
       queryClient.invalidateQueries({ queryKey: ['opportunities'] });
@@ -65,9 +73,9 @@ const PipelineView = () => {
     } catch (error) {
       toast.error('Erreur lors de la suppression');
     }
-  };
+  }, [queryClient]);
 
-  const handleDragStart = (e: React.DragEvent, opportunity: Opportunity) => {
+  const handleDragStart = useCallback((e: React.DragEvent, opportunity: Opportunity) => {
     e.dataTransfer.setData('opportunityId', opportunity.id!);
     e.dataTransfer.effectAllowed = 'move';
     const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
@@ -76,19 +84,19 @@ const PipelineView = () => {
     document.body.appendChild(dragImage);
     e.dataTransfer.setDragImage(dragImage, 0, 0);
     setTimeout(() => document.body.removeChild(dragImage), 0);
-  };
+  }, []);
 
-  const handleDragOver = (e: React.DragEvent, stage: OpportunityStage) => {
+  const handleDragOver = useCallback((e: React.DragEvent, stage: OpportunityStage) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     setDraggedOverStage(stage);
-  };
+  }, []);
 
-  const handleDragLeave = () => {
+  const handleDragLeave = useCallback(() => {
     setDraggedOverStage(null);
-  };
+  }, []);
 
-  const handleDrop = async (e: React.DragEvent, stage: OpportunityStage) => {
+  const handleDrop = useCallback(async (e: React.DragEvent, stage: OpportunityStage) => {
     e.preventDefault();
     setDraggedOverStage(null);
     const opportunityId = e.dataTransfer.getData('opportunityId');
@@ -99,16 +107,16 @@ const PipelineView = () => {
     } catch (error) {
       toast.error('Erreur lors du déplacement');
     }
-  };
+  }, [queryClient]);
 
-  const calculateStageStats = (stage: OpportunityStage): StageStats => {
+  const calculateStageStats = useCallback((stage: OpportunityStage): StageStats => {
     const stageOpportunities = filteredOpportunities.filter((opp) => opp.stage === stage);
     return {
       count: stageOpportunities.length,
       total: stageOpportunities.reduce((sum, opp) => sum + opp.value, 0),
       opportunities: stageOpportunities,
     };
-  };
+  }, [filteredOpportunities]);
 
   if (isLoading) {
     return <div>Chargement...</div>;

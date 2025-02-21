@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -30,20 +31,25 @@ const ContractsView = () => {
 
   const { data: contracts = [], isLoading } = useQuery({
     queryKey: ['contracts'],
-    queryFn: getContracts
+    queryFn: getContracts,
+    staleTime: 60000, // Cache valide pendant 1 minute
+    cacheTime: 300000, // Garde en cache pendant 5 minutes
   });
 
-  const filteredContracts = contracts.filter(contract =>
-    contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contract.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredContracts = useCallback(() => 
+    contracts.filter(contract =>
+      contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contract.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+    ),
+    [contracts, searchTerm]
   );
 
-  const handleEdit = (contract: Contract) => {
+  const handleEdit = useCallback((contract: Contract) => {
     setSelectedContract(contract);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleDelete = async (contractId: string) => {
+  const handleDelete = useCallback(async (contractId: string) => {
     try {
       await deleteContract(contractId);
       queryClient.invalidateQueries({ queryKey: ['contracts'] });
@@ -52,16 +58,18 @@ const ContractsView = () => {
       console.error('Error:', error);
       toast.error("Une erreur est survenue lors de la suppression");
     }
-  };
+  }, [queryClient]);
 
-  const handleFormClose = () => {
+  const handleFormClose = useCallback(() => {
     setIsFormOpen(false);
     setSelectedContract(undefined);
-  };
+  }, []);
 
   if (isLoading) {
     return <div>Chargement...</div>;
   }
+
+  const contractsList = filteredContracts();
 
   return (
     <div className="space-y-4">
@@ -107,7 +115,7 @@ const ContractsView = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredContracts.map((contract) => (
+            {contractsList.map((contract) => (
               <TableRow key={contract.id}>
                 <TableCell className="font-medium">{contract.title}</TableCell>
                 <TableCell>{contract.clientName}</TableCell>

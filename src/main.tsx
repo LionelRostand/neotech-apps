@@ -16,6 +16,7 @@ import App from './App';
 import Dashboard from './pages/Dashboard';
 import CRM from './pages/CRM';
 import Sales from './pages/Sales';
+import Clients from './pages/Clients';
 import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
 import './index.css';
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/crm",
         element: <CRM />,
+      },
+      {
+        path: "/clients",
+        element: <Clients />,
       },
       {
         path: "/sales",

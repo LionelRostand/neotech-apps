@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useMemo } from 'react';
 import {
   Card,
@@ -181,7 +180,7 @@ const PipelineView = () => {
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-base font-semibold">{stage}</CardTitle>
                     <span className="text-sm font-medium text-muted-foreground">
-                      {stats.count} {stats.count > 1 ? 'opportunités' : 'opportunité'}
+                      {stats.count}
                     </span>
                   </div>
                   <div className="text-sm font-medium text-muted-foreground">

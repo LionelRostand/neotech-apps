@@ -12,13 +12,13 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    const path = location.pathname;
-    if (path === '/freight' || path === '/freight/orders') {
-      setActiveTab('overview');
-    } else if (path === '/freight/routes') {
+    const path = location.pathname.split('/').pop() || '';
+    if (path === 'routes') {
       setActiveTab('routes');
-    } else if (path === '/freight/tracking') {
+    } else if (path === 'tracking') {
       setActiveTab('tracking');
+    } else {
+      setActiveTab('overview');
     }
   }, [location.pathname]);
 
@@ -32,9 +32,9 @@ const Freight = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === 'overview') {
-      navigate('/freight/orders', { replace: true });
+      navigate('orders');
     } else {
-      navigate(`/freight/${value}`, { replace: true });
+      navigate(value);
     }
   };
 

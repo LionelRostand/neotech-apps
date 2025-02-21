@@ -59,80 +59,80 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        index: true,
+        path: "/",
         element: <Dashboard />
       },
       {
-        path: "crm",
+        path: "/crm",
         element: <CRM />
       },
       {
-        path: "clients",
+        path: "/clients",
         element: <Clients />
       },
       {
-        path: "sales",
+        path: "/sales",
         element: <Sales />
       },
       {
-        path: "freight",
+        path: "/freight",
         children: [
           {
-            path: "orders",
+            path: "/freight/orders",
             element: <FreightOrders />
           },
           {
-            path: "routes",
+            path: "/freight/routes",
             element: <RouteTracking />
           },
           {
-            path: "tracking",
+            path: "/freight/tracking",
             element: <ParcelScanning />
           }
         ]
       },
       {
-        path: "purchases",
+        path: "/purchases",
         element: <Purchases />,
         children: [
           {
-            index: true,
+            path: "/purchases",
             element: <Suppliers />
           },
           {
-            path: "suppliers",
+            path: "/purchases/suppliers",
             element: <Suppliers />
           },
           {
-            path: "rfq",
+            path: "/purchases/rfq",
             element: <RFQ />
           },
           {
-            path: "orders",
+            path: "/purchases/orders",
             element: <PurchaseOrders />
           },
           {
-            path: "receipts",
+            path: "/purchases/receipts",
             element: <Receipts />
           },
           {
-            path: "invoices",
+            path: "/purchases/invoices",
             element: <Invoices />
           },
           {
-            path: "contracts",
+            path: "/purchases/contracts",
             element: <Contracts />
           },
           {
-            path: "inventory",
+            path: "/purchases/inventory",
             element: <Inventory />
           },
           {
-            path: "accounting",
+            path: "/purchases/accounting",
             element: <Accounting />
           },
           {
-            path: "analytics",
+            path: "/purchases/analytics",
             element: <Analytics />
           }
         ]
@@ -150,3 +150,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
+

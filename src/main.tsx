@@ -58,59 +58,59 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <Dashboard />,
       },
       {
-        path: "/crm",
+        path: "crm",
         element: <CRM />,
       },
       {
-        path: "/clients",
+        path: "clients",
         element: <Clients />,
       },
       {
-        path: "/sales",
+        path: "sales",
         element: <Sales />,
       },
       {
-        path: "/purchases",
+        path: "purchases",
         element: <Purchases />,
         children: [
           {
-            path: "suppliers",
+            path: "/purchases/suppliers",
             element: <Suppliers />,
           },
           {
-            path: "rfq",
+            path: "/purchases/rfq",
             element: <RFQ />,
           },
           {
-            path: "orders",
+            path: "/purchases/orders",
             element: <PurchaseOrders />,
           },
           {
-            path: "receipts",
+            path: "/purchases/receipts",
             element: <Receipts />,
           },
           {
-            path: "invoices",
+            path: "/purchases/invoices",
             element: <Invoices />,
           },
           {
-            path: "contracts",
+            path: "/purchases/contracts",
             element: <Contracts />,
           },
           {
-            path: "inventory",
+            path: "/purchases/inventory",
             element: <Inventory />,
           },
           {
-            path: "accounting",
+            path: "/purchases/accounting",
             element: <Accounting />,
           },
           {
-            path: "analytics",
+            path: "/purchases/analytics",
             element: <Analytics />,
           },
         ],
@@ -132,4 +132,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
-

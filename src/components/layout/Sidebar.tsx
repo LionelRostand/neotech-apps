@@ -91,12 +91,6 @@ const menuItems = [
     path: '/settings',
     subItems: [
       { 
-        icon: Cog, 
-        label: 'Paramètres généraux', 
-        path: '/settings/general', 
-        description: 'Configuration générale du système' 
-      },
-      { 
         icon: Building, 
         label: 'Société', 
         path: '/settings/company', 

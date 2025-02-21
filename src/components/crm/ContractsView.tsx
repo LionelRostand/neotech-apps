@@ -33,7 +33,7 @@ const ContractsView = () => {
     queryKey: ['contracts'],
     queryFn: getContracts,
     staleTime: 60000, // Cache valide pendant 1 minute
-    cacheTime: 300000, // Garde en cache pendant 5 minutes
+    gcTime: 300000, // Garde en cache pendant 5 minutes
   });
 
   const filteredContracts = useCallback(() => 

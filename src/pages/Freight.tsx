@@ -12,40 +12,38 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    // Get the current path segments and remove empty strings
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    
-    // Set default route if needed
-    if (!pathSegments.includes('freight') || pathSegments.length === 1) {
-      navigate('/freight/orders', { replace: true });
+    // Default to overview tab if we're at the root freight path
+    if (location.pathname === '/freight' || location.pathname === '/freight/') {
+      navigate('orders', { replace: true });
       return;
     }
 
-    // Get the last segment of the path
-    const lastSegment = pathSegments[pathSegments.length - 1];
-
-    // Set active tab based on the last path segment
-    if (lastSegment === 'routes') {
-      setActiveTab('routes');
-    } else if (lastSegment === 'tracking') {
-      setActiveTab('tracking');
-    } else {
-      setActiveTab('overview');
+    // Extract the current route to set the active tab
+    const currentRoute = location.pathname.split('/').pop();
+    
+    switch (currentRoute) {
+      case 'routes':
+        setActiveTab('routes');
+        break;
+      case 'tracking':
+        setActiveTab('tracking');
+        break;
+      case 'orders':
+      default:
+        setActiveTab('overview');
     }
   }, [location.pathname, navigate]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    
-    // Map tab values to their corresponding routes
-    const routes = {
-      overview: '/freight/orders',
-      routes: '/freight/routes',
-      tracking: '/freight/tracking'
+    const routes: Record<string, string> = {
+      overview: 'orders',
+      routes: 'routes',
+      tracking: 'tracking'
     };
-
-    // Navigate to the corresponding route
-    navigate(routes[value as keyof typeof routes]);
+    
+    // Use relative navigation
+    navigate(routes[value], { replace: true });
   };
 
   const stats = {
@@ -154,4 +152,3 @@ const Freight = () => {
 };
 
 export default Freight;
-

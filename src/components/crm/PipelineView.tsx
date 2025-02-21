@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, MoreHorizontal, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { PlusCircle, MoreHorizontal, Trash2, Building2, Calendar, Euro } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getOpportunities, deleteOpportunity, updateOpportunity } from '../../services';
 import type { Opportunity } from '../../types/crm';
@@ -47,8 +47,8 @@ const PipelineView = () => {
   const { data: opportunities = [], isLoading } = useQuery({
     queryKey: ['opportunities'],
     queryFn: getOpportunities,
-    staleTime: 60000, // Cache valide pendant 1 minute
-    gcTime: 300000, // Garde en cache pendant 5 minutes
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const clients = useMemo(() => 
@@ -119,15 +119,19 @@ const PipelineView = () => {
   }, [filteredOpportunities]);
 
   if (isLoading) {
-    return <div>Chargement...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-pulse text-muted-foreground">Chargement...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-start">
+    <div className="space-y-8">
+      <div className="flex justify-between items-start gap-4">
         <div>
-          <h2 className="text-xl font-semibold">Pipeline Commercial</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-2xl font-semibold tracking-tight">Pipeline Commercial</h2>
+          <p className="text-sm text-muted-foreground mt-1">
             Valeur totale : {filteredOpportunities
               .filter(opp => !['Perdu'].includes(opp.stage))
               .reduce((sum, opp) => sum + opp.value, 0)
@@ -138,7 +142,7 @@ const PipelineView = () => {
       </div>
 
       <div className="flex gap-6">
-        <div className="flex-1">
+        <div className="flex-1 bg-card rounded-lg p-4 shadow-sm">
           <PipelineFilters
             minValue={minValue}
             setMinValue={setMinValue}
@@ -152,54 +156,64 @@ const PipelineView = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-5 gap-6">
         {STAGES.map((stage) => {
           const stats = calculateStageStats(stage);
           return (
             <div
               key={stage}
               className={`space-y-4 min-h-[500px] ${
-                draggedOverStage === stage ? 'bg-muted/50 rounded-lg' : ''
+                draggedOverStage === stage ? 'bg-muted/50 rounded-lg p-2' : ''
               }`}
               onDragOver={(e) => handleDragOver(e, stage)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, stage)}
             >
-              <div className="flex flex-col gap-1 bg-card p-4 rounded-lg shadow-sm">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-medium">{stage}</h3>
-                  <span className="text-sm text-muted-foreground">
-                    {stats.count} {stats.count > 1 ? 'opportunités' : 'opportunité'}
-                  </span>
-                </div>
-                <div className="text-sm font-medium text-muted-foreground">
-                  {stats.total.toLocaleString('fr-FR', {
-                    style: 'currency',
-                    currency: 'EUR',
-                  })}
-                </div>
-              </div>
+              <Card className={`
+                border-t-4 shadow-sm
+                ${stage === 'Gagné' ? 'border-t-green-500' : 
+                  stage === 'Perdu' ? 'border-t-red-500' : 
+                  stage === 'Négociation' ? 'border-t-orange-500' : 
+                  stage === 'Proposition' ? 'border-t-blue-500' : 
+                  'border-t-purple-500'}
+              `}>
+                <CardHeader className="p-4">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-base font-semibold">{stage}</CardTitle>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {stats.count} {stats.count > 1 ? 'opportunités' : 'opportunité'}
+                    </span>
+                  </div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    {stats.total.toLocaleString('fr-FR', {
+                      style: 'currency',
+                      currency: 'EUR',
+                    })}
+                  </div>
+                </CardHeader>
+              </Card>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {stats.opportunities
                   .sort((a, b) => b.value - a.value)
                   .map((opportunity) => (
                     <Card
                       key={opportunity.id}
-                      className={`cursor-move hover:shadow-md transition-shadow ${
-                        draggedOverStage === stage ? 'opacity-50' : ''
-                      }`}
+                      className={`
+                        cursor-move hover:shadow-md transition-all duration-200
+                        ${draggedOverStage === stage ? 'opacity-50' : ''}
+                      `}
                       draggable
                       onDragStart={(e) => handleDragStart(e, opportunity)}
                     >
-                      <CardHeader className="p-4">
+                      <CardHeader className="p-4 pb-2">
                         <div className="flex justify-between items-start gap-2">
                           <CardTitle className="text-sm font-medium">
                             {opportunity.title}
                           </CardTitle>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -218,19 +232,24 @@ const PipelineView = () => {
                           </DropdownMenu>
                         </div>
                       </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        <p className="text-sm text-muted-foreground">{opportunity.clientName}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <p className="text-sm font-medium">
+                      <CardContent className="p-4 pt-0 space-y-2">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Building2 className="h-4 w-4 mr-1" />
+                          {opportunity.clientName}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center text-sm font-medium">
+                            <Euro className="h-4 w-4 mr-1" />
                             {opportunity.value.toLocaleString('fr-FR', {
                               style: 'currency',
                               currency: 'EUR',
                             })}
-                          </p>
+                          </div>
                           {opportunity.expectedCloseDate && (
-                            <p className="text-xs text-muted-foreground">
+                            <div className="flex items-center text-xs text-muted-foreground">
+                              <Calendar className="h-3 w-3 mr-1" />
                               {new Date(opportunity.expectedCloseDate).toLocaleDateString('fr-FR')}
-                            </p>
+                            </div>
                           )}
                         </div>
                       </CardContent>

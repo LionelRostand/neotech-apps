@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from "./components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from 'sonner';
 
 import App from './App';

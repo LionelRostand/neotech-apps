@@ -59,80 +59,80 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <Dashboard />
       },
       {
-        path: "/crm",
+        path: "crm",
         element: <CRM />
       },
       {
-        path: "/clients",
+        path: "clients",
         element: <Clients />
       },
       {
-        path: "/sales",
+        path: "sales",
         element: <Sales />
       },
       {
-        path: "/freight",
+        path: "freight",
         children: [
           {
-            path: "/freight/orders",
+            path: "orders",
             element: <FreightOrders />
           },
           {
-            path: "/freight/routes",
+            path: "routes",
             element: <RouteTracking />
           },
           {
-            path: "/freight/tracking",
+            path: "tracking",
             element: <ParcelScanning />
           }
         ]
       },
       {
-        path: "/purchases",
+        path: "purchases",
         element: <Purchases />,
         children: [
           {
-            path: "/purchases",
+            index: true,
             element: <Suppliers />
           },
           {
-            path: "/purchases/suppliers",
+            path: "suppliers",
             element: <Suppliers />
           },
           {
-            path: "/purchases/rfq",
+            path: "rfq",
             element: <RFQ />
           },
           {
-            path: "/purchases/orders",
+            path: "orders",
             element: <PurchaseOrders />
           },
           {
-            path: "/purchases/receipts",
+            path: "receipts",
             element: <Receipts />
           },
           {
-            path: "/purchases/invoices",
+            path: "invoices",
             element: <Invoices />
           },
           {
-            path: "/purchases/contracts",
+            path: "contracts",
             element: <Contracts />
           },
           {
-            path: "/purchases/inventory",
+            path: "inventory",
             element: <Inventory />
           },
           {
-            path: "/purchases/accounting",
+            path: "accounting",
             element: <Accounting />
           },
           {
-            path: "/purchases/analytics",
+            path: "analytics",
             element: <Analytics />
           }
         ]

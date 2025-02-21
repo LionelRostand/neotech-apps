@@ -19,6 +19,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ConversionStats from './pipeline/ConversionStats';
+import PipelineFilters from './pipeline/PipelineFilters';
 
 const STAGES = [
   'Qualification',
@@ -39,9 +41,20 @@ interface StageStats {
 const PipelineView = () => {
   const queryClient = useQueryClient();
   const [draggedOverStage, setDraggedOverStage] = useState<OpportunityStage | null>(null);
+  const [minValue, setMinValue] = useState(0);
+  const [selectedClient, setSelectedClient] = useState('');
+  
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ['opportunities'],
     queryFn: getOpportunities,
+  });
+
+  const clients = [...new Set(opportunities.map(opp => opp.clientName))];
+  
+  const filteredOpportunities = opportunities.filter(opp => {
+    const meetsValueCriteria = opp.value >= minValue;
+    const meetsClientCriteria = !selectedClient || opp.clientName === selectedClient;
+    return meetsValueCriteria && meetsClientCriteria;
   });
 
   const handleDeleteOpportunity = async (id: string) => {
@@ -89,7 +102,7 @@ const PipelineView = () => {
   };
 
   const calculateStageStats = (stage: OpportunityStage): StageStats => {
-    const stageOpportunities = opportunities.filter((opp) => opp.stage === stage);
+    const stageOpportunities = filteredOpportunities.filter((opp) => opp.stage === stage);
     return {
       count: stageOpportunities.length,
       total: stageOpportunities.reduce((sum, opp) => sum + opp.value, 0),
@@ -102,18 +115,33 @@ const PipelineView = () => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6">
+      <div className="flex justify-between items-start">
         <div>
           <h2 className="text-xl font-semibold">Pipeline Commercial</h2>
           <p className="text-sm text-muted-foreground">
-            Valeur totale : {opportunities
+            Valeur totale : {filteredOpportunities
               .filter(opp => !['Perdu'].includes(opp.stage))
               .reduce((sum, opp) => sum + opp.value, 0)
               .toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
           </p>
         </div>
         <OpportunityFormDialog />
+      </div>
+
+      <div className="flex gap-6">
+        <div className="flex-1">
+          <PipelineFilters
+            minValue={minValue}
+            setMinValue={setMinValue}
+            selectedClient={selectedClient}
+            setSelectedClient={setSelectedClient}
+            clients={clients}
+          />
+        </div>
+        <div className="w-80">
+          <ConversionStats opportunities={opportunities} />
+        </div>
       </div>
 
       <div className="grid grid-cols-5 gap-4">

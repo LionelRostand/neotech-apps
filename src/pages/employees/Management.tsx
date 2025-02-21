@@ -11,37 +11,53 @@ import { toast } from "sonner";
 
 interface Employee {
   id: string;
+  firstName: string;
   name: string;
   position: string;
   department: string;
   status: 'active' | 'inactive';
   startDate: string;
+  birthDate: string;
+  address: string;
+  city: string;
 }
 
 const mockEmployees: Employee[] = [
   {
     id: '1',
-    name: 'Jean Dupont',
+    firstName: 'Jean',
+    name: 'Dupont',
     position: 'Développeur Senior',
     department: 'IT',
     status: 'active',
     startDate: '2022-01-15',
+    birthDate: '1985-06-15',
+    address: '123 rue de la Paix',
+    city: 'Paris'
   },
   {
     id: '2',
-    name: 'Marie Martin',
+    firstName: 'Marie',
+    name: 'Martin',
     position: 'Chef de Projet',
     department: 'IT',
     status: 'active',
     startDate: '2021-06-01',
+    birthDate: '1990-03-22',
+    address: '45 avenue des Champs-Élysées',
+    city: 'Paris'
   },
   {
     id: '3',
-    name: 'Pierre Laurent',
+    firstName: 'Pierre',
+    name: 'Laurent',
     position: 'Designer UI/UX',
     department: 'Design',
     status: 'inactive',
     startDate: '2023-03-10',
+    birthDate: '1988-11-30',
+    address: '78 boulevard Saint-Michel',
+    city: 'Paris'
   },
 ];
 
@@ -50,10 +66,14 @@ const EmployeeManagement = () => {
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
   const [isNewEmployeeDialogOpen, setIsNewEmployeeDialogOpen] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
+    firstName: '',
     name: '',
     position: '',
     department: '',
-    startDate: ''
+    startDate: '',
+    birthDate: '',
+    address: '',
+    city: ''
   });
 
   const filteredEmployees = employees.filter(employee =>
@@ -63,7 +83,9 @@ const EmployeeManagement = () => {
   );
 
   const handleCreateEmployee = () => {
-    if (!newEmployee.name || !newEmployee.position || !newEmployee.department || !newEmployee.startDate) {
+    if (!newEmployee.firstName || !newEmployee.name || !newEmployee.position || 
+        !newEmployee.department || !newEmployee.startDate || !newEmployee.birthDate || 
+        !newEmployee.address || !newEmployee.city) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
@@ -76,7 +98,16 @@ const EmployeeManagement = () => {
 
     setEmployees([...employees, employee]);
     setIsNewEmployeeDialogOpen(false);
-    setNewEmployee({ name: '', position: '', department: '', startDate: '' });
+    setNewEmployee({ 
+      firstName: '',
+      name: '', 
+      position: '', 
+      department: '', 
+      startDate: '',
+      birthDate: '',
+      address: '',
+      city: ''
+    });
     toast.success("Employé ajouté avec succès");
   };
 
@@ -107,7 +138,7 @@ const EmployeeManagement = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nom</TableHead>
+              <TableHead>Nom complet</TableHead>
               <TableHead>Poste</TableHead>
               <TableHead>Département</TableHead>
               <TableHead>Date d'entrée</TableHead>
@@ -118,7 +149,7 @@ const EmployeeManagement = () => {
           <TableBody>
             {filteredEmployees.map((employee) => (
               <TableRow key={employee.id}>
-                <TableCell>{employee.name}</TableCell>
+                <TableCell>{employee.firstName} {employee.name}</TableCell>
                 <TableCell>{employee.position}</TableCell>
                 <TableCell>{employee.department}</TableCell>
                 <TableCell>{new Date(employee.startDate).toLocaleDateString('fr-FR')}</TableCell>
@@ -147,6 +178,17 @@ const EmployeeManagement = () => {
             <DialogTitle>Nouvel employé</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="firstName" className="text-right">
+                Prénom
+              </Label>
+              <Input
+                id="firstName"
+                className="col-span-3"
+                value={newEmployee.firstName}
+                onChange={(e) => setNewEmployee({ ...newEmployee, firstName: e.target.value })}
+              />
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Nom
@@ -181,6 +223,18 @@ const EmployeeManagement = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="birthDate" className="text-right">
+                Date de naissance
+              </Label>
+              <Input
+                id="birthDate"
+                type="date"
+                className="col-span-3"
+                value={newEmployee.birthDate}
+                onChange={(e) => setNewEmployee({ ...newEmployee, birthDate: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="startDate" className="text-right">
                 Date d'entrée
               </Label>
@@ -190,6 +244,28 @@ const EmployeeManagement = () => {
                 className="col-span-3"
                 value={newEmployee.startDate}
                 onChange={(e) => setNewEmployee({ ...newEmployee, startDate: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="text-right">
+                Adresse
+              </Label>
+              <Input
+                id="address"
+                className="col-span-3"
+                value={newEmployee.address}
+                onChange={(e) => setNewEmployee({ ...newEmployee, address: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="city" className="text-right">
+                Ville
+              </Label>
+              <Input
+                id="city"
+                className="col-span-3"
+                value={newEmployee.city}
+                onChange={(e) => setNewEmployee({ ...newEmployee, city: e.target.value })}
               />
             </div>
           </div>
@@ -208,4 +284,3 @@ const EmployeeManagement = () => {
 };
 
 export default EmployeeManagement;
-

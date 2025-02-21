@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Table,
@@ -30,11 +30,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getQuotes } from '../../services/quoteService';
+import { getQuotes, createQuote, updateQuote, deleteQuote } from '../../services/quoteService';
 import type { Quote } from '../../types/sales';
+import { QuoteFormDialog } from './QuoteForm';
 
 const QuotesView = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState<Quote | undefined>();
+  const queryClient = useQueryClient();
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ['quotes'],
@@ -47,6 +51,41 @@ const QuotesView = () => {
     quote.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     quote.number.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleCreateOrUpdateQuote = async (quoteData: Omit<Quote, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      if (selectedQuote?.id) {
+        await updateQuote(selectedQuote.id, quoteData);
+      } else {
+        await createQuote(quoteData);
+      }
+      await queryClient.invalidateQueries({ queryKey: ['quotes'] });
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du devis:', error);
+      throw error;
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteQuote(id);
+      await queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      toast.success("Devis supprimé avec succès");
+    } catch (error) {
+      console.error('Erreur lors de la suppression du devis:', error);
+      toast.error("Erreur lors de la suppression du devis");
+    }
+  };
+
+  const openEditForm = (quote: Quote) => {
+    setSelectedQuote(quote);
+    setIsFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setSelectedQuote(undefined);
+    setIsFormOpen(false);
+  };
 
   const getStatusColor = (status: Quote['status']) => {
     switch (status) {
@@ -81,7 +120,7 @@ const QuotesView = () => {
             />
           </div>
         </div>
-        <Button onClick={() => toast.info("Fonctionnalité à venir")}>
+        <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nouveau devis
         </Button>
@@ -130,13 +169,13 @@ const QuotesView = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => openEditForm(quote)}>
+                        <Pencil className="h-4 w-4 mr-2" />
+                        Modifier
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => toast.info("Fonctionnalité à venir")}>
                         <Eye className="h-4 w-4 mr-2" />
                         Voir
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => toast.info("Fonctionnalité à venir")}>
-                        <Pencil className="h-4 w-4 mr-2" />
-                        Modifier
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => toast.info("Fonctionnalité à venir")}>
                         <Mail className="h-4 w-4 mr-2" />
@@ -156,7 +195,7 @@ const QuotesView = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         className="text-red-600"
-                        onClick={() => toast.info("Fonctionnalité à venir")}
+                        onClick={() => handleDelete(quote.id!)}
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Supprimer
@@ -169,6 +208,13 @@ const QuotesView = () => {
           </TableBody>
         </Table>
       </div>
+
+      <QuoteFormDialog
+        open={isFormOpen}
+        onOpenChange={handleFormClose}
+        quote={selectedQuote}
+        onSubmit={handleCreateOrUpdateQuote}
+      />
     </div>
   );
 };

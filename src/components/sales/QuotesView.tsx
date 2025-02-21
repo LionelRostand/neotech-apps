@@ -60,9 +60,11 @@ const QuotesView = () => {
         await createQuote(quoteData);
       }
       await queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      toast.success(selectedQuote?.id ? "Devis modifié avec succès" : "Devis créé avec succès");
+      handleFormClose();
     } catch (error) {
       console.error('Erreur lors de la sauvegarde du devis:', error);
-      throw error;
+      toast.error("Une erreur est survenue lors de la sauvegarde du devis");
     }
   };
 
@@ -100,6 +102,19 @@ const QuotesView = () => {
       default:
         return 'bg-yellow-100 text-yellow-800';
     }
+  };
+
+  const formatDate = (date: Date | string | undefined) => {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('fr-FR');
+  };
+
+  const formatCurrency = (amount: number | undefined) => {
+    if (typeof amount !== 'number') return '-';
+    return amount.toLocaleString('fr-FR', {
+      style: 'currency',
+      currency: 'EUR',
+    });
   };
 
   if (isLoading) {
@@ -142,25 +157,16 @@ const QuotesView = () => {
           <TableBody>
             {filteredQuotes.map((quote) => (
               <TableRow key={quote.id}>
-                <TableCell className="font-medium">{quote.number}</TableCell>
-                <TableCell>{quote.clientName}</TableCell>
-                <TableCell>
-                  {new Date(quote.createdAt).toLocaleDateString('fr-FR')}
-                </TableCell>
-                <TableCell>
-                  {quote.total.toLocaleString('fr-FR', {
-                    style: 'currency',
-                    currency: 'EUR',
-                  })}
-                </TableCell>
+                <TableCell className="font-medium">{quote.number || '-'}</TableCell>
+                <TableCell>{quote.clientName || '-'}</TableCell>
+                <TableCell>{formatDate(quote.createdAt)}</TableCell>
+                <TableCell>{formatCurrency(quote.total)}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(quote.status)}`}>
-                    {quote.status}
+                    {quote.status || 'draft'}
                   </span>
                 </TableCell>
-                <TableCell>
-                  {new Date(quote.validUntil).toLocaleDateString('fr-FR')}
-                </TableCell>
+                <TableCell>{formatDate(quote.validUntil)}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -195,7 +201,7 @@ const QuotesView = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         className="text-red-600"
-                        onClick={() => handleDelete(quote.id!)}
+                        onClick={() => quote.id && handleDelete(quote.id)}
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Supprimer

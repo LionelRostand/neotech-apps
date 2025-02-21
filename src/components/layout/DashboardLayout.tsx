@@ -12,6 +12,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -30,13 +31,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         fixed inset-0 z-40 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <Sidebar onClose={() => setIsSidebarOpen(false)} />
+        <Sidebar 
+          onClose={() => setIsSidebarOpen(false)} 
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       {/* Main content */}
       <div className={`
         transition-all duration-300 ease-in-out
-        ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}
+        ${isSidebarOpen ? (isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64') : 'lg:ml-0'}
       `}>
         <Header />
         <motion.main 

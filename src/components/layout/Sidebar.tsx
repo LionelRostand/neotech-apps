@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   Users, 
@@ -34,11 +35,19 @@ import {
   Medal,
   DollarSign,
   UserPlus,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+
+interface SidebarProps {
+  onClose?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+}
 
 const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/' },
@@ -140,29 +149,42 @@ const menuItems = [
   { icon: Settings, label: 'Paramètres', path: '/settings' }
 ];
 
-interface SidebarProps {
-  onClose?: () => void;
-}
-
-const Sidebar = ({ onClose }: SidebarProps) => {
+const Sidebar = ({ onClose, isCollapsed, onToggleCollapse }: SidebarProps) => {
   const location = useLocation();
   
   return (
     <motion.aside 
       initial={{ x: -250 }}
       animate={{ x: 0 }}
-      className="h-screen bg-white border-r shadow-sm w-[280px] relative"
+      className={`h-screen bg-white border-r shadow-sm relative ${isCollapsed ? 'w-20' : 'w-[280px]'} transition-all duration-300`}
     >
       <div className="flex items-center justify-between p-6">
-        <h1 className="text-2xl font-bold text-neotech-600">NEOTECH</h1>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
-          onClick={onClose}
-        >
-          <X className="h-6 w-6" />
-        </Button>
+        <h1 className={`text-2xl font-bold text-neotech-600 transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
+          NEOTECH
+        </h1>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggleCollapse}
+            className="hidden lg:flex"
+            title={isCollapsed ? "Déplier" : "Réduire"}
+          >
+            {isCollapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={onClose}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
       </div>
       
       <nav className="mt-6 h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
@@ -186,13 +208,18 @@ const Sidebar = ({ onClose }: SidebarProps) => {
                   }
                 }}
               >
-                <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
-                <span className={`${isActive ? 'font-medium text-neotech-700' : ''} ${isSubMenuOpen ? 'font-medium' : ''}`}>
+                <Icon className={`w-5 h-5 ${isCollapsed ? '' : 'mr-3'} ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
+                <span className={`
+                  ${isActive ? 'font-medium text-neotech-700' : ''} 
+                  ${isSubMenuOpen ? 'font-medium' : ''}
+                  ${isCollapsed ? 'hidden' : 'block'}
+                  transition-opacity duration-300
+                `}>
                   {item.label}
                 </span>
               </Link>
               
-              {item.subItems && isSubMenuOpen && (
+              {!isCollapsed && item.subItems && isSubMenuOpen && (
                 <div className="ml-6 border-l border-gray-200">
                   {item.subItems.map((subItem, subIndex) => {
                     const SubIcon = subItem.icon;

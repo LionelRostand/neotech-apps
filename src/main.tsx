@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -19,6 +18,7 @@ import Clients from './pages/Clients';
 import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
 import Freight from './pages/Freight';
+import { GeneralSettings } from './components/settings/GeneralSettings';
 
 // Purchase module routes
 import Suppliers from './pages/purchases/Suppliers';
@@ -72,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "sales",
         element: <Sales />
+      },
+      {
+        path: "settings",
+        element: <GeneralSettings />
       },
       {
         path: "freight",

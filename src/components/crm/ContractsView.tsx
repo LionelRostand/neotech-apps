@@ -1,5 +1,7 @@
 
 import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -18,44 +20,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ContractForm from './ContractForm';
-
-interface Contract {
-  id: string;
-  title: string;
-  clientName: string;
-  status: 'En cours' | 'Signé' | 'Expiré';
-  startDate: string;
-  endDate: string;
-  value: number;
-}
-
-const mockContracts: Contract[] = [
-  {
-    id: '1',
-    title: 'Contrat de service IT',
-    clientName: 'Entreprise A',
-    status: 'En cours',
-    startDate: '2024-01-01',
-    endDate: '2024-12-31',
-    value: 50000
-  },
-  {
-    id: '2',
-    title: 'Maintenance annuelle',
-    clientName: 'Entreprise B',
-    status: 'Signé',
-    startDate: '2024-02-01',
-    endDate: '2025-01-31',
-    value: 25000
-  }
-];
+import { getContracts, deleteContract, Contract } from '../../services/crm';
 
 const ContractsView = () => {
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
-  const filteredContracts = mockContracts.filter(contract =>
+  const { data: contracts = [], isLoading } = useQuery({
+    queryKey: ['contracts'],
+    queryFn: getContracts
+  });
+
+  const filteredContracts = contracts.filter(contract =>
     contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     contract.clientName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -65,15 +43,25 @@ const ContractsView = () => {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (contractId: string) => {
-    // TODO: Implement delete logic
-    console.log('Delete contract:', contractId);
+  const handleDelete = async (contractId: string) => {
+    try {
+      await deleteContract(contractId);
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
+      toast.success("Contrat supprimé avec succès");
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Une erreur est survenue lors de la suppression");
+    }
   };
 
   const handleFormClose = () => {
     setIsFormOpen(false);
     setSelectedContract(undefined);
   };
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
 
   return (
     <div className="space-y-4">
@@ -158,7 +146,7 @@ const ContractsView = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         className="text-red-600"
-                        onClick={() => handleDelete(contract.id)}
+                        onClick={() => handleDelete(contract.id!)}
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Supprimer

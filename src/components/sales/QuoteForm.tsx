@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import {
@@ -19,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trash2, Plus } from 'lucide-react';
-import { Quote, QuoteItem } from '../../types/sales';
+import { Quote, QuoteItem, Product } from '../../types/sales';
 import { useQuery } from '@tanstack/react-query';
 import { getProducts } from '../../services/productService';
 
@@ -42,7 +41,7 @@ export const QuoteFormDialog = ({ open, onOpenChange, quote, onSubmit }: QuoteFo
   );
   const [notes, setNotes] = useState(quote?.notes || '');
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [] } = useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: getProducts,
   });
@@ -132,9 +131,7 @@ export const QuoteFormDialog = ({ open, onOpenChange, quote, onSubmit }: QuoteFo
         taxTotal,
         total,
         validUntil: new Date(validUntil),
-        notes,
-        createdAt: quote?.createdAt || new Date(),
-        updatedAt: new Date(),
+        notes
       });
 
       onOpenChange(false);

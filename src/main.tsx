@@ -20,6 +20,16 @@ import Purchases from './pages/Purchases';
 import Clients from './pages/Clients';
 import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
+
+// Purchase module routes
+import Suppliers from './pages/purchases/Suppliers';
+import RFQ from './pages/purchases/RFQ';
+import PurchaseOrders from './pages/purchases/PurchaseOrders';
+import Receipts from './pages/purchases/Receipts';
+import Invoices from './pages/purchases/Invoices';
+import Contracts from './pages/purchases/Contracts';
+import Analytics from './pages/purchases/Analytics';
+
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -64,6 +74,36 @@ const router = createBrowserRouter([
       {
         path: "/purchases",
         element: <Purchases />,
+        children: [
+          {
+            path: "suppliers",
+            element: <Suppliers />,
+          },
+          {
+            path: "rfq",
+            element: <RFQ />,
+          },
+          {
+            path: "orders",
+            element: <PurchaseOrders />,
+          },
+          {
+            path: "receipts",
+            element: <Receipts />,
+          },
+          {
+            path: "invoices",
+            element: <Invoices />,
+          },
+          {
+            path: "contracts",
+            element: <Contracts />,
+          },
+          {
+            path: "analytics",
+            element: <Analytics />,
+          },
+        ],
       }
     ],
   },

@@ -49,7 +49,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
+    <Route>
       <Route
         path="/"
         element={<Providers><App /></Providers>}
@@ -73,10 +73,10 @@ const router = createBrowserRouter(
         </Route>
       </Route>
       <Route
-        path="/auth"
+        path="auth"
         element={<Providers><Auth /></Providers>}
       />
-    </>
+    </Route>
   )
 );
 

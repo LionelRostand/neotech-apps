@@ -49,31 +49,41 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route
-      path="/"
-      element={
-        <Providers>
-          <App />
-        </Providers>
-      }
-      errorElement={<NotFound />}
-    >
-      <Route index element={<Dashboard />} />
-      <Route path="crm" element={<CRM />} />
-      <Route path="clients" element={<Clients />} />
-      <Route path="sales" element={<Sales />} />
-      <Route path="purchases" element={<Purchases />}>
-        <Route path="suppliers" element={<Suppliers />} />
-        <Route path="rfq" element={<RFQ />} />
-        <Route path="orders" element={<PurchaseOrders />} />
-        <Route path="receipts" element={<Receipts />} />
-        <Route path="invoices" element={<Invoices />} />
-        <Route path="contracts" element={<Contracts />} />
-        <Route path="inventory" element={<Inventory />} />
-        <Route path="accounting" element={<Accounting />} />
-        <Route path="analytics" element={<Analytics />} />
+    <>
+      <Route
+        path="/"
+        element={
+          <Providers>
+            <App />
+          </Providers>
+        }
+        errorElement={<NotFound />}
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="crm" element={<CRM />} />
+        <Route path="clients" element={<Clients />} />
+        <Route path="sales" element={<Sales />} />
+        <Route path="purchases" element={<Purchases />}>
+          <Route path="suppliers" element={<Suppliers />} />
+          <Route path="rfq" element={<RFQ />} />
+          <Route path="orders" element={<PurchaseOrders />} />
+          <Route path="receipts" element={<Receipts />} />
+          <Route path="invoices" element={<Invoices />} />
+          <Route path="contracts" element={<Contracts />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="accounting" element={<Accounting />} />
+          <Route path="analytics" element={<Analytics />} />
+        </Route>
       </Route>
-    </Route>
+      <Route
+        path="auth"
+        element={
+          <Providers>
+            <Auth />
+          </Providers>
+        }
+      />
+    </>
   )
 );
 

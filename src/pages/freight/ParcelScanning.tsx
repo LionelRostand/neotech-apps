@@ -3,19 +3,34 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Scan, Package } from 'lucide-react';
+import { Scan, Package, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { scanParcel, type ParcelData } from '@/services/freightService';
+import { format } from 'date-fns';
 
 const ParcelScanning = () => {
   const [code, setCode] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [currentParcel, setCurrentParcel] = useState<ParcelData | null>(null);
 
-  const handleScan = () => {
-    if (code.trim()) {
-      // Ici, nous simulerons une recherche de colis
-      // Dans une version réelle, cela ferait appel à une API
-      toast.success("Code scanné avec succès: " + code);
-    } else {
+  const handleScan = async () => {
+    if (!code.trim()) {
       toast.error("Veuillez entrer un code valide");
+      return;
+    }
+
+    setScanning(true);
+    try {
+      const parcel = await scanParcel(code);
+      if (parcel) {
+        setCurrentParcel(parcel);
+        setCode('');
+      }
+    } catch (error) {
+      toast.error("Erreur lors du scan du colis");
+      console.error(error);
+    } finally {
+      setScanning(false);
     }
   };
 
@@ -43,8 +58,12 @@ const ParcelScanning = () => {
                 onChange={(e) => setCode(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={handleScan}>
-                Scanner
+              <Button onClick={handleScan} disabled={scanning}>
+                {scanning ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  'Scanner'
+                )}
               </Button>
             </div>
             <p className="text-sm text-gray-500">
@@ -61,19 +80,57 @@ const ParcelScanning = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            {currentParcel ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">
+                  Code: {currentParcel.trackingNumber}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Scanné le: {format(currentParcel.updatedAt, 'dd/MM/yyyy HH:mm')}
+                </p>
+              </div>
+            ) : (
               <p className="text-sm text-gray-600">Aucun scan récent</p>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
 
-      <div className="mt-8 bg-gray-50 rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Informations du Colis</h2>
-        <p className="text-gray-500">
-          Scannez un code pour voir les détails du colis
-        </p>
-      </div>
+      {currentParcel && (
+        <div className="mt-8 bg-gray-50 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Informations du Colis</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Numéro de suivi</p>
+              <p className="text-lg">{currentParcel.trackingNumber}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Statut</p>
+              <p className="text-lg capitalize">{currentParcel.status.replace('_', ' ')}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Origine</p>
+              <p className="text-lg">{currentParcel.origin}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Destination</p>
+              <p className="text-lg">{currentParcel.destination}</p>
+            </div>
+            {currentParcel.clientId && (
+              <div>
+                <p className="text-sm font-medium text-gray-600">Client ID</p>
+                <p className="text-lg">{currentParcel.clientId}</p>
+              </div>
+            )}
+            {currentParcel.purchaseOrderId && (
+              <div>
+                <p className="text-sm font-medium text-gray-600">Bon de commande</p>
+                <p className="text-lg">{currentParcel.purchaseOrderId}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -33,6 +33,16 @@ import Inventory from './pages/purchases/Inventory';
 import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
 
+// Employee module routes
+import Employees from './pages/Employees';
+import EmployeeManagement from './pages/employees/Management';
+import EmployeeContracts from './pages/employees/Contracts';
+import EmployeeLeaves from './pages/employees/Leaves';
+import EmployeeAttendance from './pages/employees/Attendance';
+import EmployeePerformance from './pages/employees/Performance';
+import EmployeePayroll from './pages/employees/Payroll';
+import EmployeeReports from './pages/employees/Reports';
+
 // Freight management routes
 import FreightOrders from './pages/freight/FreightOrders';
 import RouteTracking from './pages/freight/RouteTracking';
@@ -77,14 +87,43 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
+        element: <GeneralSettings />
+      },
+      {
+        path: "employees",
+        element: <Employees />,
         children: [
           {
             index: true,
-            element: <Navigate to="/settings/general" replace />
+            element: <EmployeeManagement />
           },
           {
-            path: "general",
-            element: <GeneralSettings />
+            path: "management",
+            element: <EmployeeManagement />
+          },
+          {
+            path: "contracts",
+            element: <EmployeeContracts />
+          },
+          {
+            path: "leaves",
+            element: <EmployeeLeaves />
+          },
+          {
+            path: "attendance",
+            element: <EmployeeAttendance />
+          },
+          {
+            path: "performance",
+            element: <EmployeePerformance />
+          },
+          {
+            path: "payroll",
+            element: <EmployeePayroll />
+          },
+          {
+            path: "reports",
+            element: <EmployeeReports />
           }
         ]
       },

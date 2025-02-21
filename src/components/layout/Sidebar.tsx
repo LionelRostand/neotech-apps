@@ -27,7 +27,14 @@ import {
   Scan,
   Database,
   BarChart,
-  FileSpreadsheet
+  FileSpreadsheet,
+  UserCog,
+  Calendar,
+  Clock,
+  FileSignature,
+  Medal,
+  DollarSign,
+  UserPlus
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -51,6 +58,55 @@ const menuItems = [
       { icon: PackageSearch, label: 'Stocks', path: '/purchases/inventory', description: 'Gestion des stocks' },
       { icon: Calculator, label: 'Comptabilité', path: '/purchases/accounting', description: 'Intégration comptable' },
       { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics', description: 'Rapports et analyses' }
+    ]
+  },
+  { 
+    icon: UserCog, 
+    label: 'Employés', 
+    path: '/employees',
+    subItems: [
+      { 
+        icon: UserPlus, 
+        label: 'Gestion employés', 
+        path: '/employees/management', 
+        description: 'Création et gestion des employés' 
+      },
+      { 
+        icon: FileSignature, 
+        label: 'Contrats', 
+        path: '/employees/contracts', 
+        description: 'Gestion des contrats de travail' 
+      },
+      { 
+        icon: Calendar, 
+        label: 'Congés', 
+        path: '/employees/leaves', 
+        description: 'Gestion des absences et congés' 
+      },
+      { 
+        icon: Clock, 
+        label: 'Présences', 
+        path: '/employees/attendance', 
+        description: 'Suivi du temps et des présences' 
+      },
+      { 
+        icon: Medal, 
+        label: 'Performance', 
+        path: '/employees/performance', 
+        description: 'Évaluation et objectifs' 
+      },
+      { 
+        icon: DollarSign, 
+        label: 'Salaires', 
+        path: '/employees/payroll', 
+        description: 'Gestion des salaires et avantages' 
+      },
+      { 
+        icon: FileBarChart, 
+        label: 'Rapports RH', 
+        path: '/employees/reports', 
+        description: 'Reporting et statistiques' 
+      }
     ]
   },
   { 

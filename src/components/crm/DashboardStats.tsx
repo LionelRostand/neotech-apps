@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getClients } from '../../services';
 import type { Client } from '../../types/crm';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, TrendingUp, UserCheck, UserPlus } from 'lucide-react';
+import { Users, TrendingUp, UserCheck, UserPlus, DollarSign } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -79,18 +79,23 @@ const DashboardStats = () => {
               <p className="text-2xl font-bold mt-2">{prospects}</p>
             </div>
 
-            <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Chiffre d'affaires</span>
+            <div className="p-6 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/20 shadow-lg">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-full bg-primary/10">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                </div>
+                <span className="text-sm font-medium text-primary/80">Chiffre d'affaires</span>
               </div>
-              <p className="text-2xl font-bold mt-2">
-                {totalRevenue.toLocaleString('fr-FR', {
-                  style: 'currency',
-                  currency: 'EUR',
-                  maximumFractionDigits: 0
-                })}
-              </p>
+              <div className="space-y-1">
+                <p className="text-3xl font-bold text-primary">
+                  {totalRevenue.toLocaleString('fr-FR', {
+                    style: 'currency',
+                    currency: 'EUR',
+                    maximumFractionDigits: 0
+                  })}
+                </p>
+                <p className="text-xs text-primary/60">Revenus totaux</p>
+              </div>
             </div>
           </div>
         </CardContent>

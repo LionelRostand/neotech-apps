@@ -54,7 +54,7 @@ const DashboardStats = () => {
           <CardTitle className="text-base font-medium">Aperçu des clients</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-primary" />
@@ -79,22 +79,22 @@ const DashboardStats = () => {
               <p className="text-2xl font-bold mt-2">{prospects}</p>
             </div>
 
-            <div className="p-6 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/20 shadow-lg">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 rounded-full bg-primary/10">
-                  <DollarSign className="h-5 w-5 text-primary" />
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 border-2 border-primary/30 shadow-xl transform hover:scale-105 transition-all duration-300">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-full bg-primary/20 shadow-inner">
+                  <DollarSign className="h-6 w-6 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-primary/80">Chiffre d'affaires</span>
+                <span className="text-base font-semibold text-primary/90">Chiffre d'affaires</span>
               </div>
-              <div className="space-y-1">
-                <p className="text-3xl font-bold text-primary">
+              <div className="space-y-2">
+                <p className="text-4xl font-bold text-primary tracking-tight">
                   {totalRevenue.toLocaleString('fr-FR', {
                     style: 'currency',
                     currency: 'EUR',
                     maximumFractionDigits: 0
                   })}
                 </p>
-                <p className="text-xs text-primary/60">Revenus totaux</p>
+                <p className="text-sm text-primary/70 font-medium">Total des revenus</p>
               </div>
             </div>
           </div>

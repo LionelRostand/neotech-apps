@@ -35,6 +35,7 @@ import Analytics from './pages/purchases/Analytics';
 // Freight management routes
 import FreightOrders from './pages/freight/FreightOrders';
 import RouteTracking from './pages/freight/RouteTracking';
+import ParcelScanning from './pages/freight/ParcelScanning';
 
 import './index.css';
 
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
           {
             path: "routes",
             element: <RouteTracking />
+          },
+          {
+            path: "tracking",
+            element: <ParcelScanning />
           }
         ]
       },

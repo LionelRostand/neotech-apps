@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -32,6 +33,8 @@ const ContractForm = ({ isOpen, onClose, contract }: ContractFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: contract?.title || '',
+    reference: contract?.reference || '',
+    supplier: contract?.supplier || '',
     clientName: contract?.clientName || '',
     clientId: contract?.clientId || '',
     status: contract?.status || 'En cours',
@@ -82,6 +85,24 @@ const ContractForm = ({ isOpen, onClose, contract }: ContractFormProps) => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="reference">Référence</Label>
+            <Input
+              id="reference"
+              value={formData.reference}
+              onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="supplier">Fournisseur</Label>
+            <Input
+              id="supplier"
+              value={formData.supplier}
+              onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="title">Titre</Label>
             <Input

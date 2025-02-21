@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface Employee {
   id: string;
@@ -44,13 +47,38 @@ const mockEmployees: Employee[] = [
 
 const EmployeeManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [employees] = useState<Employee[]>(mockEmployees);
+  const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
+  const [isNewEmployeeDialogOpen, setIsNewEmployeeDialogOpen] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({
+    name: '',
+    position: '',
+    department: '',
+    startDate: ''
+  });
 
   const filteredEmployees = employees.filter(employee =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
     employee.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleCreateEmployee = () => {
+    if (!newEmployee.name || !newEmployee.position || !newEmployee.department || !newEmployee.startDate) {
+      toast.error("Veuillez remplir tous les champs obligatoires");
+      return;
+    }
+
+    const employee: Employee = {
+      id: (employees.length + 1).toString(),
+      ...newEmployee,
+      status: 'active'
+    };
+
+    setEmployees([...employees, employee]);
+    setIsNewEmployeeDialogOpen(false);
+    setNewEmployee({ name: '', position: '', department: '', startDate: '' });
+    toast.success("Employé ajouté avec succès");
+  };
 
   return (
     <div className="p-6">
@@ -69,7 +97,7 @@ const EmployeeManagement = () => {
             className="pl-8"
           />
         </div>
-        <Button>
+        <Button onClick={() => setIsNewEmployeeDialogOpen(true)}>
           <UserPlus className="w-4 h-4 mr-2" />
           Nouvel employé
         </Button>
@@ -112,8 +140,72 @@ const EmployeeManagement = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isNewEmployeeDialogOpen} onOpenChange={setIsNewEmployeeDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Nouvel employé</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Nom
+              </Label>
+              <Input
+                id="name"
+                className="col-span-3"
+                value={newEmployee.name}
+                onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="position" className="text-right">
+                Poste
+              </Label>
+              <Input
+                id="position"
+                className="col-span-3"
+                value={newEmployee.position}
+                onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="department" className="text-right">
+                Département
+              </Label>
+              <Input
+                id="department"
+                className="col-span-3"
+                value={newEmployee.department}
+                onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="startDate" className="text-right">
+                Date d'entrée
+              </Label>
+              <Input
+                id="startDate"
+                type="date"
+                className="col-span-3"
+                value={newEmployee.startDate}
+                onChange={(e) => setNewEmployee({ ...newEmployee, startDate: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setIsNewEmployeeDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button type="button" onClick={handleCreateEmployee}>
+              Créer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 export default EmployeeManagement;
+

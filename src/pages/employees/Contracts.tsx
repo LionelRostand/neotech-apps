@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface Contract {
   id: string;
@@ -43,11 +46,42 @@ const mockContracts: Contract[] = [
 const EmployeeContracts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contracts] = useState<Contract[]>(mockContracts);
+  const [isNewContractDialogOpen, setIsNewContractDialogOpen] = useState(false);
+  const [newContract, setNewContract] = useState({
+    employeeName: '',
+    type: '',
+    startDate: '',
+    endDate: '',
+  });
 
   const filteredContracts = contracts.filter(contract =>
     contract.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     contract.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleCreateContract = () => {
+    if (!newContract.employeeName || !newContract.type || !newContract.startDate) {
+      toast.error("Veuillez remplir tous les champs obligatoires");
+      return;
+    }
+
+    // Simuler l'ajout d'un nouveau contrat
+    const contract: Contract = {
+      id: (contracts.length + 1).toString(),
+      ...newContract,
+      status: 'active'
+    };
+
+    // Dans un cas réel, on appellerait ici l'API pour sauvegarder le contrat
+    toast.success("Contrat créé avec succès");
+    setIsNewContractDialogOpen(false);
+    setNewContract({
+      employeeName: '',
+      type: '',
+      startDate: '',
+      endDate: '',
+    });
+  };
 
   return (
     <div className="p-6">
@@ -66,7 +100,7 @@ const EmployeeContracts = () => {
             className="pl-8"
           />
         </div>
-        <Button>
+        <Button onClick={() => setIsNewContractDialogOpen(true)}>
           <FileSignature className="w-4 h-4 mr-2" />
           Nouveau contrat
         </Button>
@@ -117,6 +151,70 @@ const EmployeeContracts = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isNewContractDialogOpen} onOpenChange={setIsNewContractDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Nouveau contrat</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="employeeName" className="text-right">
+                Employé
+              </Label>
+              <Input
+                id="employeeName"
+                className="col-span-3"
+                value={newContract.employeeName}
+                onChange={(e) => setNewContract({ ...newContract, employeeName: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">
+                Type de contrat
+              </Label>
+              <Input
+                id="type"
+                className="col-span-3"
+                value={newContract.type}
+                onChange={(e) => setNewContract({ ...newContract, type: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="startDate" className="text-right">
+                Date de début
+              </Label>
+              <Input
+                id="startDate"
+                type="date"
+                className="col-span-3"
+                value={newContract.startDate}
+                onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="endDate" className="text-right">
+                Date de fin
+              </Label>
+              <Input
+                id="endDate"
+                type="date"
+                className="col-span-3"
+                value={newContract.endDate}
+                onChange={(e) => setNewContract({ ...newContract, endDate: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setIsNewContractDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button type="button" onClick={handleCreateContract}>
+              Créer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

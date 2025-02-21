@@ -13,7 +13,15 @@ import {
   Truck,
   CreditCard,
   FileBarChart,
-  Store
+  Store,
+  UserCheck,
+  ShieldCheck,
+  PieChart,
+  ClipboardCheck,
+  BookOpen,
+  PackageSearch,
+  Warehouse,
+  Calculator
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -28,13 +36,15 @@ const menuItems = [
     label: 'Achats', 
     path: '/purchases',
     subItems: [
-      { icon: Store, label: 'Fournisseurs', path: '/purchases/suppliers' },
-      { icon: FileText, label: 'Demandes de prix', path: '/purchases/rfq' },
-      { icon: Box, label: 'Bons de commande', path: '/purchases/orders' },
-      { icon: Truck, label: 'Réceptions', path: '/purchases/receipts' },
-      { icon: CreditCard, label: 'Factures', path: '/purchases/invoices' },
-      { icon: TrendingDown, label: 'Contrats', path: '/purchases/contracts' },
-      { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics' },
+      { icon: Store, label: 'Fournisseurs', path: '/purchases/suppliers', description: 'Gestion des fournisseurs' },
+      { icon: FileText, label: 'Demandes de prix', path: '/purchases/rfq', description: 'Création et suivi des demandes de prix' },
+      { icon: Box, label: 'Bons de commande', path: '/purchases/orders', description: 'Gestion des commandes' },
+      { icon: Truck, label: 'Réceptions', path: '/purchases/receipts', description: 'Suivi des livraisons' },
+      { icon: CreditCard, label: 'Factures', path: '/purchases/invoices', description: 'Gestion des factures fournisseurs' },
+      { icon: TrendingDown, label: 'Contrats', path: '/purchases/contracts', description: 'Gestion des contrats fournisseurs' },
+      { icon: PackageSearch, label: 'Stocks', path: '/purchases/inventory', description: 'Gestion des stocks' },
+      { icon: Calculator, label: 'Comptabilité', path: '/purchases/accounting', description: 'Intégration comptable' },
+      { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics', description: 'Rapports et analyses' }
     ]
   },
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },
@@ -85,12 +95,19 @@ const Sidebar = () => {
                         key={`${index}-${subIndex}`}
                         to={subItem.path}
                         className={`
-                          flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200
+                          flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200 group
                           ${isSubActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
                         `}
                       >
                         <SubIcon className={`w-4 h-4 mr-3 ${isSubActive ? 'text-neotech-500' : 'text-gray-400'}`} />
-                        <span className={isSubActive ? 'font-medium text-neotech-700' : ''}>{subItem.label}</span>
+                        <div className="flex flex-col">
+                          <span className={isSubActive ? 'font-medium text-neotech-700' : ''}>{subItem.label}</span>
+                          {subItem.description && (
+                            <span className="text-xs text-gray-500 hidden group-hover:block">
+                              {subItem.description}
+                            </span>
+                          )}
+                        </div>
                       </Link>
                     );
                   })}
@@ -105,3 +122,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

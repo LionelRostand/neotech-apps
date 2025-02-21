@@ -28,6 +28,8 @@ import PurchaseOrders from './pages/purchases/PurchaseOrders';
 import Receipts from './pages/purchases/Receipts';
 import Invoices from './pages/purchases/Invoices';
 import Contracts from './pages/purchases/Contracts';
+import Inventory from './pages/purchases/Inventory';
+import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
 
 import './index.css';
@@ -100,6 +102,14 @@ const router = createBrowserRouter([
             element: <Contracts />,
           },
           {
+            path: "inventory",
+            element: <Inventory />,
+          },
+          {
+            path: "accounting",
+            element: <Accounting />,
+          },
+          {
             path: "analytics",
             element: <Analytics />,
           },
@@ -122,3 +132,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
+

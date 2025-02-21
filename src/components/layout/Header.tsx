@@ -2,9 +2,11 @@
 import { Bell, Search, User, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { signOut, user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <motion.header 
@@ -32,7 +34,11 @@ const Header = () => {
         <div className="flex items-center gap-3 pl-4 border-l">
           <span className="text-sm font-medium">{user?.email || 'Utilisateur'}</span>
           <div className="flex items-center gap-2">
-            <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <button 
+              onClick={() => navigate('/profile')}
+              className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors duration-200"
+              title="Mon profil"
+            >
               <User className="w-5 h-5 text-gray-600" />
             </button>
             <button 
@@ -50,4 +56,3 @@ const Header = () => {
 };
 
 export default Header;
-

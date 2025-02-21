@@ -31,6 +31,11 @@ import Contracts from './pages/purchases/Contracts';
 import Inventory from './pages/purchases/Inventory';
 import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
+import SuppliersList from './pages/purchases/suppliers/SuppliersList';
+import SupplierPrices from './pages/purchases/suppliers/SupplierPrices';
+import SupplierAnalytics from './pages/purchases/suppliers/SupplierAnalytics';
+import SupplierSettings from './pages/purchases/suppliers/SupplierSettings';
+import Returns from './pages/purchases/Returns';
 
 import './index.css';
 
@@ -79,7 +84,28 @@ const router = createBrowserRouter([
           },
           {
             path: "suppliers",
-            element: <Suppliers />
+            children: [
+              {
+                index: true,
+                element: <Suppliers />
+              },
+              {
+                path: "list",
+                element: <SuppliersList />
+              },
+              {
+                path: "prices",
+                element: <SupplierPrices />
+              },
+              {
+                path: "analytics",
+                element: <SupplierAnalytics />
+              },
+              {
+                path: "settings",
+                element: <SupplierSettings />
+              }
+            ]
           },
           {
             path: "rfq",
@@ -92,6 +118,10 @@ const router = createBrowserRouter([
           {
             path: "receipts",
             element: <Receipts />
+          },
+          {
+            path: "returns",
+            element: <Returns />
           },
           {
             path: "invoices",

@@ -1,22 +1,8 @@
 
-import { Bell, Search, ChevronDown, LogOut, User, Settings } from 'lucide-react';
+import { Bell, Search, User } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../hooks/useAuth';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
-
-  const handleLogout = async () => {
-    await signOut();
-  };
-
   return (
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
@@ -41,32 +27,10 @@ const Header = () => {
         </button>
         
         <div className="flex items-center gap-3 pl-4 border-l">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 focus:outline-none">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium">{user?.email || 'Utilisateur'}</span>
-                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-gray-600" />
-                </div>
-              </div>
-              <ChevronDown className="w-4 h-4 text-gray-500" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem className="cursor-pointer">
-                <User className="mr-2 h-4 w-4" />
-                <span>Profil</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Paramètres</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-red-600" onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Se déconnecter</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <span className="text-sm font-medium">John Doe</span>
+          <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <User className="w-5 h-5 text-gray-600" />
+          </button>
         </div>
       </div>
     </motion.header>

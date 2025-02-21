@@ -31,11 +31,8 @@ import Contracts from './pages/purchases/Contracts';
 import Inventory from './pages/purchases/Inventory';
 import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
-import SuppliersList from './pages/purchases/suppliers/SuppliersList';
-import SupplierPrices from './pages/purchases/suppliers/SupplierPrices';
-import SupplierAnalytics from './pages/purchases/suppliers/SupplierAnalytics';
-import SupplierSettings from './pages/purchases/suppliers/SupplierSettings';
-import Returns from './pages/purchases/Returns';
+
+import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -50,34 +47,81 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 );
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<Providers><App /></Providers>} errorElement={<NotFound />}>
-      <Route index element={<Dashboard />} />
-      <Route path="crm" element={<CRM />} />
-      <Route path="clients" element={<Clients />} />
-      <Route path="sales" element={<Sales />} />
-      <Route path="purchases" element={<Purchases />}>
-        <Route path="suppliers" element={<Suppliers />}>
-          <Route index element={<SuppliersList />} />
-          <Route path="list" element={<SuppliersList />} />
-          <Route path="prices" element={<SupplierPrices />} />
-          <Route path="analytics" element={<SupplierAnalytics />} />
-          <Route path="settings" element={<SupplierSettings />} />
-        </Route>
-        <Route path="rfq" element={<RFQ />} />
-        <Route path="orders" element={<PurchaseOrders />} />
-        <Route path="receipts" element={<Receipts />} />
-        <Route path="returns" element={<Returns />} />
-        <Route path="invoices" element={<Invoices />} />
-        <Route path="contracts" element={<Contracts />} />
-        <Route path="inventory" element={<Inventory />} />
-        <Route path="accounting" element={<Accounting />} />
-        <Route path="analytics" element={<Analytics />} />
-      </Route>
-    </Route>
-  )
-);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Providers><App /></Providers>,
+    errorElement: <NotFound />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      },
+      {
+        path: "crm",
+        element: <CRM />
+      },
+      {
+        path: "clients",
+        element: <Clients />
+      },
+      {
+        path: "sales",
+        element: <Sales />
+      },
+      {
+        path: "purchases",
+        element: <Purchases />,
+        children: [
+          {
+            index: true,
+            element: <Suppliers />
+          },
+          {
+            path: "suppliers",
+            element: <Suppliers />
+          },
+          {
+            path: "rfq",
+            element: <RFQ />
+          },
+          {
+            path: "orders",
+            element: <PurchaseOrders />
+          },
+          {
+            path: "receipts",
+            element: <Receipts />
+          },
+          {
+            path: "invoices",
+            element: <Invoices />
+          },
+          {
+            path: "contracts",
+            element: <Contracts />
+          },
+          {
+            path: "inventory",
+            element: <Inventory />
+          },
+          {
+            path: "accounting",
+            element: <Accounting />
+          },
+          {
+            path: "analytics",
+            element: <Analytics />
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: "/auth",
+    element: <Providers><Auth /></Providers>
+  }
+]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

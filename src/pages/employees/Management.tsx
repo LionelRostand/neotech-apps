@@ -184,17 +184,6 @@ const EmployeeManagement = () => {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firstName" className="text-right">
-                Prénom
-              </Label>
-              <Input
-                id="firstName"
-                className="col-span-3"
-                value={newEmployee.firstName}
-                onChange={(e) => setNewEmployee({ ...newEmployee, firstName: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Nom
               </Label>
@@ -203,6 +192,17 @@ const EmployeeManagement = () => {
                 className="col-span-3"
                 value={newEmployee.name}
                 onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="firstName" className="text-right">
+                Prénom
+              </Label>
+              <Input
+                id="firstName"
+                className="col-span-3"
+                value={newEmployee.firstName}
+                onChange={(e) => setNewEmployee({ ...newEmployee, firstName: e.target.value })}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">

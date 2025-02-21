@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Users, 
@@ -152,7 +151,7 @@ const Sidebar = () => {
         <h1 className="text-2xl font-bold text-neotech-600">NEOTECH</h1>
       </div>
       
-      <nav className="mt-6">
+      <nav className="mt-6 h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
@@ -212,4 +211,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-

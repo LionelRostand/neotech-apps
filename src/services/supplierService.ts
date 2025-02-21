@@ -76,10 +76,11 @@ export const getSupplierProducts = async (supplierId: string): Promise<SupplierP
       .map(doc => ({
         id: doc.id,
         ...doc.data()
-      }))
-      .filter(product => product.supplierId === supplierId) as SupplierProduct[];
+      } as SupplierProduct))
+      .filter((product: SupplierProduct) => product.supplierId === supplierId);
   } catch (error) {
     console.error('Erreur lors de la récupération des produits fournisseur:', error);
     throw error;
   }
 };
+

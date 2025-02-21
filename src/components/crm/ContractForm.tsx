@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -19,7 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createContract, updateContract, Contract } from '../../services/crm';
+import { createContract, updateContract } from '../../services';
+import type { Contract } from '../../types/crm';
 
 interface ContractFormProps {
   isOpen: boolean;

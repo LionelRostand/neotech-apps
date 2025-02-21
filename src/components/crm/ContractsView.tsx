@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -20,7 +19,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ContractForm from './ContractForm';
-import { getContracts, deleteContract, Contract } from '../../services/crm';
+import { getContracts, deleteContract } from '../../services';
+import type { Contract } from '../../types/crm';
 
 const ContractsView = () => {
   const queryClient = useQueryClient();

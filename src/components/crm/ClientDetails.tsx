@@ -31,6 +31,10 @@ const ClientDetails = ({ client }: ClientDetailsProps) => {
     });
   };
 
+  // Assurons-nous que les tableaux existent avec des valeurs par défaut
+  const contacts = client.contacts || [];
+  const interactions = client.interactions || [];
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-start">
@@ -93,7 +97,7 @@ const ClientDetails = ({ client }: ClientDetailsProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {client.contacts.map((contact: ClientContact) => (
+              {contacts.map((contact: ClientContact) => (
                 <TableRow key={contact.id}>
                   <TableCell className="font-medium">
                     {contact.name}
@@ -120,7 +124,7 @@ const ClientDetails = ({ client }: ClientDetailsProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {client.interactions.map((interaction: ClientInteraction) => (
+              {interactions.map((interaction: ClientInteraction) => (
                 <TableRow key={interaction.id}>
                   <TableCell>{formatDate(interaction.date)}</TableCell>
                   <TableCell>{interaction.type}</TableCell>

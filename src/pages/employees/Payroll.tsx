@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 interface Payroll {
   id: string;
@@ -46,9 +50,17 @@ const mockPayroll: Payroll[] = [
   },
 ];
 
+const months = [
+  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+];
+
 const EmployeePayroll = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [payroll] = useState<Payroll[]>(mockPayroll);
+  const [payroll, setPayroll] = useState<Payroll[]>(mockPayroll);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
 
   const filteredPayroll = payroll.filter(record =>
     record.employeeName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -59,6 +71,25 @@ const EmployeePayroll = () => {
       style: 'currency',
       currency: 'EUR',
     }).format(amount);
+  };
+
+  const handleGeneratePayslips = () => {
+    const year = parseInt(selectedYear);
+    const newPayrolls = mockPayroll.map(record => ({
+      ...record,
+      month: selectedMonth,
+      year,
+      status: 'processing' as const,
+    }));
+
+    setPayroll(prevPayroll => {
+      const existingIds = new Set(prevPayroll.map(p => p.id));
+      const uniqueNewPayrolls = newPayrolls.filter(p => !existingIds.has(p.id));
+      return [...prevPayroll, ...uniqueNewPayrolls];
+    });
+
+    setDialogOpen(false);
+    toast.success(`Fiches de paie en cours de génération pour ${selectedMonth} ${selectedYear}`);
   };
 
   return (
@@ -78,7 +109,7 @@ const EmployeePayroll = () => {
             className="pl-8"
           />
         </div>
-        <Button>
+        <Button onClick={() => setDialogOpen(true)}>
           <FileText className="w-4 h-4 mr-2" />
           Générer les fiches de paie
         </Button>
@@ -127,6 +158,52 @@ const EmployeePayroll = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Générer les fiches de paie</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Mois</Label>
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez un mois" />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map((month) => (
+                    <SelectItem key={month} value={month}>
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Année</Label>
+              <Input
+                type="number"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                min={2020}
+                max={2030}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button 
+              onClick={handleGeneratePayslips}
+              disabled={!selectedMonth || !selectedYear}
+            >
+              Générer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

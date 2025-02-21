@@ -8,7 +8,7 @@ const menuItems = [
   { icon: Users, label: 'CRM', path: '/crm' },
   { icon: UserCircle, label: 'Clients', path: '/clients' },
   { icon: ShoppingCart, label: 'Ventes', path: '/sales' },
-  { icon: Package, label: 'Achats', path: '/purchases' },
+  { icon: Package, label: 'Achats', path: '/sales' }, // Changed from /purchases to /sales
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },
   { icon: BarChart2, label: 'Rapports', path: '/reports' },
   { icon: Settings, label: 'Paramètres', path: '/settings' },

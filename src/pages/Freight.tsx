@@ -12,19 +12,19 @@ const Freight = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    // Get the current path segments
+    // Get the current path segments and remove empty strings
     const pathSegments = location.pathname.split('/').filter(Boolean);
     
-    // If we're at the root freight path or just /freight, redirect to orders
-    if (pathSegments.length === 0 || (pathSegments.length === 1 && pathSegments[0] === 'freight')) {
-      navigate('/freight/orders');
+    // Set default route if needed
+    if (!pathSegments.includes('freight') || pathSegments.length === 1) {
+      navigate('/freight/orders', { replace: true });
       return;
     }
 
     // Get the last segment of the path
     const lastSegment = pathSegments[pathSegments.length - 1];
 
-    // Set active tab based on current path
+    // Set active tab based on the last path segment
     if (lastSegment === 'routes') {
       setActiveTab('routes');
     } else if (lastSegment === 'tracking') {
@@ -34,26 +34,25 @@ const Freight = () => {
     }
   }, [location.pathname, navigate]);
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    
+    // Map tab values to their corresponding routes
+    const routes = {
+      overview: '/freight/orders',
+      routes: '/freight/routes',
+      tracking: '/freight/tracking'
+    };
+
+    // Navigate to the corresponding route
+    navigate(routes[value as keyof typeof routes]);
+  };
+
   const stats = {
     activeOrders: 48,
     deliveriesInProgress: 12,
     parcelsScanned: 156,
     onTimeDelivery: 94.5
-  };
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    
-    // Construct the target path with leading slash
-    let path = '/freight/orders';
-    if (tab === 'routes') {
-      path = '/freight/routes';
-    } else if (tab === 'tracking') {
-      path = '/freight/tracking';
-    }
-
-    // Navigate with absolute path
-    navigate(path);
   };
 
   return (
@@ -155,3 +154,4 @@ const Freight = () => {
 };
 
 export default Freight;
+

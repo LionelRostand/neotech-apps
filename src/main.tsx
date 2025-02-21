@@ -50,11 +50,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <RouterProvider router={router}>
-          <AuthProvider>
-            <Toaster />
-          </AuthProvider>
-        </RouterProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster />
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>,

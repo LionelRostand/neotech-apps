@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import {
   createBrowserRouter,
   RouterProvider,
+  Navigate
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from "next-themes";
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: "settings",
         children: [
+          {
+            index: true,
+            element: <Navigate to="/settings/general" replace />
+          },
           {
             path: "general",
             element: <GeneralSettings />
@@ -164,4 +169,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
-

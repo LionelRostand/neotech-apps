@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { getClients } from '../../services';
 import type { Client } from '../../types/crm';
@@ -79,23 +78,18 @@ const DashboardStats = () => {
               <p className="text-2xl font-bold mt-2">{prospects}</p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 border-2 border-primary/30 shadow-xl transform hover:scale-105 transition-all duration-300">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-full bg-primary/20 shadow-inner">
-                  <DollarSign className="h-6 w-6 text-primary" />
-                </div>
-                <span className="text-base font-semibold text-primary/90">Chiffre d'affaires</span>
+            <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Chiffre d'affaires</span>
               </div>
-              <div className="space-y-2">
-                <p className="text-4xl font-bold text-primary tracking-tight">
-                  {totalRevenue.toLocaleString('fr-FR', {
-                    style: 'currency',
-                    currency: 'EUR',
-                    maximumFractionDigits: 0
-                  })}
-                </p>
-                <p className="text-sm text-primary/70 font-medium">Total des revenus</p>
-              </div>
+              <p className="text-2xl font-bold mt-2">
+                {totalRevenue.toLocaleString('fr-FR', {
+                  style: 'currency',
+                  currency: 'EUR',
+                  maximumFractionDigits: 0
+                })}
+              </p>
             </div>
           </div>
         </CardContent>

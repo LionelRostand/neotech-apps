@@ -21,6 +21,8 @@ import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
 import './index.css';
 
+const queryClient = new QueryClient();
+
 // Create a component that wraps the app with providers
 const Providers = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
@@ -59,6 +61,11 @@ const router = createBrowserRouter([
         path: "/sales",
         element: <Sales />,
       },
+      // Important : rediriger /purchases vers /sales pour la rétrocompatibilité
+      {
+        path: "/purchases",
+        element: <Sales />,
+      }
     ],
   },
   {
@@ -70,8 +77,6 @@ const router = createBrowserRouter([
     ),
   },
 ]);
-
-const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -27,6 +27,8 @@ const STAGES = [
   'Perdu',
 ] as const;
 
+type OpportunityStage = typeof STAGES[number];
+
 const PipelineView = () => {
   const queryClient = useQueryClient();
   const { data: opportunities = [], isLoading } = useQuery({
@@ -52,7 +54,7 @@ const PipelineView = () => {
     e.preventDefault();
   };
 
-  const handleDrop = async (e: React.DragEvent, stage: string) => {
+  const handleDrop = async (e: React.DragEvent, stage: OpportunityStage) => {
     e.preventDefault();
     const opportunityId = e.dataTransfer.getData('opportunityId');
     try {

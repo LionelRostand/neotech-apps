@@ -9,6 +9,8 @@ import { createOpportunity, updateOpportunity, Opportunity } from '../../service
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
+type OpportunityStage = 'Qualification' | 'Proposition' | 'Négociation' | 'Gagné' | 'Perdu';
+
 interface OpportunityFormProps {
   opportunity?: Opportunity;
   onClose?: () => void;
@@ -21,7 +23,7 @@ export const OpportunityForm = ({ opportunity, onClose }: OpportunityFormProps) 
     clientId: '',
     clientName: '',
     value: 0,
-    stage: 'Qualification',
+    stage: 'Qualification' as OpportunityStage,
     notes: ''
   });
 
@@ -82,7 +84,7 @@ export const OpportunityForm = ({ opportunity, onClose }: OpportunityFormProps) 
           <Label htmlFor="stage">Étape</Label>
           <Select
             value={formData.stage}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, stage: value }))}
+            onValueChange={(value: OpportunityStage) => setFormData(prev => ({ ...prev, stage: value }))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Sélectionner une étape" />

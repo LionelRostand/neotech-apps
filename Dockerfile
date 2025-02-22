@@ -11,7 +11,7 @@ WORKDIR /neotech-apps
 RUN yarn install --frozen-lockfile
 
 # Copier uniquement les fichiers nécessaires pour l'installation des dépendances
-COPY package*.json yarn.lock ./
+COPY package*.json ./
 
 # Copier le reste du projet
 COPY . .

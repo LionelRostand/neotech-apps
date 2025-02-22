@@ -1,10 +1,9 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "./hooks/useAuth";
 import { Outlet, Navigate } from "react-router-dom";
-import NotFound from "./pages/NotFound";
+import DashboardLayout from "./components/layout/DashboardLayout";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -17,7 +16,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/auth" />;
   }
   
-  return children;
+  return <DashboardLayout>{children}</DashboardLayout>;
 };
 
 const App = () => (

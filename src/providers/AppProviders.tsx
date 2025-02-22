@@ -5,7 +5,14 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from '../hooks/useAuth';
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export const AppProviders = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>

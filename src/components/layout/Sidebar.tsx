@@ -12,7 +12,7 @@ const Sidebar = () => {
     <motion.aside 
       initial={{ x: -250 }}
       animate={{ x: 0 }}
-      className="fixed left-0 top-0 h-screen w-64 bg-white border-r shadow-sm"
+      className="fixed left-0 top-0 h-screen w-64 bg-white border-r shadow-sm z-50"
     >
       <div className="p-6">
         <h1 className="text-2xl font-bold text-neotech-600">NEOTECH</h1>

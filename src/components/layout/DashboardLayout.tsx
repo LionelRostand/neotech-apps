@@ -10,15 +10,17 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="ml-64 min-h-screen">
+    <div className="flex h-screen bg-gray-50">
+      <div className="fixed inset-y-0 z-50 w-64 bg-white border-r shadow-sm">
+        <Sidebar />
+      </div>
+      <div className="flex-1 ml-64">
         <Header />
         <motion.main 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-6"
+          className="container p-6 mx-auto"
         >
           {children}
         </motion.main>

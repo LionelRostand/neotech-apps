@@ -14,34 +14,32 @@ const AccountingChart = () => {
   ];
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Plan Comptable</h1>
-      <Card className="p-4">
-        <div className="space-y-4">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Libellé</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Solde</TableHead>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold">Plan Comptable</h2>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableHead className="font-semibold">Code</TableHead>
+              <TableHead className="font-semibold">Libellé</TableHead>
+              <TableHead className="font-semibold">Type</TableHead>
+              <TableHead className="font-semibold text-right">Solde</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {accounts.map((account) => (
+              <TableRow key={account.code} className="hover:bg-muted/50">
+                <TableCell className="font-mono">{account.code}</TableCell>
+                <TableCell>{account.label}</TableCell>
+                <TableCell>{account.type}</TableCell>
+                <TableCell className="text-right font-mono">
+                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance)}
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {accounts.map((account) => (
-                <TableRow key={account.code}>
-                  <TableCell>{account.code}</TableCell>
-                  <TableCell>{account.label}</TableCell>
-                  <TableCell>{account.type}</TableCell>
-                  <TableCell className="text-right">
-                    {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

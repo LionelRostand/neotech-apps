@@ -12,8 +12,14 @@ interface Contact {
   isOnline: boolean;
 }
 
+const defaultContacts: Contact[] = [
+  { id: '1', name: 'Alice Martin', lastMessage: 'Bonjour!', timestamp: '10:30', isOnline: true },
+  { id: '2', name: 'Bob Dubois', lastMessage: 'À plus tard', timestamp: '09:15', isOnline: false },
+  { id: '3', name: 'Claire Dupont', lastMessage: 'Merci', timestamp: 'Hier', isOnline: true },
+];
+
 const Chat = () => {
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(defaultContacts[0]);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',

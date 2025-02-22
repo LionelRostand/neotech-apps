@@ -1,10 +1,14 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { useAuth } from "./hooks/useAuth";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { Outlet, Navigate } from "react-router-dom";
-import DashboardLayout from "./components/layout/DashboardLayout";
-import { AuthProvider } from "./hooks/useAuth";
+import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
+
+const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -17,17 +21,19 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/auth" />;
   }
   
-  return <DashboardLayout>{children}</DashboardLayout>;
+  return children;
 };
 
 const App = () => (
-  <AuthProvider>
-    <Toaster />
-    <Sonner />
-    <PrivateRoute>
-      <Outlet />
-    </PrivateRoute>
-  </AuthProvider>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <PrivateRoute>
+        <Outlet />
+      </PrivateRoute>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;

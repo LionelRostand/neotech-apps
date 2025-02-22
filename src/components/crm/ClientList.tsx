@@ -17,6 +17,7 @@ import { SearchBar } from './client-list/SearchBar';
 const ClientList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   
   const { 
@@ -42,6 +43,17 @@ const ClientList = () => {
     } catch (error) {
       toast.error('Erreur lors de la suppression du client');
     }
+  };
+
+  const handleViewClient = (client: Client) => {
+    setSelectedClient(client);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    // Clear the selected client after the dialog animation completes
+    setTimeout(() => setSelectedClient(null), 300);
   };
 
   if (error) {
@@ -78,7 +90,7 @@ const ClientList = () => {
                   key={client.id}
                   client={client}
                   onDelete={handleDeleteClient}
-                  onView={setSelectedClient}
+                  onView={handleViewClient}
                 />
               ))
             )}
@@ -86,7 +98,7 @@ const ClientList = () => {
         </Table>
       </div>
 
-      <Dialog open={!!selectedClient} onOpenChange={() => setSelectedClient(null)}>
+      <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
         <DialogContent className="max-w-4xl">
           {selectedClient && <ClientDetails client={selectedClient} />}
         </DialogContent>

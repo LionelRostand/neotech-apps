@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +6,7 @@ import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { Outlet, Navigate } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import { mainRoutes } from './routes/mainRoutes';
 
 const queryClient = new QueryClient();
 

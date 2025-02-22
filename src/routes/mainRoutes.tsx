@@ -1,4 +1,5 @@
 
+import React from 'react';
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
 import CRM from '../pages/CRM';

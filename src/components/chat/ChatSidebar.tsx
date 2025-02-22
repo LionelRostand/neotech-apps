@@ -11,18 +11,13 @@ interface Contact {
   isOnline: boolean;
 }
 
-const contacts: Contact[] = [
-  { id: '1', name: 'Alice Martin', lastMessage: 'Bonjour!', timestamp: '10:30', isOnline: true },
-  { id: '2', name: 'Bob Dubois', lastMessage: 'À plus tard', timestamp: '09:15', isOnline: false },
-  { id: '3', name: 'Claire Dupont', lastMessage: 'Merci', timestamp: 'Hier', isOnline: true },
-];
-
 interface ChatSidebarProps {
   onSelectContact: (contact: Contact) => void;
   selectedContactId?: string;
+  contacts: Contact[];
 }
 
-const ChatSidebar = ({ onSelectContact, selectedContactId }: ChatSidebarProps) => {
+const ChatSidebar = ({ onSelectContact, selectedContactId, contacts }: ChatSidebarProps) => {
   return (
     <div className="w-80 border-r border-gray-200 h-full flex flex-col bg-white">
       <div className="p-4 border-b border-gray-200">

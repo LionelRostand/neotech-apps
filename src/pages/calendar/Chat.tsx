@@ -19,7 +19,8 @@ const defaultContacts: Contact[] = [
 ];
 
 const Chat = () => {
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(defaultContacts[0]);
+  const [contacts] = useState<Contact[]>(defaultContacts);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(contacts[0]);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -51,6 +52,7 @@ const Chat = () => {
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-gray-50">
       <ChatSidebar
+        contacts={contacts}
         onSelectContact={setSelectedContact}
         selectedContactId={selectedContact?.id}
       />

@@ -19,6 +19,7 @@ import Clients from './pages/Clients';
 import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
 import Freight from './pages/Freight';
+import Profile from './pages/Profile';
 import { GeneralSettings } from './components/settings/GeneralSettings';
 import Accounting from './pages/Accounting';
 
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />
+      },
+      {
+        path: "profile",
+        element: <Profile />
       },
       {
         path: "crm",

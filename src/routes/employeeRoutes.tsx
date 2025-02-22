@@ -1,0 +1,49 @@
+
+import { RouteObject } from "react-router-dom";
+import Employees from '../pages/Employees';
+import EmployeeManagement from '../pages/employees/Management';
+import EmployeeContracts from '../pages/employees/Contracts';
+import EmployeeLeaves from '../pages/employees/Leaves';
+import EmployeeAttendance from '../pages/employees/Attendance';
+import EmployeePerformance from '../pages/employees/Performance';
+import EmployeePayroll from '../pages/employees/Payroll';
+import Reports from '../pages/employees/Reports';
+
+export const employeeRoutes: RouteObject = {
+  path: "employees",
+  element: <Employees />,
+  children: [
+    {
+      index: true,
+      element: <EmployeeManagement />
+    },
+    {
+      path: "management",
+      element: <EmployeeManagement />
+    },
+    {
+      path: "contracts",
+      element: <EmployeeContracts />
+    },
+    {
+      path: "leaves",
+      element: <EmployeeLeaves />
+    },
+    {
+      path: "attendance",
+      element: <EmployeeAttendance />
+    },
+    {
+      path: "performance",
+      element: <EmployeePerformance />
+    },
+    {
+      path: "payroll",
+      element: <EmployeePayroll />
+    },
+    {
+      path: "reports",
+      element: <Reports />
+    }
+  ]
+};

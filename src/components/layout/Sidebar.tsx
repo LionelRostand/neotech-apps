@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   Users, 
@@ -137,13 +138,13 @@ const Sidebar = () => {
     <motion.aside 
       initial={{ x: -250 }}
       animate={{ x: 0 }}
-      className="fixed left-0 top-0 h-screen w-64 bg-white border-r shadow-sm"
+      className="fixed left-0 top-0 h-screen w-56 bg-white border-r shadow-sm overflow-y-auto"
     >
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-neotech-600">NEOTECH</h1>
+      <div className="p-4">
+        <h1 className="text-xl font-bold text-neotech-600">NEOTECH</h1>
       </div>
       
-      <nav className="mt-6">
+      <nav className="mt-4">
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
@@ -154,19 +155,19 @@ const Sidebar = () => {
               <Link
                 to={item.path}
                 className={`
-                  flex items-center px-6 py-3 text-gray-700 transition-all duration-200
+                  flex items-center px-4 py-2 text-sm text-gray-700 transition-all duration-200
                   ${isActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
                   ${isSubMenuOpen ? 'bg-gray-50' : ''}
                 `}
               >
-                <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
+                <Icon className={`w-4 h-4 mr-3 ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
                 <span className={`${isActive ? 'font-medium text-neotech-700' : ''} ${isSubMenuOpen ? 'font-medium' : ''}`}>
                   {item.label}
                 </span>
               </Link>
               
               {item.subItems && isSubMenuOpen && (
-                <div className="ml-6 border-l border-gray-200">
+                <div className="ml-4 border-l border-gray-200">
                   {item.subItems.map((subItem, subIndex) => {
                     const SubIcon = subItem.icon;
                     const isSubActive = location.pathname === subItem.path;
@@ -176,15 +177,15 @@ const Sidebar = () => {
                         key={`${index}-${subIndex}`}
                         to={subItem.path}
                         className={`
-                          flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200 group
+                          flex items-center px-4 py-2 text-xs text-gray-700 transition-all duration-200 group
                           ${isSubActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
                         `}
                       >
-                        <SubIcon className={`w-4 h-4 mr-3 ${isSubActive ? 'text-neotech-500' : 'text-gray-400'}`} />
+                        <SubIcon className={`w-3 h-3 mr-2 ${isSubActive ? 'text-neotech-500' : 'text-gray-400'}`} />
                         <div className="flex flex-col">
                           <span className={isSubActive ? 'font-medium text-neotech-700' : ''}>{subItem.label}</span>
                           {subItem.description && (
-                            <span className="text-xs text-gray-500 hidden group-hover:block">
+                            <span className="text-[10px] text-gray-500 hidden group-hover:block">
                               {subItem.description}
                             </span>
                           )}

@@ -12,7 +12,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
-      <div className="ml-64 min-h-screen">
+      <div className="ml-56 min-h-screen">
         <Header />
         <motion.main 
           initial={{ opacity: 0, y: 20 }}

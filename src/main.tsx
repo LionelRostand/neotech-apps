@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -52,21 +51,10 @@ import './index.css';
 
 const queryClient = new QueryClient();
 
-const Providers = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <AuthProvider>
-        {children}
-        <Toaster />
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
-
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Providers><App /></Providers>,
+    element: <App />,
     errorElement: <NotFound />,
     children: [
       {
@@ -199,7 +187,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <Providers><Auth /></Providers>
+    element: (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <AuthProvider>
+            <Auth />
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    )
   }
 ]);
 

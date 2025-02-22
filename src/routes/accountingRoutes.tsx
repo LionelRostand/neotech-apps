@@ -9,50 +9,95 @@ import AccountingReports from '../pages/accounting/Reports';
 import AccountingPayments from '../pages/accounting/Payments';
 import AccountingCurrencies from '../pages/accounting/Currencies';
 import AccountingJournals from '../pages/accounting/Journals';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 export const accountingRoutes = {
   path: "accounting",
-  element: <Accounting />,
+  element: (
+    <ProtectedRoute module="accounting">
+      <Accounting />
+    </ProtectedRoute>
+  ),
   children: [
     {
       index: true,
-      element: <AccountingChart />
+      element: (
+        <ProtectedRoute module="accounting">
+          <AccountingChart />
+        </ProtectedRoute>
+      )
     },
     {
       path: "chart",
-      element: <AccountingChart />
+      element: (
+        <ProtectedRoute module="accounting">
+          <AccountingChart />
+        </ProtectedRoute>
+      )
     },
     {
       path: "invoices",
-      element: <AccountingInvoices />
+      element: (
+        <ProtectedRoute module="accounting" action="write">
+          <AccountingInvoices />
+        </ProtectedRoute>
+      )
     },
     {
       path: "journals",
-      element: <AccountingJournals />
+      element: (
+        <ProtectedRoute module="accounting" action="write">
+          <AccountingJournals />
+        </ProtectedRoute>
+      )
     },
     {
       path: "treasury",
-      element: <AccountingTreasury />
+      element: (
+        <ProtectedRoute module="accounting" action="write">
+          <AccountingTreasury />
+        </ProtectedRoute>
+      )
     },
     {
       path: "tax",
-      element: <AccountingTax />
+      element: (
+        <ProtectedRoute module="accounting" action="write">
+          <AccountingTax />
+        </ProtectedRoute>
+      )
     },
     {
       path: "closing",
-      element: <AccountingClosing />
+      element: (
+        <ProtectedRoute module="accounting" action="manage">
+          <AccountingClosing />
+        </ProtectedRoute>
+      )
     },
     {
       path: "reports",
-      element: <AccountingReports />
+      element: (
+        <ProtectedRoute module="accounting">
+          <AccountingReports />
+        </ProtectedRoute>
+      )
     },
     {
       path: "payments",
-      element: <AccountingPayments />
+      element: (
+        <ProtectedRoute module="accounting" action="write">
+          <AccountingPayments />
+        </ProtectedRoute>
+      )
     },
     {
       path: "currencies",
-      element: <AccountingCurrencies />
+      element: (
+        <ProtectedRoute module="accounting" action="write">
+          <AccountingCurrencies />
+        </ProtectedRoute>
+      )
     }
   ]
 };

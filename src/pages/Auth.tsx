@@ -27,7 +27,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -94,9 +94,6 @@ const Auth = () => {
           </a>
         </p>
       </motion.div>
-      <p className="text-xs text-gray-400 mt-8">
-        Application conçue par NEOTECH-CONSULTING
-      </p>
     </div>
   );
 };

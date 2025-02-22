@@ -1,23 +1,52 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from "next-themes";
+import { Toaster } from 'sonner';
 import { AuthProvider } from './hooks/useAuth';
-import Auth from './pages/Auth';
+
 import App from './App';
+import Dashboard from './pages/Dashboard';
+import CRM from './pages/CRM';
+import Sales from './pages/Sales';
+import Purchases from './pages/Purchases';
+import Clients from './pages/Clients';
+import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
-import { mainRoutes } from './routes/mainRoutes';
+import Freight from './pages/Freight';
+import { GeneralSettings } from './components/settings/GeneralSettings';
+
+// Purchase module routes
+import Suppliers from './pages/purchases/Suppliers';
+import RFQ from './pages/purchases/RFQ';
+import PurchaseOrders from './pages/purchases/PurchaseOrders';
+import Receipts from './pages/purchases/Receipts';
+import Invoices from './pages/purchases/Invoices';
+import Contracts from './pages/purchases/Contracts';
+import Inventory from './pages/purchases/Inventory';
+import Accounting from './pages/purchases/Accounting';
+import Analytics from './pages/purchases/Analytics';
+
+// Freight management routes
+import FreightOrders from './pages/freight/FreightOrders';
+import RouteTracking from './pages/freight/RouteTracking';
+import ParcelScanning from './pages/freight/ParcelScanning';
+
+import './index.css';
 
 const queryClient = new QueryClient();
 
-// Create a Providers component to wrap the entire application
 const Providers = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <AuthProvider>
         {children}
+        <Toaster />
       </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
@@ -28,15 +57,105 @@ const router = createBrowserRouter([
     path: "/",
     element: <Providers><App /></Providers>,
     errorElement: <NotFound />,
-    children: mainRoutes.children
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      },
+      {
+        path: "crm",
+        element: <CRM />
+      },
+      {
+        path: "clients",
+        element: <Clients />
+      },
+      {
+        path: "sales",
+        element: <Sales />
+      },
+      {
+        path: "settings",
+        children: [
+          {
+            path: "general",
+            element: <GeneralSettings />
+          }
+        ]
+      },
+      {
+        path: "freight",
+        element: <Freight />,
+        children: [
+          {
+            index: true,
+            element: <FreightOrders />
+          },
+          {
+            path: "orders",
+            element: <FreightOrders />
+          },
+          {
+            path: "routes",
+            element: <RouteTracking />
+          },
+          {
+            path: "tracking",
+            element: <ParcelScanning />
+          }
+        ]
+      },
+      {
+        path: "purchases",
+        element: <Purchases />,
+        children: [
+          {
+            index: true,
+            element: <Suppliers />
+          },
+          {
+            path: "suppliers",
+            element: <Suppliers />
+          },
+          {
+            path: "rfq",
+            element: <RFQ />
+          },
+          {
+            path: "orders",
+            element: <PurchaseOrders />
+          },
+          {
+            path: "receipts",
+            element: <Receipts />
+          },
+          {
+            path: "invoices",
+            element: <Invoices />
+          },
+          {
+            path: "contracts",
+            element: <Contracts />
+          },
+          {
+            path: "inventory",
+            element: <Inventory />
+          },
+          {
+            path: "accounting",
+            element: <Accounting />
+          },
+          {
+            path: "analytics",
+            element: <Analytics />
+          }
+        ]
+      }
+    ]
   },
   {
     path: "/auth",
-    element: (
-      <Providers>
-        <Auth />
-      </Providers>
-    )
+    element: <Providers><Auth /></Providers>
   }
 ]);
 
@@ -45,3 +164,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
+

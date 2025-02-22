@@ -27,13 +27,12 @@ import {
   Database,
   BarChart,
   FileSpreadsheet,
-  UserCog,
-  Calendar,
-  Clock,
-  FileSignature,
-  Medal,
+  Building,
+  Globe,
   DollarSign,
-  UserPlus
+  Clock,
+  Users2,
+  Cog
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -57,55 +56,6 @@ const menuItems = [
       { icon: PackageSearch, label: 'Stocks', path: '/purchases/inventory', description: 'Gestion des stocks' },
       { icon: Calculator, label: 'Comptabilité', path: '/purchases/accounting', description: 'Intégration comptable' },
       { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics', description: 'Rapports et analyses' }
-    ]
-  },
-  { 
-    icon: UserCog, 
-    label: 'Employés', 
-    path: '/employees',
-    subItems: [
-      { 
-        icon: UserPlus, 
-        label: 'Gestion employés', 
-        path: '/employees/management', 
-        description: 'Création et gestion des employés' 
-      },
-      { 
-        icon: FileSignature, 
-        label: 'Contrats', 
-        path: '/employees/contracts', 
-        description: 'Gestion des contrats de travail' 
-      },
-      { 
-        icon: Calendar, 
-        label: 'Congés', 
-        path: '/employees/leaves', 
-        description: 'Gestion des absences et congés' 
-      },
-      { 
-        icon: Clock, 
-        label: 'Présences', 
-        path: '/employees/attendance', 
-        description: 'Suivi du temps et des présences' 
-      },
-      { 
-        icon: Medal, 
-        label: 'Performance', 
-        path: '/employees/performance', 
-        description: 'Évaluation et objectifs' 
-      },
-      { 
-        icon: DollarSign, 
-        label: 'Salaires', 
-        path: '/employees/payroll', 
-        description: 'Gestion des salaires et avantages' 
-      },
-      { 
-        icon: FileBarChart, 
-        label: 'Rapports RH', 
-        path: '/employees/reports', 
-        description: 'Reporting et statistiques' 
-      }
     ]
   },
   { 
@@ -135,7 +85,49 @@ const menuItems = [
   },
   { icon: FileText, label: 'Comptabilité', path: '/accounting' },
   { icon: BarChart2, label: 'Rapports', path: '/reports' },
-  { icon: Settings, label: 'Paramètres', path: '/settings' }
+  { 
+    icon: Settings, 
+    label: 'Paramètres', 
+    path: '/settings',
+    subItems: [
+      { 
+        icon: Cog, 
+        label: 'Paramètres généraux', 
+        path: '/settings/general', 
+        description: 'Configuration générale du système' 
+      },
+      { 
+        icon: Building, 
+        label: 'Société', 
+        path: '/settings/company', 
+        description: 'Paramètres de la société' 
+      },
+      { 
+        icon: Globe, 
+        label: 'Localisation', 
+        path: '/settings/localization', 
+        description: 'Langue et format régional' 
+      },
+      { 
+        icon: DollarSign, 
+        label: 'Devise', 
+        path: '/settings/currency', 
+        description: 'Configuration des devises' 
+      },
+      { 
+        icon: Clock, 
+        label: 'Fuseau horaire', 
+        path: '/settings/timezone', 
+        description: 'Configuration du fuseau horaire' 
+      },
+      { 
+        icon: Users2, 
+        label: 'Multi-société', 
+        path: '/settings/multicompany', 
+        description: 'Gestion multi-sociétés' 
+      }
+    ]
+  }
 ];
 
 const Sidebar = () => {
@@ -151,7 +143,7 @@ const Sidebar = () => {
         <h1 className="text-2xl font-bold text-neotech-600">NEOTECH</h1>
       </div>
       
-      <nav className="mt-6 h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
+      <nav className="mt-6">
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;

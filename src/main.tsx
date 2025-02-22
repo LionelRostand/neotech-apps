@@ -22,6 +22,7 @@ import Freight from './pages/Freight';
 import Profile from './pages/Profile';
 import { GeneralSettings } from './components/settings/GeneralSettings';
 import Accounting from './pages/Accounting';
+import EmployeeReports from './pages/employees/Reports';
 
 import Suppliers from './pages/purchases/Suppliers';
 import RFQ from './pages/purchases/RFQ';
@@ -39,7 +40,6 @@ import EmployeeLeaves from './pages/employees/Leaves';
 import EmployeeAttendance from './pages/employees/Attendance';
 import EmployeePerformance from './pages/employees/Performance';
 import EmployeePayroll from './pages/employees/Payroll';
-import EmployeeReports from './pages/employees/Reports';
 
 import FreightOrders from './pages/freight/FreightOrders';
 import RouteTracking from './pages/freight/RouteTracking';
@@ -82,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path: "reports",
+        element: <EmployeeReports />
       },
       {
         path: "crm",

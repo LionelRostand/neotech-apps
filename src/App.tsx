@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { Outlet, Navigate } from "react-router-dom";
 import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -27,11 +26,13 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <PrivateRoute>
-        <Outlet />
-      </PrivateRoute>
+      <AuthProvider>
+        <Toaster />
+        <Sonner />
+        <PrivateRoute>
+          <Outlet />
+        </PrivateRoute>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import { GeneralSettings } from './components/settings/GeneralSettings';
 
 import { AppProviders } from './providers/AppProviders';
+import { AuthProvider } from './hooks/useAuth';
 import { accountingRoutes } from './routes/accountingRoutes';
 import { employeeRoutes } from './routes/employeeRoutes';
 import { freightRoutes } from './routes/freightRoutes';

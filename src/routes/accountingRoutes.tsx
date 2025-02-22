@@ -8,6 +8,7 @@ import AccountingClosing from '../pages/accounting/Closing';
 import AccountingReports from '../pages/accounting/Reports';
 import AccountingPayments from '../pages/accounting/Payments';
 import AccountingCurrencies from '../pages/accounting/Currencies';
+import AccountingJournals from '../pages/accounting/Journals';
 
 export const accountingRoutes = {
   path: "accounting",
@@ -24,6 +25,10 @@ export const accountingRoutes = {
     {
       path: "invoices",
       element: <AccountingInvoices />
+    },
+    {
+      path: "journals",
+      element: <AccountingJournals />
     },
     {
       path: "treasury",

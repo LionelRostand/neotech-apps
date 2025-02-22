@@ -20,6 +20,7 @@ import Auth from './pages/Auth';
 import NotFound from './pages/NotFound';
 import Freight from './pages/Freight';
 import { GeneralSettings } from './components/settings/GeneralSettings';
+import Accounting from './pages/Accounting';
 
 import Suppliers from './pages/purchases/Suppliers';
 import RFQ from './pages/purchases/RFQ';
@@ -28,7 +29,6 @@ import Receipts from './pages/purchases/Receipts';
 import Invoices from './pages/purchases/Invoices';
 import Contracts from './pages/purchases/Contracts';
 import Inventory from './pages/purchases/Inventory';
-import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
 
 import Employees from './pages/Employees';
@@ -93,6 +93,48 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: <GeneralSettings />
+      },
+      {
+        path: "accounting",
+        element: <Accounting />,
+        children: [
+          {
+            index: true,
+            element: <AccountingChart />
+          },
+          {
+            path: "chart",
+            element: <AccountingChart />
+          },
+          {
+            path: "invoices",
+            element: <AccountingInvoices />
+          },
+          {
+            path: "treasury",
+            element: <AccountingTreasury />
+          },
+          {
+            path: "tax",
+            element: <AccountingTax />
+          },
+          {
+            path: "closing",
+            element: <AccountingClosing />
+          },
+          {
+            path: "reports",
+            element: <AccountingReports />
+          },
+          {
+            path: "payments",
+            element: <AccountingPayments />
+          },
+          {
+            path: "currencies",
+            element: <AccountingCurrencies />
+          }
+        ]
       },
       {
         path: "employees",

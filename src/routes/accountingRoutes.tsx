@@ -1,13 +1,13 @@
 
-import Accounting from '@/pages/accounting/Accounting';
-import AccountingChart from '@/pages/accounting/Chart';
-import AccountingInvoices from '@/pages/accounting/Invoices';
-import AccountingTreasury from '@/pages/accounting/Treasury';
-import AccountingTax from '@/pages/accounting/Tax';
-import AccountingClosing from '@/pages/accounting/Closing';
-import AccountingReports from '@/pages/accounting/Reports';
-import AccountingPayments from '@/pages/accounting/Payments';
-import AccountingCurrencies from '@/pages/accounting/Currencies';
+import Accounting from '../pages/accounting/Accounting';
+import AccountingChart from '../pages/accounting/Chart';
+import AccountingInvoices from '../pages/accounting/Invoices';
+import AccountingTreasury from '../pages/accounting/Treasury';
+import AccountingTax from '../pages/accounting/Tax';
+import AccountingClosing from '../pages/accounting/Closing';
+import AccountingReports from '../pages/accounting/Reports';
+import AccountingPayments from '../pages/accounting/Payments';
+import AccountingCurrencies from '../pages/accounting/Currencies';
 
 export const accountingRoutes = {
   path: "accounting",

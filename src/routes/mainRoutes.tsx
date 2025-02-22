@@ -1,5 +1,4 @@
 
-import App from '@/App';
 import Dashboard from '@/pages/Dashboard';
 import CRM from '@/pages/CRM';
 import Sales from '@/pages/Sales';
@@ -12,8 +11,6 @@ import { purchaseRoutes } from './purchaseRoutes';
 
 export const mainRoutes = {
   path: "/",
-  element: <App />,
-  errorElement: <NotFound />,
   children: [
     {
       index: true,

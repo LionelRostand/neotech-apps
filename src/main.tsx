@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from './hooks/useAuth';
 import Auth from './pages/Auth';
+import App from './App';
+import NotFound from './pages/NotFound';
 import { mainRoutes } from './routes/mainRoutes';
 
 const queryClient = new QueryClient();

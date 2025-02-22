@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { FileBarChart, BarChart, PieChart, LineChart, Download, Mail, Calendar, Filter, Search, Save } from 'lucide-react';
+import { FileBarChart, BarChart as BarChartIcon, PieChart as PieChartIcon, LineChart as LineChartIcon, Download, Mail, Calendar, Filter, Search, Save, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,8 +10,62 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import AdvancedFilters, { FilterCondition } from '@/components/employees/AdvancedFilters';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  LineChart,
+  Line,
+  Legend,
+  Cell
+} from 'recharts';
+
+const COLORS = ['#9b87f5', '#7E69AB', '#6E59A5', '#8E9196'];
+
+// Données de démonstration
+const departmentData = [
+  { name: 'R&D', value: 30 },
+  { name: 'Marketing', value: 20 },
+  { name: 'Ventes', value: 25 },
+  { name: 'RH', value: 15 },
+];
+
+const positionData = [
+  { name: 'Ingénieur', value: 40 },
+  { name: 'Manager', value: 15 },
+  { name: 'Designer', value: 20 },
+  { name: 'Analyste', value: 25 },
+];
+
+const evolutionData = [
+  { month: 'Jan', employees: 100 },
+  { month: 'Fév', employees: 110 },
+  { month: 'Mar', employees: 115 },
+  { month: 'Avr', employees: 125 },
+  { month: 'Mai', employees: 130 },
+  { month: 'Juin', employees: 140 },
+];
+
+const availableColumns = [
+  { id: 'department', label: 'Département' },
+  { id: 'position', label: 'Poste' },
+  { id: 'salary', label: 'Salaire' },
+  { id: 'hireDate', label: 'Date d\'embauche' },
+  { id: 'status', label: 'Statut' },
+  { id: 'manager', label: 'Manager' },
+  { id: 'team', label: 'Équipe' },
+];
 
 const EmployeeReports = () => {
   const [selectedColumns, setSelectedColumns] = useState(['department', 'position', 'salary']);
@@ -42,6 +96,14 @@ const EmployeeReports = () => {
   const handleApplyFilters = (filters: FilterCondition[]) => {
     console.log('Applied filters:', filters);
     // Implémentation du filtrage à venir
+  };
+
+  const toggleColumn = (columnId: string) => {
+    setSelectedColumns(current =>
+      current.includes(columnId)
+        ? current.filter(id => id !== columnId)
+        : [...current, columnId]
+    );
   };
 
   return (
@@ -79,6 +141,27 @@ const EmployeeReports = () => {
       )}
 
       <div className="flex flex-wrap gap-4 mb-6">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              Colonnes
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Colonnes visibles</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {availableColumns.map((column) => (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                checked={selectedColumns.includes(column.id)}
+                onCheckedChange={() => toggleColumn(column.id)}
+              >
+                {column.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Select onValueChange={(value) => setExportFormat(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Format d'export" />
@@ -122,13 +205,25 @@ const EmployeeReports = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart className="w-5 h-5" />
+              <BarChartIcon className="w-5 h-5" />
               Effectifs par département
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px] flex items-center justify-center bg-gray-100 rounded-lg">
-              Chart: Effectifs par département
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={departmentData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#9b87f5">
+                    {departmentData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
@@ -136,13 +231,32 @@ const EmployeeReports = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <PieChart className="w-5 h-5" />
+              <PieChartIcon className="w-5 h-5" />
               Distribution des postes
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px] flex items-center justify-center bg-gray-100 rounded-lg">
-              Chart: Distribution des postes
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={positionData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={100}
+                    fill="#9b87f5"
+                    dataKey="value"
+                  >
+                    {positionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
@@ -150,13 +264,28 @@ const EmployeeReports = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <LineChart className="w-5 h-5" />
+              <LineChartIcon className="w-5 h-5" />
               Évolution des effectifs
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px] flex items-center justify-center bg-gray-100 rounded-lg">
-              Chart: Évolution des effectifs
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={evolutionData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="employees"
+                    name="Employés"
+                    stroke="#9b87f5"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
@@ -166,3 +295,4 @@ const EmployeeReports = () => {
 };
 
 export default EmployeeReports;
+

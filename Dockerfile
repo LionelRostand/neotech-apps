@@ -19,7 +19,7 @@ COPY package*.json  ./
 COPY . .
 
 #Install vite 
-npm install vite --save-dev
+run npm install vite --save-dev
 
 # Construire l'application
 RUN npx vite build

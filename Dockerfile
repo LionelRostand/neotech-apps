@@ -18,8 +18,12 @@ COPY package*.json  ./
 # Copier le reste du projet
 COPY . .
 
+#Install vite 
+npm install vite --save-dev
+
 # Construire l'application
 RUN npx vite build
+
 
 # Étape 2: Image finale optimisée
 FROM node:18.20.7-alpine

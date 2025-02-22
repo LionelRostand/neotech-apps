@@ -5,23 +5,20 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { MeetingsSidebar } from "@/components/meetings/MeetingsSidebar";
 import { ParticipantsGrid } from "@/components/meetings/ParticipantsGrid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Video } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { NewMeetingDialog } from "@/components/meetings/NewMeetingDialog";
+
+interface Participant {
+  id: string;
+  name: string;
+}
 
 const Meetings = () => {
-  const { toast } = useToast();
   const [meetingId, setMeetingId] = useState("123-456-789");
+  const [activeParticipants, setActiveParticipants] = useState<Participant[]>([]);
 
-  const handleNewMeeting = () => {
-    // Générer un nouvel ID de réunion (simplifié pour l'exemple)
-    const newMeetingId = Math.random().toString(36).substring(2, 11);
+  const handleStartMeeting = (participants: Participant[], newMeetingId: string) => {
     setMeetingId(newMeetingId);
-    
-    toast({
-      title: "Nouvelle réunion créée",
-      description: `ID de réunion : ${newMeetingId}`,
-    });
+    setActiveParticipants(participants);
   };
 
   return (
@@ -29,10 +26,7 @@ const Meetings = () => {
       <div className="container mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Réunions Vidéo</h1>
-          <Button className="flex items-center gap-2" onClick={handleNewMeeting}>
-            <Video className="w-4 h-4" />
-            Nouvelle Réunion
-          </Button>
+          <NewMeetingDialog onMeetingStart={handleStartMeeting} />
         </div>
 
         <SidebarProvider>
@@ -47,7 +41,7 @@ const Meetings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ParticipantsGrid />
+                  <ParticipantsGrid participants={activeParticipants} />
                 </CardContent>
               </Card>
             </div>

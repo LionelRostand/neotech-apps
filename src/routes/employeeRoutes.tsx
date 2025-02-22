@@ -7,7 +7,7 @@ import EmployeeLeaves from '../pages/employees/Leaves';
 import EmployeeAttendance from '../pages/employees/Attendance';
 import EmployeePerformance from '../pages/employees/Performance';
 import EmployeePayroll from '../pages/employees/Payroll';
-import Reports from '../pages/employees/Reports';
+import EmployeeReports from '../pages/employees/Reports';
 
 export const employeeRoutes: RouteObject = {
   path: "employees",
@@ -43,7 +43,7 @@ export const employeeRoutes: RouteObject = {
     },
     {
       path: "reports",
-      element: <Reports />
+      element: <EmployeeReports />
     }
   ]
 };

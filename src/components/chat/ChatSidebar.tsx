@@ -1,7 +1,9 @@
 
 import React from 'react';
-import { MessageSquare, Search, User } from 'lucide-react';
+import { MessageSquare, Search, User, ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface Contact {
   id: string;
@@ -18,13 +20,25 @@ interface ChatSidebarProps {
 }
 
 const ChatSidebar = ({ onSelectContact, selectedContactId, contacts }: ChatSidebarProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-80 border-r border-gray-200 h-full flex flex-col bg-white">
       <div className="p-4 border-b border-gray-200">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <MessageSquare className="w-5 h-5" />
-          Messages
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => navigate('/calendar')}
+            className="hover:bg-gray-100"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-600" />
+          </Button>
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <MessageSquare className="w-5 h-5" />
+            Messages
+          </h2>
+        </div>
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
           <Input
@@ -66,3 +80,4 @@ const ChatSidebar = ({ onSelectContact, selectedContactId, contacts }: ChatSideb
 };
 
 export default ChatSidebar;
+

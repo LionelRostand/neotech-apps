@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -14,6 +15,7 @@ import App from './App';
 import Dashboard from './pages/Dashboard';
 import CRM from './pages/CRM';
 import Sales from './pages/Sales';
+import QuotesView from './pages/sales/QuotesView';
 import Purchases from './pages/Purchases';
 import Clients from './pages/Clients';
 import Auth from './pages/Auth';

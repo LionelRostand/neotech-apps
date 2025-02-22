@@ -1,6 +1,25 @@
+
 import React from 'react';
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 const AccountingInvoices = () => {
+  const { toast } = useToast();
+
+  const handleCreateInvoice = () => {
+    toast({
+      title: "Création de facture",
+      description: "La création d'une nouvelle facture a été initiée",
+    });
+  };
+
+  const handleImportInvoices = () => {
+    toast({
+      title: "Import de factures",
+      description: "L'import des factures a été initié",
+    });
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Invoices</h2>
@@ -64,12 +83,20 @@ const AccountingInvoices = () => {
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-lg font-medium mb-2">Quick Actions</h3>
             <div className="space-y-2">
-              <button className="w-full px-4 py-2 text-sm font-medium text-white bg-neotech-500 rounded-md hover:bg-neotech-600">
+              <Button
+                onClick={handleCreateInvoice}
+                className="w-full"
+                variant="default"
+              >
                 Create New Invoice
-              </button>
-              <button className="w-full px-4 py-2 text-sm font-medium text-neotech-600 border border-neotech-500 rounded-md hover:bg-neotech-50">
+              </Button>
+              <Button
+                onClick={handleImportInvoices}
+                className="w-full"
+                variant="outline"
+              >
                 Import Invoices
-              </button>
+              </Button>
             </div>
           </div>
         </div>

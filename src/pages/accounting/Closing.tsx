@@ -1,6 +1,18 @@
+
 import React from 'react';
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 const AccountingClosing = () => {
+  const { toast } = useToast();
+
+  const handleStartClosing = () => {
+    toast({
+      title: "Clôture comptable",
+      description: "Le processus de clôture a été initié",
+    });
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Closing</h2>
@@ -16,9 +28,13 @@ const AccountingClosing = () => {
               <span className="text-gray-600">Last Closing Date</span>
               <span className="font-medium">November 30, 2023</span>
             </div>
-            <button className="bg-neotech-500 text-white px-4 py-2 rounded-md hover:bg-neotech-600 transition-colors">
+            <Button
+              onClick={handleStartClosing}
+              className="w-full"
+              variant="default"
+            >
               Start Closing Process
-            </button>
+            </Button>
           </div>
         </div>
 

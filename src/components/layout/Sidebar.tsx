@@ -25,7 +25,6 @@ import {
   Route,
   Scan,
   Database,
-  BarChart,
   FileSpreadsheet,
   UserCog,
   Calendar,
@@ -33,7 +32,12 @@ import {
   FileSignature,
   Medal,
   DollarSign,
-  UserPlus
+  UserPlus,
+  Receipt,
+  Banknote,
+  Wallet,
+  Euro,
+  Coins
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -133,7 +137,61 @@ const menuItems = [
       }
     ]
   },
-  { icon: FileText, label: 'Comptabilité', path: '/accounting' },
+  { 
+    icon: Calculator, 
+    label: 'Comptabilité', 
+    path: '/accounting',
+    subItems: [
+      {
+        icon: Database,
+        label: 'Plan Comptable',
+        path: '/accounting/chart',
+        description: 'Configuration et gestion des comptes'
+      },
+      {
+        icon: Receipt,
+        label: 'Factures & Paiements',
+        path: '/accounting/invoices',
+        description: 'Gestion des factures et paiements'
+      },
+      {
+        icon: Banknote,
+        label: 'Trésorerie',
+        path: '/accounting/treasury',
+        description: 'Gestion de la trésorerie et banque'
+      },
+      {
+        icon: Euro,
+        label: 'TVA & Taxes',
+        path: '/accounting/tax',
+        description: 'Gestion de la TVA et déclarations fiscales'
+      },
+      {
+        icon: FileSignature,
+        label: 'Clôture',
+        path: '/accounting/closing',
+        description: 'Gestion des clôtures comptables'
+      },
+      {
+        icon: FileBarChart,
+        label: 'Rapports',
+        path: '/accounting/reports',
+        description: 'Tableaux de bord et analyses financières'
+      },
+      {
+        icon: Wallet,
+        label: 'Paiements',
+        path: '/accounting/payments',
+        description: 'Gestion des moyens de paiement'
+      },
+      {
+        icon: Coins,
+        label: 'Multi-devises',
+        path: '/accounting/currencies',
+        description: 'Gestion des devises et taux de change'
+      }
+    ]
+  },
   { icon: BarChart2, label: 'Rapports', path: '/reports' },
   { icon: Settings, label: 'Paramètres', path: '/settings' }
 ];

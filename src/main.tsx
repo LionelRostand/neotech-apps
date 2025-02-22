@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -22,7 +21,6 @@ import NotFound from './pages/NotFound';
 import Freight from './pages/Freight';
 import { GeneralSettings } from './components/settings/GeneralSettings';
 
-// Purchase module routes
 import Suppliers from './pages/purchases/Suppliers';
 import RFQ from './pages/purchases/RFQ';
 import PurchaseOrders from './pages/purchases/PurchaseOrders';
@@ -33,7 +31,6 @@ import Inventory from './pages/purchases/Inventory';
 import Accounting from './pages/purchases/Accounting';
 import Analytics from './pages/purchases/Analytics';
 
-// Employee module routes
 import Employees from './pages/Employees';
 import EmployeeManagement from './pages/employees/Management';
 import EmployeeContracts from './pages/employees/Contracts';
@@ -43,10 +40,18 @@ import EmployeePerformance from './pages/employees/Performance';
 import EmployeePayroll from './pages/employees/Payroll';
 import EmployeeReports from './pages/employees/Reports';
 
-// Freight management routes
 import FreightOrders from './pages/freight/FreightOrders';
 import RouteTracking from './pages/freight/RouteTracking';
 import ParcelScanning from './pages/freight/ParcelScanning';
+
+import AccountingChart from './pages/accounting/Chart';
+import AccountingInvoices from './pages/accounting/Invoices';
+import AccountingTreasury from './pages/accounting/Treasury';
+import AccountingTax from './pages/accounting/Tax';
+import AccountingClosing from './pages/accounting/Closing';
+import AccountingReports from './pages/accounting/Reports';
+import AccountingPayments from './pages/accounting/Payments';
+import AccountingCurrencies from './pages/accounting/Currencies';
 
 import './index.css';
 
@@ -187,7 +192,41 @@ const router = createBrowserRouter([
           },
           {
             path: "accounting",
-            element: <Accounting />
+            element: <Accounting />,
+            children: [
+              {
+                path: "chart",
+                element: <AccountingChart />
+              },
+              {
+                path: "invoices",
+                element: <AccountingInvoices />
+              },
+              {
+                path: "treasury",
+                element: <AccountingTreasury />
+              },
+              {
+                path: "tax",
+                element: <AccountingTax />
+              },
+              {
+                path: "closing",
+                element: <AccountingClosing />
+              },
+              {
+                path: "reports",
+                element: <AccountingReports />
+              },
+              {
+                path: "payments",
+                element: <AccountingPayments />
+              },
+              {
+                path: "currencies",
+                element: <AccountingCurrencies />
+              }
+            ]
           },
           {
             path: "analytics",

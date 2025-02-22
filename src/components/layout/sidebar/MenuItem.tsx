@@ -25,23 +25,34 @@ const MenuItem = ({
   currentPath
 }: MenuItemProps) => {
   return (
-    <div className="group">
+    <div className="group my-1">
       <Link
         to={path}
         className={`
           flex items-center px-6 py-3 text-gray-700 transition-all duration-200
-          ${isActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
-          ${isSubMenuOpen ? 'bg-gray-50' : ''}
+          hover:bg-gray-50/90 rounded-lg mx-2
+          ${isActive ? 'bg-neotech-50 text-neotech-700 shadow-sm' : ''}
+          ${isSubMenuOpen ? 'bg-gray-50/80' : ''}
         `}
       >
-        <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
-        <span className={`${isActive ? 'font-medium text-neotech-700' : ''} ${isSubMenuOpen ? 'font-medium' : ''}`}>
+        <Icon 
+          className={`
+            w-5 h-5 mr-3 transition-colors
+            ${isActive ? 'text-neotech-500' : 'text-gray-400 group-hover:text-neotech-400'}
+          `} 
+        />
+        <span className={`
+          transition-all
+          ${isActive ? 'font-medium text-neotech-700' : ''} 
+          ${isSubMenuOpen ? 'font-medium' : ''}
+          group-hover:text-neotech-600
+        `}>
           {label}
         </span>
       </Link>
       
       {subItems && isSubMenuOpen && (
-        <div className="ml-6 border-l border-gray-200">
+        <div className="mt-1 ml-7 pl-4 border-l border-gray-200/70 space-y-0.5">
           {subItems.map((subItem, subIndex) => (
             <SubMenuItem
               key={subIndex}

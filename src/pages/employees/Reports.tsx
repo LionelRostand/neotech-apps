@@ -11,11 +11,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AdvancedFilters, { FilterCondition } from '@/components/employees/AdvancedFilters';
 
 const EmployeeReports = () => {
   const [selectedColumns, setSelectedColumns] = useState(['department', 'position', 'salary']);
   const [exportFormat, setExportFormat] = useState('pdf');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   const handleExport = () => {
     console.log(`Exporting in ${exportFormat} format...`);
@@ -37,6 +39,11 @@ const EmployeeReports = () => {
     // Implémentation de la sauvegarde du modèle à venir
   };
 
+  const handleApplyFilters = (filters: FilterCondition[]) => {
+    console.log('Applied filters:', filters);
+    // Implémentation du filtrage à venir
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -54,11 +61,22 @@ const EmployeeReports = () => {
               className="pl-9 w-64"
             />
           </div>
-          <Button variant="outline" size="icon">
+          <Button 
+            variant="outline" 
+            size="icon"
+            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            className={showAdvancedFilters ? 'bg-gray-100' : ''}
+          >
             <Filter className="w-4 h-4" />
           </Button>
         </div>
       </div>
+
+      {showAdvancedFilters && (
+        <div className="mb-6">
+          <AdvancedFilters onApplyFilters={handleApplyFilters} />
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-4 mb-6">
         <Select onValueChange={(value) => setExportFormat(value)}>

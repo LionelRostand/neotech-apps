@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
@@ -29,13 +29,20 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </Button>
       
       <Sidebar isVisible={isSidebarVisible} />
-      <div className={`transition-all duration-300 ${isSidebarVisible ? 'ml-56' : 'ml-0'} min-h-screen`}>
+      <div 
+        className={`
+          transition-all duration-300 
+          lg:ml-56 
+          ${isSidebarVisible ? 'ml-56' : 'ml-0'}
+          min-h-screen
+        `}
+      >
         <Header />
         <motion.main 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-6"
+          className="p-4 md:p-6"
         >
           {children}
         </motion.main>

@@ -1,17 +1,71 @@
-
 import React from 'react';
-import { Card } from "@/components/ui/card";
 
 const AccountingClosing = () => {
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Clôture Comptable</h1>
-      <Card className="p-4">
-        <div className="space-y-4">
-          <p className="text-gray-500">Gestion des clôtures comptables</p>
-          {/* TODO: Implement accounting closing functionality */}
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Closing</h2>
+      <div className="grid gap-6">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Period Closing</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600">Current Period</span>
+              <span className="font-medium">December 2023</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600">Last Closing Date</span>
+              <span className="font-medium">November 30, 2023</span>
+            </div>
+            <button className="bg-neotech-500 text-white px-4 py-2 rounded-md hover:bg-neotech-600 transition-colors">
+              Start Closing Process
+            </button>
+          </div>
         </div>
-      </Card>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Closing Checklist</h3>
+          <div className="space-y-3">
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Verify all transactions are posted</span>
+            </div>
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Reconcile bank accounts</span>
+            </div>
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Review accounts receivable</span>
+            </div>
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Review accounts payable</span>
+            </div>
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Process end-of-period adjustments</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Previous Closings</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span>November 2023</span>
+              <span className="text-green-600">Completed</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span>October 2023</span>
+              <span className="text-green-600">Completed</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span>September 2023</span>
+              <span className="text-green-600">Completed</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

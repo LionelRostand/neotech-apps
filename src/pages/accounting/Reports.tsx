@@ -1,17 +1,41 @@
-
 import React from 'react';
-import { Card } from "@/components/ui/card";
 
 const AccountingReports = () => {
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Rapports Comptables</h1>
-      <Card className="p-4">
-        <div className="space-y-4">
-          <p className="text-gray-500">Tableaux de bord et analyses financières</p>
-          {/* TODO: Implement accounting reports functionality */}
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Reports</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="p-4 border rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-2">Balance Sheet</h3>
+          <p className="text-gray-600 mb-4">View your company's financial position</p>
+          <button className="text-neotech-500 hover:text-neotech-600">Generate Report →</button>
         </div>
-      </Card>
+        <div className="p-4 border rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-2">Income Statement</h3>
+          <p className="text-gray-600 mb-4">Track revenue, expenses, and profit</p>
+          <button className="text-neotech-500 hover:text-neotech-600">Generate Report →</button>
+        </div>
+        <div className="p-4 border rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-2">Cash Flow</h3>
+          <p className="text-gray-600 mb-4">Monitor your cash movements</p>
+          <button className="text-neotech-500 hover:text-neotech-600">Generate Report →</button>
+        </div>
+        <div className="p-4 border rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-2">Tax Reports</h3>
+          <p className="text-gray-600 mb-4">Tax declarations and summaries</p>
+          <button className="text-neotech-500 hover:text-neotech-600">Generate Report →</button>
+        </div>
+        <div className="p-4 border rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-2">Accounts Receivable</h3>
+          <p className="text-gray-600 mb-4">Track customer payments and aging</p>
+          <button className="text-neotech-500 hover:text-neotech-600">Generate Report →</button>
+        </div>
+        <div className="p-4 border rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-2">Accounts Payable</h3>
+          <p className="text-gray-600 mb-4">Monitor vendor payments and due dates</p>
+          <button className="text-neotech-500 hover:text-neotech-600">Generate Report →</button>
+        </div>
+      </div>
     </div>
   );
 };

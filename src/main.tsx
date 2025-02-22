@@ -41,10 +41,21 @@ import './index.css';
 
 const queryClient = new QueryClient();
 
+const Providers = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <AuthProvider>
+        {children}
+        <Toaster />
+      </AuthProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Providers><App /></Providers>,
     errorElement: <NotFound />,
     children: [
       {
@@ -144,20 +155,13 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <Auth />
+    element: <Providers><Auth /></Providers>
   }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <AuthProvider>
-          <RouterProvider router={router} />
-          <Toaster />
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>,
 );
 

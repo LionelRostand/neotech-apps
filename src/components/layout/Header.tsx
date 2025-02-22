@@ -12,10 +12,10 @@ const Header = () => {
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="bg-white border-b h-16 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10"
+      className="bg-white border-b h-16 flex items-center justify-between px-6 sticky top-0 z-10"
     >
       <div className="flex items-center flex-1">
-        <div className="relative max-w-md w-full hidden md:block">
+        <div className="relative max-w-md w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
@@ -25,14 +25,14 @@ const Header = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-4">
         <button className="p-2 hover:bg-gray-100 rounded-full relative">
           <Bell className="w-5 h-5 text-gray-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-neotech-500 rounded-full"></span>
         </button>
         
-        <div className="flex items-center gap-2 md:gap-3 md:pl-4 md:border-l">
-          <span className="text-sm font-medium hidden md:block">{user?.email || 'Utilisateur'}</span>
+        <div className="flex items-center gap-3 pl-4 border-l">
+          <span className="text-sm font-medium">{user?.email || 'Utilisateur'}</span>
           <div className="flex items-center gap-2">
             <button 
               onClick={() => navigate('/profile')}

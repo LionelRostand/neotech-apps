@@ -33,12 +33,10 @@ import {
   FileSignature,
   Medal,
   DollarSign,
-  UserPlus,
-  X
+  UserPlus
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 
 const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/' },
@@ -140,29 +138,17 @@ const menuItems = [
   { icon: Settings, label: 'Paramètres', path: '/settings' }
 ];
 
-interface SidebarProps {
-  onClose?: () => void;
-}
-
-const Sidebar = ({ onClose }: SidebarProps) => {
+const Sidebar = () => {
   const location = useLocation();
   
   return (
     <motion.aside 
       initial={{ x: -250 }}
       animate={{ x: 0 }}
-      className="h-screen bg-white border-r shadow-sm w-[280px] relative"
+      className="fixed left-0 top-0 h-screen w-64 bg-white border-r shadow-sm"
     >
-      <div className="flex items-center justify-between p-6">
+      <div className="p-6">
         <h1 className="text-2xl font-bold text-neotech-600">NEOTECH</h1>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
-          onClick={onClose}
-        >
-          <X className="h-6 w-6" />
-        </Button>
       </div>
       
       <nav className="mt-6 h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
@@ -180,11 +166,6 @@ const Sidebar = ({ onClose }: SidebarProps) => {
                   ${isActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
                   ${isSubMenuOpen ? 'bg-gray-50' : ''}
                 `}
-                onClick={() => {
-                  if (window.innerWidth < 1024) {
-                    onClose?.();
-                  }
-                }}
               >
                 <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-neotech-500' : 'text-gray-400'}`} />
                 <span className={`${isActive ? 'font-medium text-neotech-700' : ''} ${isSubMenuOpen ? 'font-medium' : ''}`}>
@@ -206,11 +187,6 @@ const Sidebar = ({ onClose }: SidebarProps) => {
                           flex items-center px-6 py-2 text-sm text-gray-700 transition-all duration-200 group
                           ${isSubActive ? 'bg-neotech-50 border-r-4 border-neotech-500' : 'hover:bg-gray-50'}
                         `}
-                        onClick={() => {
-                          if (window.innerWidth < 1024) {
-                            onClose?.();
-                          }
-                        }}
                       >
                         <SubIcon className={`w-4 h-4 mr-3 ${isSubActive ? 'text-neotech-500' : 'text-gray-400'}`} />
                         <div className="flex flex-col">

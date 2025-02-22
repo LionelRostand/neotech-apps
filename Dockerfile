@@ -7,11 +7,11 @@ RUN corepack enable
 # Définir le répertoire de travail
 WORKDIR /neotech-apps
 
-# Copier uniquement les fichiers nécessaires pour l'installation des dépendances
-COPY package*.json yarn.lock ./
-
 # Installer les dépendances
 RUN yarn install --frozen-lockfile
+
+# Copier uniquement les fichiers nécessaires pour l'installation des dépendances
+COPY package*.json yarn.lock ./
 
 # Copier le reste du projet
 COPY . .

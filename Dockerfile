@@ -34,3 +34,4 @@ EXPOSE 3000
 
 # Lancer l'application
 CMD ["node", "server.js"]
+

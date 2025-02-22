@@ -62,9 +62,7 @@ const router = createBrowserRouter(
         <Route path="crm" element={<CRM />} />
         <Route path="clients" element={<Clients />} />
         <Route path="sales" element={<Sales />} />
-        <Route path="settings">
-          <Route path="general" element={<GeneralSettings />} />
-        </Route>
+        <Route path="settings/general" element={<GeneralSettings />} />
         <Route path="freight" element={<Freight />}>
           <Route index element={<FreightOrders />} />
           <Route path="orders" element={<FreightOrders />} />

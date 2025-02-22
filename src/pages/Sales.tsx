@@ -1,10 +1,10 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Outlet } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, TrendingUp, DollarSign, Settings, ShoppingCart } from 'lucide-react';
+import QuotesView from '@/components/sales/QuotesView';
 import { getQuotes } from '@/services';
 import type { Quote } from '@/types/sales';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -106,7 +106,35 @@ const Sales = () => {
           </Card>
         </div>
 
-        <Outlet />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="quotes" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Tous les devis
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="flex items-center gap-2">
+              <ShoppingCart className="h-4 w-4" />
+              Modèles
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Paramètres
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="quotes" className="space-y-4">
+            <QuotesView />
+          </TabsContent>
+          <TabsContent value="templates">
+            <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
+              Fonctionnalité à venir : Gestion des modèles de devis
+            </div>
+          </TabsContent>
+          <TabsContent value="settings">
+            <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
+              Fonctionnalité à venir : Paramètres des devis
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardLayout>
   );

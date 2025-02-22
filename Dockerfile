@@ -32,7 +32,8 @@ FROM node:18.20.7-alpine
 RUN npm install -g serve
 
 # Créer un utilisateur non-root
-RUN addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node
+RUN getent group node || addgroup -g 1000 node
+RUN adduser -u 1000 -G node -s /bin/sh -D node || echo "User node already exists"
 
 # Passer en utilisateur sécurisé
 USER node

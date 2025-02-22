@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Users, 
@@ -6,7 +5,7 @@ import {
   Package, 
   FileText, 
   Settings, 
-  BarChart2, 
+  BarChart2,
   UserCircle,
   TrendingDown,
   Box,
@@ -14,29 +13,23 @@ import {
   CreditCard,
   FileBarChart,
   Store,
-  UserCheck,
-  ShieldCheck,
-  PieChart,
-  ClipboardCheck,
-  BookOpen,
-  PackageSearch,
-  Warehouse,
-  Calculator,
-  MapPin,
   Route,
   Scan,
-  Database,
-  BarChart,
-  FileSpreadsheet,
+  Cog,
   Building,
   Globe,
   DollarSign,
   Clock,
   Users2,
-  Cog
+  PackageSearch,
+  Calculator
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
+
+interface SidebarProps {
+  isVisible: boolean;
+}
 
 const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/' },
@@ -131,13 +124,14 @@ const menuItems = [
   }
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isVisible }: SidebarProps) => {
   const location = useLocation();
   
   return (
     <motion.aside 
       initial={{ x: -250 }}
-      animate={{ x: 0 }}
+      animate={{ x: isVisible ? 0 : -250 }}
+      transition={{ duration: 0.3 }}
       className="fixed left-0 top-0 h-screen w-56 bg-white border-r shadow-sm overflow-y-auto"
     >
       <div className="p-4">

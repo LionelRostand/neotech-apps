@@ -22,7 +22,11 @@ import Freight from './pages/Freight';
 import Profile from './pages/Profile';
 import { GeneralSettings } from './components/settings/GeneralSettings';
 import Accounting from './pages/Accounting';
-import EmployeeReports from './pages/employees/Reports';
+import Calendar from './pages/Calendar';
+import Events from './pages/calendar/Events';
+import Meetings from './pages/calendar/Meetings';
+import Chat from './pages/calendar/Chat';
+import Notifications from './pages/calendar/Notifications';
 
 import Suppliers from './pages/purchases/Suppliers';
 import RFQ from './pages/purchases/RFQ';
@@ -282,6 +286,32 @@ const router = createBrowserRouter([
           {
             path: "analytics",
             element: <Analytics />
+          }
+        ]
+      },
+      {
+        path: "calendar",
+        element: <Calendar />,
+        children: [
+          {
+            index: true,
+            element: <Events />
+          },
+          {
+            path: "events",
+            element: <Events />
+          },
+          {
+            path: "meetings",
+            element: <Meetings />
+          },
+          {
+            path: "chat",
+            element: <Chat />
+          },
+          {
+            path: "notifications",
+            element: <Notifications />
           }
         ]
       }

@@ -5,8 +5,9 @@ import Clients from '@/pages/Clients';
 
 export const dashboardRoutes = [
   {
-    index: true,
-    element: <Dashboard />
+    path: "",
+    element: <Dashboard />,
+    index: true
   },
   {
     path: "crm",
@@ -17,3 +18,4 @@ export const dashboardRoutes = [
     element: <Clients />
   }
 ];
+

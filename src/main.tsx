@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -83,7 +82,17 @@ const router = createBrowserRouter([
       },
       {
         path: "sales",
-        element: <Sales />
+        element: <Sales />,
+        children: [
+          {
+            index: true,
+            element: <QuotesView />
+          },
+          {
+            path: "quotes",
+            element: <QuotesView />
+          }
+        ]
       },
       {
         path: "settings",

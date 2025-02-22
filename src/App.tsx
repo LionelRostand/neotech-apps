@@ -2,15 +2,10 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
-import { Outlet, Navigate } from "react-router-dom";
-import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
+import { useAuth } from "./hooks/useAuth";
+import { Navigate, Outlet } from "react-router-dom";
 
-const queryClient = new QueryClient();
-
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+const App = () => {
   const { user, loading } = useAuth();
   
   if (loading) {
@@ -20,20 +15,14 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   if (!user) {
     return <Navigate to="/auth" />;
   }
-  
-  return children;
-};
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+  return (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <PrivateRoute>
-        <Outlet />
-      </PrivateRoute>
+      <Outlet />
     </TooltipProvider>
-  </QueryClientProvider>
-);
+  );
+};
 
 export default App;

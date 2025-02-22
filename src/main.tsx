@@ -10,18 +10,30 @@ import { mainRoutes } from './routes/mainRoutes';
 
 const queryClient = new QueryClient();
 
+// Create a Providers component to wrap the entire application
+const Providers = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <AuthProvider>
+        {children}
+      </AuthProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
+
 const router = createBrowserRouter([
-  mainRoutes,
+  {
+    path: "/",
+    element: <Providers><App /></Providers>,
+    errorElement: <NotFound />,
+    children: mainRoutes.children
+  },
   {
     path: "/auth",
     element: (
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-          <AuthProvider>
-            <Auth />
-          </AuthProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <Providers>
+        <Auth />
+      </Providers>
     )
   }
 ]);

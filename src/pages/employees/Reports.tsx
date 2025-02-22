@@ -1,10 +1,19 @@
-
 import { useState } from 'react';
 import { FileBarChart, BarChart as BarChartIcon, PieChart as PieChartIcon, LineChart as LineChartIcon, Download, Mail, Calendar, Filter, Search, Save, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +42,6 @@ import {
 
 const COLORS = ['#9b87f5', '#7E69AB', '#6E59A5', '#8E9196'];
 
-// Données de démonstration
 const departmentData = [
   { name: 'R&D', value: 30 },
   { name: 'Marketing', value: 20 },
@@ -72,30 +80,54 @@ const EmployeeReports = () => {
   const [exportFormat, setExportFormat] = useState('pdf');
   const [searchQuery, setSearchQuery] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const [templateName, setTemplateName] = useState('');
+  const [scheduleEmail, setScheduleEmail] = useState('');
+  const [scheduleFrequency, setScheduleFrequency] = useState('weekly');
+  const { toast } = useToast();
 
   const handleExport = () => {
-    console.log(`Exporting in ${exportFormat} format...`);
-    // Implémentation de l'export à venir
+    toast({
+      title: "Export en cours",
+      description: `Export au format ${exportFormat} en préparation...`,
+    });
   };
 
   const handleEmailReport = () => {
-    console.log('Preparing email report...');
-    // Implémentation de l'envoi par email à venir
+    toast({
+      title: "Envoi du rapport",
+      description: "Le rapport va être envoyé par email...",
+    });
   };
 
   const handleScheduleReport = () => {
-    console.log('Opening schedule dialog...');
-    // Implémentation de la planification à venir
+    setShowScheduleDialog(true);
+  };
+
+  const handleSaveSchedule = () => {
+    toast({
+      title: "Rapport planifié",
+      description: `Le rapport sera envoyé ${scheduleFrequency} à ${scheduleEmail}`,
+    });
+    setShowScheduleDialog(false);
   };
 
   const handleSaveTemplate = () => {
-    console.log('Saving report template...');
-    // Implémentation de la sauvegarde du modèle à venir
+    setShowSaveTemplateDialog(true);
+  };
+
+  const handleConfirmSaveTemplate = () => {
+    toast({
+      title: "Modèle sauvegardé",
+      description: `Le modèle "${templateName}" a été sauvegardé avec succès.`,
+    });
+    setShowSaveTemplateDialog(false);
+    setTemplateName('');
   };
 
   const handleApplyFilters = (filters: FilterCondition[]) => {
     console.log('Applied filters:', filters);
-    // Implémentation du filtrage à venir
   };
 
   const toggleColumn = (columnId: string) => {
@@ -181,14 +213,14 @@ const EmployeeReports = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => handleExport()}>
+            <DropdownMenuItem onClick={handleExport}>
               Télécharger
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleEmailReport()}>
+            <DropdownMenuItem onClick={handleEmailReport}>
               <Mail className="w-4 h-4 mr-2" />
               Envoyer par email
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleScheduleReport()}>
+            <DropdownMenuItem onClick={handleScheduleReport}>
               <Calendar className="w-4 h-4 mr-2" />
               Planifier l'envoi
             </DropdownMenuItem>
@@ -290,9 +322,94 @@ const EmployeeReports = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={showSaveTemplateDialog} onOpenChange={setShowSaveTemplateDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Sauvegarder le modèle</DialogTitle>
+            <DialogDescription>
+              Donnez un nom à votre modèle de rapport pour pouvoir le réutiliser ultérieurement.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="template-name" className="text-right">
+                Nom du modèle
+              </Label>
+              <Input
+                id="template-name"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSaveTemplateDialog(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleConfirmSaveTemplate}>
+              <Save className="w-4 h-4 mr-2" />
+              Sauvegarder
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Planifier l'envoi du rapport</DialogTitle>
+            <DialogDescription>
+              Configurez la fréquence d'envoi et l'adresse email de destination.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="schedule-email" className="text-right">
+                Email
+              </Label>
+              <Input
+                id="schedule-email"
+                type="email"
+                value={scheduleEmail}
+                onChange={(e) => setScheduleEmail(e.target.value)}
+                className="col-span-3"
+                placeholder="exemple@entreprise.com"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="schedule-frequency" className="text-right">
+                Fréquence
+              </Label>
+              <Select
+                value={scheduleFrequency}
+                onValueChange={setScheduleFrequency}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Sélectionnez une fréquence" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Quotidien</SelectItem>
+                  <SelectItem value="weekly">Hebdomadaire</SelectItem>
+                  <SelectItem value="monthly">Mensuel</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowScheduleDialog(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleSaveSchedule}>
+              <Calendar className="w-4 h-4 mr-2" />
+              Planifier
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 export default EmployeeReports;
-

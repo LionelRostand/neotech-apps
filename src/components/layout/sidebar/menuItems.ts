@@ -29,7 +29,11 @@ import {
   Route,
   Scan,
   Wallet,
-  Coins
+  Coins,
+  Video,
+  MessageCircle,
+  CalendarCheck,
+  BellRing
 } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
@@ -52,6 +56,17 @@ export const menuItems: MenuItem[] = [
   { icon: Users, label: 'CRM', path: '/crm' },
   { icon: UserCircle, label: 'Clients', path: '/clients' },
   { icon: ShoppingCart, label: 'Ventes', path: '/sales' },
+  { 
+    icon: Calendar, 
+    label: 'Calendrier', 
+    path: '/calendar',
+    subItems: [
+      { icon: CalendarCheck, label: 'Mes Événements', path: '/calendar/events', description: 'Gérer vos événements et réunions' },
+      { icon: Video, label: 'Réunions Vidéo', path: '/calendar/meetings', description: 'Planifier des réunions en visioconférence' },
+      { icon: MessageCircle, label: 'Chat', path: '/calendar/chat', description: 'Discussions en temps réel' },
+      { icon: BellRing, label: 'Notifications', path: '/calendar/notifications', description: 'Gérer vos notifications et rappels' },
+    ]
+  },
   { 
     icon: Package, 
     label: 'Achats', 
@@ -110,4 +125,3 @@ export const menuItems: MenuItem[] = [
   { icon: BarChart2, label: 'Rapports', path: '/reports' },
   { icon: Settings, label: 'Paramètres', path: '/settings' }
 ];
-

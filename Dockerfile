@@ -10,14 +10,16 @@ WORKDIR /neotech-apps
 # Installer les dépendances
 RUN yarn install --frozen-lockfile
 
+
 # Copier uniquement les fichiers nécessaires pour l'installation des dépendances
-COPY package*.json ./
+COPY package*.json yarn.lock ./
+
 
 # Copier le reste du projet
 COPY . .
 
 # Construire l'application
-RUN yarn build
+RUN npx vite build
 
 # Étape 2: Image finale optimisée
 FROM node:18.20.7-alpine

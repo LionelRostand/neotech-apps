@@ -1,4 +1,3 @@
-
 # Étape 1: Build de l'application avec Node.js
 FROM node:18.20.7-alpine AS builder
 

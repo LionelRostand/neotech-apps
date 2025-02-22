@@ -1,41 +1,49 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-  };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Sidebar mobile trigger */}
       <Button
         variant="ghost"
         size="icon"
         className="fixed top-4 left-4 z-50 lg:hidden"
-        onClick={toggleSidebar}
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-6 w-6" />
       </Button>
-      
-      <Sidebar isVisible={isSidebarVisible} />
-      <div className={`transition-all duration-300 ${isSidebarVisible ? 'ml-56' : 'ml-0'} min-h-screen`}>
+
+      {/* Sidebar */}
+      <div className={`
+        fixed inset-0 z-40 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <Sidebar onClose={() => setIsSidebarOpen(false)} />
+      </div>
+
+      {/* Main content */}
+      <div className={`
+        transition-all duration-300 ease-in-out
+        ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}
+      `}>
         <Header />
         <motion.main 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-6"
+          className="p-4 md:p-6 pt-20 lg:pt-6"
         >
           {children}
         </motion.main>

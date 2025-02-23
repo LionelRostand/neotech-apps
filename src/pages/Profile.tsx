@@ -149,33 +149,21 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="role">Rôle actuel</Label>
-                <Input
-                  id="role"
-                  value={getRoleName(currentRole)}
-                  readOnly
-                  className="bg-gray-50"
-                />
+                <Select
+                  value={currentRole}
+                  onValueChange={handleRoleChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Sélectionnez un rôle" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Administrateur</SelectItem>
+                    <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="accountant">Comptable</SelectItem>
+                    <SelectItem value="user">Employé</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              {role === 'admin' && user?.email === 'admin@neotech-consulting.com' && (
-                <div className="space-y-2">
-                  <Label htmlFor="roleSelect">Changer le rôle</Label>
-                  <Select
-                    value={currentRole}
-                    onValueChange={handleRoleChange}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Sélectionnez un rôle" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Administrateur</SelectItem>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="accountant">Comptable</SelectItem>
-                      <SelectItem value="user">Employé</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
 
               <div className="space-y-2">
                 <Label htmlFor="created">Membre depuis</Label>

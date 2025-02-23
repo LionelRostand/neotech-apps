@@ -17,31 +17,49 @@ export const ProfileAvatar = ({ email, avatarUrl, onAvatarChange }: ProfileAvata
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("L'image ne doit pas dépasser 5Mo");
-        return;
-      }
+    if (!file) return;
 
-      if (!file.type.startsWith('image/')) {
-        toast.error("Le fichier doit être une image");
-        return;
-      }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("L'image ne doit pas dépasser 5Mo");
+      return;
+    }
 
-      setLoading(true);
-      try {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error("Le fichier doit être une image");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log("Lecture du fichier...");
+      const reader = new FileReader();
+      
+      reader.onload = async (e) => {
+        try {
+          console.log("Fichier lu, conversion en Data URL...");
           const dataUrl = e.target?.result as string;
+          console.log("Appel de onAvatarChange...");
           await onAvatarChange(dataUrl);
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
+          console.log("Avatar mis à jour avec succès");
+        } catch (error) {
+          console.error("Erreur lors de l'upload de l'avatar:", error);
+          toast.error("Erreur lors de l'upload de l'image");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      reader.onerror = (error) => {
         console.error("Erreur lors de la lecture du fichier:", error);
-        toast.error("Erreur lors du chargement de l'image");
-      } finally {
+        toast.error("Erreur lors de la lecture du fichier");
         setLoading(false);
-      }
+      };
+
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Erreur lors du traitement du fichier:", error);
+      toast.error("Erreur lors du traitement de l'image");
+      setLoading(false);
     }
   };
 
@@ -86,3 +104,4 @@ export const ProfileAvatar = ({ email, avatarUrl, onAvatarChange }: ProfileAvata
     </div>
   );
 };
+

@@ -71,7 +71,7 @@ const EmployeeManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
   const [isNewEmployeeDialogOpen, setIsNewEmployeeDialogOpen] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({
+  const [newEmployee, setNewEmployee] = useState<Omit<Employee, 'id' | 'status'>>({
     firstName: '',
     name: '',
     position: '',
@@ -80,7 +80,7 @@ const EmployeeManagement = () => {
     birthDate: '',
     address: '',
     city: '',
-    contractType: 'CDI' as const
+    contractType: 'CDI'  // Remove the 'as const' assertion
   });
 
   const [sortConfig, setSortConfig] = useState<{

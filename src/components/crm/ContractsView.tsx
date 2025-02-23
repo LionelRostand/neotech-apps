@@ -20,8 +20,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ContractForm from './ContractForm';
-import { getContracts, deleteContract } from '../../services';
 import type { Contract } from '../../types/crm';
+
+// Données de test pour le développement
+const mockContracts: Contract[] = [
+  {
+    id: '1',
+    reference: 'CONT-2024-001',
+    title: 'Contrat de service annuel',
+    clientId: '1',
+    clientName: 'Société ABC',
+    supplier: 'Fournisseur XYZ',
+    status: 'En cours',
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2024-12-31'),
+    value: 50000,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: '2',
+    reference: 'CONT-2024-002',
+    title: 'Contrat de maintenance',
+    clientId: '2',
+    clientName: 'Entreprise DEF',
+    supplier: 'Maintenance Pro',
+    status: 'Signé',
+    startDate: new Date('2024-02-01'),
+    endDate: new Date('2025-01-31'),
+    value: 25000,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
 
 const ContractsView = () => {
   const queryClient = useQueryClient();
@@ -29,11 +60,10 @@ const ContractsView = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
-  const { data: contracts = [], isLoading } = useQuery({
+  // Simulation d'une requête API avec des données mock
+  const { data: contracts = mockContracts, isLoading } = useQuery({
     queryKey: ['contracts'],
-    queryFn: getContracts,
-    staleTime: 60000, // Cache valide pendant 1 minute
-    gcTime: 300000, // Garde en cache pendant 5 minutes
+    queryFn: () => Promise.resolve(mockContracts),
   });
 
   const filteredContracts = useCallback(() => 
@@ -51,9 +81,9 @@ const ContractsView = () => {
 
   const handleDelete = useCallback(async (contractId: string) => {
     try {
-      await deleteContract(contractId);
-      queryClient.invalidateQueries({ queryKey: ['contracts'] });
+      // Simuler la suppression
       toast.success("Contrat supprimé avec succès");
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
     } catch (error) {
       console.error('Error:', error);
       toast.error("Une erreur est survenue lors de la suppression");
@@ -178,3 +208,4 @@ const ContractsView = () => {
 };
 
 export default ContractsView;
+

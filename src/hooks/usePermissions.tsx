@@ -33,14 +33,23 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
 
       try {
         console.log('Fetching role for user:', user.email);
+
+        // Vérifier d'abord si c'est l'admin
+        if (user.email === 'admin@neotech-consulting.com') {
+          console.log('Admin user detected, setting role to admin');
+          setRole('admin');
+          setPermissions(defaultPermissions.admin);
+          // Mettre à jour le document dans Firestore
+          await setDoc(doc(db, 'users', user.uid), { role: 'admin' }, { merge: true });
+          setIsLoading(false);
+          return;
+        }
+
+        // Si ce n'est pas l'admin, récupérer le rôle depuis Firestore
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         let userRole: UserRole = 'user';
 
-        if (user.email === 'admin@neotech-consulting.com') {
-          console.log('Admin user detected');
-          userRole = 'admin';
-          await setDoc(doc(db, 'users', user.uid), { role: 'admin' }, { merge: true });
-        } else if (userDoc.exists()) {
+        if (userDoc.exists()) {
           userRole = (userDoc.data()?.role as UserRole) || 'user';
         }
         
@@ -102,3 +111,4 @@ export const usePermissions = () => {
   }
   return context;
 };
+

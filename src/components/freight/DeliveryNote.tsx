@@ -15,7 +15,7 @@ const DeliveryNote = ({ order }: DeliveryNoteProps) => {
     if (targetRef.current) {
       await toPDF(targetRef, {
         method: 'save',
-        fileName: `bon-livraison-${order.reference}.pdf`
+        filename: `bon-livraison-${order.reference}.pdf`
       });
     }
   };

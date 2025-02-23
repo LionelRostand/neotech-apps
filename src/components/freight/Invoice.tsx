@@ -18,7 +18,7 @@ const Invoice = ({ order }: InvoiceProps) => {
     if (targetRef.current) {
       await toPDF(targetRef, {
         method: 'save',
-        fileName: `facture-${order.reference}.pdf`
+        filename: `facture-${order.reference}.pdf`
       });
     }
   };

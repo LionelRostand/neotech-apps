@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,21 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
   const [size, setSize] = useState<'S' | 'M' | 'L' | 'XL'>('M');
   const [distance, setDistance] = useState<number>(0);
   const [cost, setCost] = useState<number | null>(null);
+  const [initialCost, setInitialCost] = useState<number | null>(null);
+
+  // Calcul du coût initial basé uniquement sur le poids
+  useEffect(() => {
+    if (weight > 0) {
+      const baseInitialCost = calculateFreightCost({ 
+        weight, 
+        size: 'M', // Taille moyenne par défaut
+        distance: 1 // Distance minimale pour le calcul initial
+      });
+      setInitialCost(baseInitialCost);
+    } else {
+      setInitialCost(null);
+    }
+  }, [weight]);
 
   const handleCalculate = () => {
     if (weight <= 0 || distance <= 0) {
@@ -57,6 +72,11 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
               onChange={(e) => setWeight(Number(e.target.value))}
               placeholder="Entrez le poids"
             />
+            {initialCost !== null && (
+              <p className="text-sm text-muted-foreground">
+                Coût initial estimé: {initialCost}€
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -110,3 +130,4 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
 };
 
 export default FreightCalculator;
+

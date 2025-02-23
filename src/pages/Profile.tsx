@@ -13,19 +13,17 @@ import { useProfile } from "@/hooks/useProfile"
 const Profile = () => {
   const { user } = useAuth();
   const { role, updateUserRole } = usePermissions();
-  const { uploadAvatar, isLoading } = useProfile();
+  const { uploadAvatar, updateProfile, isLoading } = useProfile();
   const [currentRole, setCurrentRole] = useState<UserRole>(role);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentRole(role);
-    console.log("Current role:", role);
   }, [role]);
 
   const handleRoleChange = async (newRole: UserRole) => {
     if (!user) return;
     try {
-      console.log("Updating role to:", newRole);
       await updateUserRole(user.uid, newRole);
       setCurrentRole(newRole);
       toast.success("Rôle mis à jour avec succès");
@@ -42,6 +40,7 @@ const Profile = () => {
       setAvatarUrl(url);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'avatar:", error);
+      toast.error("Erreur lors de la mise à jour de la photo de profil");
     }
   };
 

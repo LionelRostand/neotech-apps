@@ -2,22 +2,36 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
 import { User } from "firebase/auth"
 import { UserRole } from "@/types/auth"
+import { toast } from "sonner"
 
 interface ProfileInformationProps {
   user: User | null;
   currentRole: UserRole;
   onRoleChange: (role: UserRole) => void;
   getRoleName: (role: UserRole) => string;
+  onSave: () => void;
 }
 
 export const ProfileInformation = ({ 
   user, 
   currentRole, 
   onRoleChange,
-  getRoleName
+  getRoleName,
+  onSave
 }: ProfileInformationProps) => {
+  const handleSave = async () => {
+    try {
+      await onSave();
+      toast.success("Profil mis à jour avec succès");
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde du profil:", error);
+      toast.error("Erreur lors de la mise à jour du profil");
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -66,6 +80,12 @@ export const ProfileInformation = ({
           readOnly 
           className="bg-gray-50"
         />
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <Button onClick={handleSave}>
+          Enregistrer
+        </Button>
       </div>
     </div>
   );

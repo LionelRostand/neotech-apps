@@ -32,7 +32,6 @@ const Profile = () => {
       setCurrentRole(newRole);
     } catch (error) {
       console.error("Erreur lors de la mise à jour du rôle:", error);
-      // Error toast is handled in updateUserRole
     }
   };
 
@@ -43,7 +42,19 @@ const Profile = () => {
       setAvatarUrl(url);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'avatar:", error);
-      // Error toast is handled in uploadAvatar
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    
+    try {
+      await updateProfile(user.uid, {
+        role: currentRole,
+        avatarUrl: avatarUrl
+      });
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -86,6 +97,7 @@ const Profile = () => {
                 currentRole={currentRole}
                 onRoleChange={handleRoleChange}
                 getRoleName={getRoleName}
+                onSave={handleSaveProfile}
               />
             </CardContent>
           </Card>

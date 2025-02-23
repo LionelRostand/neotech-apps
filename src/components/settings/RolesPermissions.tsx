@@ -7,7 +7,6 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 
 interface User {
   id: string;
@@ -132,3 +131,4 @@ export const RolesPermissions = () => {
     </Card>
   );
 };
+

@@ -55,7 +55,7 @@ export const GeneralSettings = () => {
 
           <form onSubmit={handleSubmit} className="grid gap-6">
             <CompanyInformation />
-            <RolesPermissions role={role} />
+            <RolesPermissions />
             <LocalizationSettings />
             <ModuleAccess />
             <TimezoneSettings />
@@ -74,3 +74,4 @@ export const GeneralSettings = () => {
 };
 
 export default GeneralSettings;
+

@@ -15,6 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import FreightCalculator from '@/components/freight/FreightCalculator';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const FreightOrders = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -22,6 +29,7 @@ const FreightOrders = () => {
     reference: '',
     client: '',
     carrier: '',
+    transportType: '',
     deliveryDate: '',
     receptionDate: '',
     cost: 0
@@ -36,6 +44,7 @@ const FreightOrders = () => {
       reference: '',
       client: '',
       carrier: '',
+      transportType: '',
       deliveryDate: '',
       receptionDate: '',
       cost: 0
@@ -100,6 +109,23 @@ const FreightOrders = () => {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="transportType">Type de Transport</Label>
+                  <Select
+                    value={newOrder.transportType}
+                    onValueChange={(value) => setNewOrder({...newOrder, transportType: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un type de transport" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="truck">Camion</SelectItem>
+                      <SelectItem value="train">Train</SelectItem>
+                      <SelectItem value="ship">Bateau</SelectItem>
+                      <SelectItem value="plane">Avion</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="receptionDate">Date de réception</Label>
                   <Input
                     id="receptionDate"
@@ -142,6 +168,7 @@ const FreightOrders = () => {
             <TableHead>Référence</TableHead>
             <TableHead>Client</TableHead>
             <TableHead>Transporteur</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>Statut</TableHead>
             <TableHead>Date Livraison</TableHead>
             <TableHead>Coût</TableHead>
@@ -153,6 +180,7 @@ const FreightOrders = () => {
             <TableCell className="font-medium">TR-001</TableCell>
             <TableCell>Société ABC</TableCell>
             <TableCell>Transport Express</TableCell>
+            <TableCell>Camion</TableCell>
             <TableCell>
               <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
                 En cours
@@ -176,3 +204,4 @@ const FreightOrders = () => {
 };
 
 export default FreightOrders;
+

@@ -9,6 +9,8 @@ import { UserRole } from "@/types/auth"
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar"
 import { ProfileInformation } from "@/components/profile/ProfileInformation"
 import { useProfile } from "@/hooks/useProfile"
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -20,6 +22,24 @@ const Profile = () => {
   useEffect(() => {
     setCurrentRole(role);
   }, [role]);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setAvatarUrl(userData.avatarUrl || null);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération du profil:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
 
   const handleRoleChange = async (newRole: UserRole) => {
     if (!user) {

@@ -2,11 +2,21 @@
 import React from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Trash, FileText, Receipt, QrCode } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchOrders, deleteOrder } from '@/services/orderService';
 import { toast } from "sonner";
 import { FreightOrder } from '@/types/freight';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import DeliveryNote from './DeliveryNote';
+import Invoice from './Invoice';
 
 const OrdersTable = () => {
   const queryClient = useQueryClient();
@@ -53,6 +63,27 @@ const OrdersTable = () => {
     );
   }
 
+  const handlePrint = (content: React.ReactNode) => {
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Impression</title>
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+          </head>
+          <body>
+            <div id="print-content">
+              ${content}
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -90,13 +121,62 @@ const OrdersTable = () => {
             <TableCell>{new Date(order.deliveryDate).toLocaleDateString('fr-FR')}</TableCell>
             <TableCell>{order.cost}€</TableCell>
             <TableCell className="flex gap-2">
-              <Button variant="outline" size="icon">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" title="Bon de livraison">
+                    <FileText className="w-4 h-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-[800px] sm:w-[900px]">
+                  <SheetHeader>
+                    <SheetTitle>Bon de livraison</SheetTitle>
+                    <SheetDescription>
+                      Référence: {order.reference}
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-4">
+                    <DeliveryNote order={order} />
+                    <div className="flex justify-end mt-4">
+                      <Button onClick={() => handlePrint(<DeliveryNote order={order} />)}>
+                        Imprimer
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" title="Facture">
+                    <Receipt className="w-4 h-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-[800px] sm:w-[900px]">
+                  <SheetHeader>
+                    <SheetTitle>Facture</SheetTitle>
+                    <SheetDescription>
+                      Référence: {order.reference}
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-4">
+                    <Invoice order={order} />
+                    <div className="flex justify-end mt-4">
+                      <Button onClick={() => handlePrint(<Invoice order={order} />)}>
+                        Imprimer
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+              <Button variant="outline" size="icon" title="Modifier">
                 <Edit className="w-4 h-4" />
               </Button>
               <Button 
                 variant="outline" 
                 size="icon"
                 onClick={() => deleteMutation.mutate(order.id)}
+                title="Supprimer"
               >
                 <Trash className="w-4 h-4" />
               </Button>

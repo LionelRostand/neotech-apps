@@ -1,13 +1,6 @@
 
 import React, { useState } from 'react';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableHead, 
-  TableBody, 
-  TableCell 
-} from '@/components/ui/table';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash } from 'lucide-react';
 import {
@@ -21,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import FreightCalculator from '@/components/freight/FreightCalculator';
 
 const FreightOrders = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,12 +23,12 @@ const FreightOrders = () => {
     client: '',
     carrier: '',
     deliveryDate: '',
-    receptionDate: ''
+    receptionDate: '',
+    cost: 0
   });
 
   const handleNewOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    // Ici, vous pourriez ajouter la logique pour sauvegarder la commande
     console.log('Nouvelle commande:', newOrder);
     toast.success('Commande créée avec succès');
     setIsDialogOpen(false);
@@ -43,8 +37,13 @@ const FreightOrders = () => {
       client: '',
       carrier: '',
       deliveryDate: '',
-      receptionDate: ''
+      receptionDate: '',
+      cost: 0
     });
+  };
+
+  const handleCalculatedCost = (cost: number) => {
+    setNewOrder(prev => ({ ...prev, cost }));
   };
 
   return (
@@ -61,7 +60,7 @@ const FreightOrders = () => {
               Nouvelle Commande
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>Créer une nouvelle commande de transport</DialogTitle>
               <DialogDescription>
@@ -69,56 +68,61 @@ const FreightOrders = () => {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleNewOrder} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="reference">Référence</Label>
-                <Input
-                  id="reference"
-                  value={newOrder.reference}
-                  onChange={(e) => setNewOrder({...newOrder, reference: e.target.value})}
-                  placeholder="TR-XXX"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reference">Référence</Label>
+                  <Input
+                    id="reference"
+                    value={newOrder.reference}
+                    onChange={(e) => setNewOrder({...newOrder, reference: e.target.value})}
+                    placeholder="TR-XXX"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client">Client</Label>
+                  <Input
+                    id="client"
+                    value={newOrder.client}
+                    onChange={(e) => setNewOrder({...newOrder, client: e.target.value})}
+                    placeholder="Nom du client"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="carrier">Transporteur</Label>
+                  <Input
+                    id="carrier"
+                    value={newOrder.carrier}
+                    onChange={(e) => setNewOrder({...newOrder, carrier: e.target.value})}
+                    placeholder="Nom du transporteur"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="receptionDate">Date de réception</Label>
+                  <Input
+                    id="receptionDate"
+                    type="date"
+                    value={newOrder.receptionDate}
+                    onChange={(e) => setNewOrder({...newOrder, receptionDate: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="deliveryDate">Date de livraison</Label>
+                  <Input
+                    id="deliveryDate"
+                    type="date"
+                    value={newOrder.deliveryDate}
+                    onChange={(e) => setNewOrder({...newOrder, deliveryDate: e.target.value})}
+                    required
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="client">Client</Label>
-                <Input
-                  id="client"
-                  value={newOrder.client}
-                  onChange={(e) => setNewOrder({...newOrder, client: e.target.value})}
-                  placeholder="Nom du client"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="carrier">Transporteur</Label>
-                <Input
-                  id="carrier"
-                  value={newOrder.carrier}
-                  onChange={(e) => setNewOrder({...newOrder, carrier: e.target.value})}
-                  placeholder="Nom du transporteur"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="receptionDate">Date de réception</Label>
-                <Input
-                  id="receptionDate"
-                  type="date"
-                  value={newOrder.receptionDate}
-                  onChange={(e) => setNewOrder({...newOrder, receptionDate: e.target.value})}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="deliveryDate">Date de livraison</Label>
-                <Input
-                  id="deliveryDate"
-                  type="date"
-                  value={newOrder.deliveryDate}
-                  onChange={(e) => setNewOrder({...newOrder, deliveryDate: e.target.value})}
-                  required
-                />
-              </div>
+
+              <FreightCalculator onCalculate={handleCalculatedCost} />
+
               <div className="flex justify-end gap-2 mt-4">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                   Annuler
@@ -140,6 +144,7 @@ const FreightOrders = () => {
             <TableHead>Transporteur</TableHead>
             <TableHead>Statut</TableHead>
             <TableHead>Date Livraison</TableHead>
+            <TableHead>Coût</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -154,6 +159,7 @@ const FreightOrders = () => {
               </span>
             </TableCell>
             <TableCell>25/03/2024</TableCell>
+            <TableCell>450€</TableCell>
             <TableCell className="flex gap-2">
               <Button variant="outline" size="icon">
                 <Edit className="w-4 h-4" />
@@ -170,4 +176,3 @@ const FreightOrders = () => {
 };
 
 export default FreightOrders;
-

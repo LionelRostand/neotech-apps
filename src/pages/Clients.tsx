@@ -7,9 +7,18 @@ import { Button } from '@/components/ui/button';
 import { ClientFormDialog } from '@/components/crm/ClientForm';
 import { Download, Upload, FileText, TrendingUp, DollarSign, Settings, UserCircle } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { toast } from "sonner";
 
 const Clients = () => {
   const [activeTab, setActiveTab] = useState('list');
+
+  const handleExport = () => {
+    toast.info("L'export des clients sera bientôt disponible");
+  };
+
+  const handleImport = () => {
+    toast.info("L'import des clients sera bientôt disponible");
+  };
 
   return (
     <DashboardLayout>
@@ -22,11 +31,11 @@ const Clients = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="hover:bg-primary/10">
+            <Button variant="outline" size="sm" onClick={handleExport} className="hover:bg-primary/10">
               <Download className="h-4 w-4 mr-2" />
               Exporter
             </Button>
-            <Button variant="outline" size="sm" className="hover:bg-primary/10">
+            <Button variant="outline" size="sm" onClick={handleImport} className="hover:bg-primary/10">
               <Upload className="h-4 w-4 mr-2" />
               Importer
             </Button>

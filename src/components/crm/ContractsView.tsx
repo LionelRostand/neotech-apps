@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -10,7 +9,6 @@ import ContractForm from './ContractForm';
 import type { Contract } from '../../types/crm';
 import { Card } from "@/components/ui/card";
 
-// Données de test pour le développement
 const mockContracts: Contract[] = [
   {
     id: '1',
@@ -68,7 +66,6 @@ const ContractsView = () => {
 
   const handleDelete = useCallback(async (contractId: string) => {
     try {
-      // Simuler la suppression
       toast.success("Contrat supprimé avec succès");
       queryClient.invalidateQueries({ queryKey: ['contracts'] });
     } catch (error) {
@@ -94,7 +91,7 @@ const ContractsView = () => {
 
   return (
     <DashboardLayout hideHeader={true}>
-      <div className="container mx-auto mt-24 space-y-8">
+      <div className="container mx-auto mt-24 space-y-8 px-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">Gestion des Contrats</h1>
           <p className="mt-1 text-gray-500">Vue d'ensemble de vos contrats</p>
@@ -159,4 +156,3 @@ const ContractsView = () => {
 };
 
 export default ContractsView;
-

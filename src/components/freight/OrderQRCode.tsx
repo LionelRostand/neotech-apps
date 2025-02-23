@@ -1,6 +1,6 @@
 
 import React from 'react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { FreightOrder } from '@/types/freight';
 
 interface OrderQRCodeProps {
@@ -17,7 +17,7 @@ const OrderQRCode = ({ order, size = 128 }: OrderQRCodeProps) => {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <QRCode value={qrData} size={size} />
+      <QRCodeSVG value={qrData} size={size} />
       <span className="text-sm text-gray-500">{order.reference}</span>
     </div>
   );

@@ -103,7 +103,7 @@ const ContractsView = () => {
   const contractsList = filteredContracts();
 
   return (
-    <DashboardLayout>
+    <div className="flex-1 ml-64">
       <div className="p-6 space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex gap-4 flex-1">
@@ -206,7 +206,7 @@ const ContractsView = () => {
           contract={selectedContract}
         />
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

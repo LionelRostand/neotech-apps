@@ -94,13 +94,13 @@ const ContractsView = () => {
 
   return (
     <DashboardLayout hideHeader={true}>
-      <div className="mt-24 pl-0 space-y-8">
-        <div className="px-4">
+      <div className="container mx-auto mt-24 space-y-8">
+        <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">Gestion des Contrats</h1>
           <p className="mt-1 text-gray-500">Vue d'ensemble de vos contrats</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="p-6 space-y-2">
             <div className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-blue-500" />
@@ -134,7 +134,7 @@ const ContractsView = () => {
           </Card>
         </div>
 
-        <div className="space-y-4 px-4">
+        <div className="max-w-7xl mx-auto space-y-4">
           <ContractsToolbar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}

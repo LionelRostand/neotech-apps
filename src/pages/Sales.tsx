@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { getQuotes } from '@/services';
 import type { Quote } from '@/types/sales';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { GeneralSettings } from '../components/settings/GeneralSettings';
+import QuoteTemplatesList from '@/components/sales/templates/QuoteTemplatesList';
 
 const Sales = () => {
   const [activeTab, setActiveTab] = useState('quotes');
@@ -126,34 +126,7 @@ const Sales = () => {
             <QuotesView />
           </TabsContent>
           <TabsContent value="templates" className="space-y-4">
-            <div className="rounded-lg border bg-card p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold">Modèles de devis</h3>
-                  <p className="text-sm text-muted-foreground">Gérez vos modèles de devis prédéfinis</p>
-                </div>
-              </div>
-              <Tabs defaultValue="list" className="space-y-4">
-                <TabsList>
-                  <TabsTrigger value="list" className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Liste des modèles
-                  </TabsTrigger>
-                  <TabsTrigger value="settings" className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Paramètres
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="list">
-                  <div className="text-center text-muted-foreground">
-                    Fonctionnalité à venir : Liste des modèles de devis
-                  </div>
-                </TabsContent>
-                <TabsContent value="settings">
-                  <GeneralSettings />
-                </TabsContent>
-              </Tabs>
-            </div>
+            <QuoteTemplatesList />
           </TabsContent>
           <TabsContent value="settings">
             <GeneralSettings />
@@ -165,4 +138,3 @@ const Sales = () => {
 };
 
 export default Sales;
-

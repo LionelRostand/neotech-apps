@@ -23,6 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Simulation d'une base de données pour le dernier numéro de référence
+let lastReferenceNumber = 1;
+
 const FreightOrders = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newOrder, setNewOrder] = useState({
@@ -35,9 +38,19 @@ const FreightOrders = () => {
     cost: 0
   });
 
+  const generateReference = () => {
+    const referenceNumber = String(lastReferenceNumber).padStart(3, '0');
+    lastReferenceNumber += 1;
+    return `TR-${referenceNumber}`;
+  };
+
   const handleNewOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Nouvelle commande:', newOrder);
+    const orderWithReference = {
+      ...newOrder,
+      reference: generateReference()
+    };
+    console.log('Nouvelle commande:', orderWithReference);
     toast.success('Commande créée avec succès');
     setIsDialogOpen(false);
     setNewOrder({
@@ -74,20 +87,11 @@ const FreightOrders = () => {
               <DialogTitle>Créer une nouvelle commande de transport</DialogTitle>
               <DialogDescription>
                 Remplissez les informations pour créer une nouvelle commande de transport.
+                La référence sera générée automatiquement.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleNewOrder} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="reference">Référence</Label>
-                  <Input
-                    id="reference"
-                    value={newOrder.reference}
-                    onChange={(e) => setNewOrder({...newOrder, reference: e.target.value})}
-                    placeholder="TR-XXX"
-                    required
-                  />
-                </div>
                 <div className="space-y-2">
                   <Label htmlFor="client">Client</Label>
                   <Input

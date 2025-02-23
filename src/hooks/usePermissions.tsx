@@ -23,7 +23,7 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserRole = async () => {
+    const initializeAdminUser = async () => {
       if (!user) {
         setRole('user');
         setPermissions(defaultPermissions.user);
@@ -32,34 +32,34 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
       }
 
       try {
-        // Définir d'abord le rôle admin pour l'utilisateur admin
         if (user.email === 'admin@neotech-consulting.com') {
-          console.log('Setting admin role for:', user.email);
+          const userRef = doc(db, 'users', user.uid);
+          
+          // Vérifier d'abord si le document existe
+          const docSnap = await getDoc(userRef);
+          
+          // Mettre à jour ou créer le document avec le rôle admin
+          await setDoc(userRef, {
+            role: 'admin',
+            email: user.email
+          }, { merge: true });
+
+          console.log('Admin role set for:', user.email);
           setRole('admin');
           setPermissions(defaultPermissions.admin);
-          
-          // S'assurer que le document existe dans Firestore
-          const userRef = doc(db, 'users', user.uid);
-          await setDoc(userRef, { 
-            role: 'admin',
-            email: user.email 
-          }, { merge: true });
-          
           setIsLoading(false);
           return;
         }
 
-        // Pour les autres utilisateurs, lire leur rôle depuis Firestore
+        // Pour les autres utilisateurs
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
         
         if (userDoc.exists()) {
           const userRole = userDoc.data()?.role as UserRole || 'user';
-          console.log('Fetched role for user:', user.email, 'Role:', userRole);
           setRole(userRole);
           setPermissions(defaultPermissions[userRole]);
         } else {
-          // Créer un nouveau document pour l'utilisateur avec le rôle par défaut
           const defaultRole: UserRole = 'user';
           await setDoc(userRef, { 
             role: defaultRole,
@@ -69,7 +69,7 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
           setPermissions(defaultPermissions[defaultRole]);
         }
       } catch (error) {
-        console.error('Erreur lors de la récupération du rôle:', error);
+        console.error('Erreur lors de l\'initialisation des permissions:', error);
         // En cas d'erreur, définir un rôle par défaut
         setRole('user');
         setPermissions(defaultPermissions.user);
@@ -77,7 +77,7 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
       setIsLoading(false);
     };
 
-    fetchUserRole();
+    initializeAdminUser();
   }, [user]);
 
   const hasPermission = (module: string, action: string): boolean => {
@@ -91,12 +91,12 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
 
   const updateUserRole = async (userId: string, newRole: UserRole) => {
     try {
-      await setDoc(doc(db, 'users', userId), { 
+      const userRef = doc(db, 'users', userId);
+      await setDoc(userRef, { 
         role: newRole,
         email: user?.email
       }, { merge: true });
       
-      // Si l'utilisateur met à jour son propre rôle
       if (user?.uid === userId) {
         setRole(newRole);
         setPermissions(defaultPermissions[newRole]);
@@ -130,4 +130,3 @@ export const usePermissions = () => {
   }
   return context;
 };
-

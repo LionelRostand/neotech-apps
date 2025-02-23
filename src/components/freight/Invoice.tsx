@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { FreightOrder } from '@/types/freight';
 import OrderQRCode from './OrderQRCode';
-import { toPDF } from 'react-to-pdf';
+import toPDF from 'react-to-pdf';
 
 interface InvoiceProps {
   order: FreightOrder;
@@ -74,3 +74,4 @@ const Invoice = ({ order }: InvoiceProps) => {
 };
 
 export default Invoice;
+

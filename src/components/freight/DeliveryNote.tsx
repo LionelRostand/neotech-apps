@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { FreightOrder } from '@/types/freight';
 import OrderQRCode from './OrderQRCode';
-import { toPDF } from 'react-to-pdf';
+import toPDF from 'react-to-pdf';
 
 interface DeliveryNoteProps {
   order: FreightOrder;
@@ -67,3 +67,4 @@ const DeliveryNote = ({ order }: DeliveryNoteProps) => {
 };
 
 export default DeliveryNote;
+

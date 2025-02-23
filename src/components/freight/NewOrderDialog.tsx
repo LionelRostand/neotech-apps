@@ -22,25 +22,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createOrder } from '@/services/orderService';
-import { NewFreightOrder } from '@/types/freight';
+import { createOrder, updateOrder } from '@/services/orderService';
+import { NewFreightOrder, FreightOrder } from '@/types/freight';
 
 interface NewOrderProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  isEditing?: boolean;
+  order?: FreightOrder;
+  onClose?: () => void;
 }
 
 let lastReferenceNumber = 1;
 
-const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
+const NewOrderDialog: React.FC<NewOrderProps> = ({ 
+  isOpen, 
+  onOpenChange, 
+  isEditing = false, 
+  order,
+  onClose 
+}) => {
   const queryClient = useQueryClient();
   const [newOrder, setNewOrder] = React.useState<Omit<NewFreightOrder, 'reference'>>({
-    client: '',
-    carrier: '',
-    transportType: 'truck',
-    deliveryDate: '',
-    receptionDate: '',
-    cost: 0
+    client: order?.client || '',
+    carrier: order?.carrier || '',
+    transportType: order?.transportType || 'truck',
+    deliveryDate: order?.deliveryDate || '',
+    receptionDate: order?.receptionDate || '',
+    cost: order?.cost || 0
   });
 
   const generateReference = () => {
@@ -49,12 +58,18 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
     return `TR-${referenceNumber}`;
   };
 
-  const createOrderMutation = useMutation({
-    mutationFn: createOrder,
+  const mutation = useMutation({
+    mutationFn: (data: NewFreightOrder | FreightOrder) => {
+      if (isEditing && order) {
+        return updateOrder(order.id, data);
+      }
+      return createOrder(data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['freight-orders'] });
-      toast.success('Commande créée avec succès');
-      onOpenChange(false);
+      toast.success(isEditing ? 'Commande modifiée avec succès' : 'Commande créée avec succès');
+      if (onOpenChange) onOpenChange(false);
+      if (onClose) onClose();
       setNewOrder({
         client: '',
         carrier: '',
@@ -65,18 +80,17 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
       });
     },
     onError: (error) => {
-      console.error('Error creating order:', error);
-      toast.error('Erreur lors de la création de la commande');
+      console.error('Error creating/updating order:', error);
+      toast.error(isEditing ? 'Erreur lors de la modification de la commande' : 'Erreur lors de la création de la commande');
     },
   });
 
-  const handleNewOrder = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const orderWithReference = {
-      ...newOrder,
-      reference: generateReference()
-    };
-    createOrderMutation.mutate(orderWithReference);
+    const orderData = isEditing && order 
+      ? { ...order, ...newOrder }
+      : { ...newOrder, reference: generateReference() };
+    mutation.mutate(orderData);
   };
 
   const handleCalculatedCost = (cost: number) => {
@@ -93,13 +107,14 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Créer une nouvelle commande de transport</DialogTitle>
+          <DialogTitle>{isEditing ? 'Modifier la commande' : 'Créer une nouvelle commande de transport'}</DialogTitle>
           <DialogDescription>
-            Remplissez les informations pour créer une nouvelle commande de transport.
-            La référence sera générée automatiquement.
+            {isEditing 
+              ? 'Modifiez les informations de la commande de transport.'
+              : 'Remplissez les informations pour créer une nouvelle commande de transport. La référence sera générée automatiquement.'}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleNewOrder} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="client">Client</Label>
@@ -164,11 +179,18 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
           <FreightCalculator onCalculate={handleCalculatedCost} />
 
           <div className="flex justify-end gap-2 mt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => {
+                if (onOpenChange) onOpenChange(false);
+                if (onClose) onClose();
+              }}
+            >
               Annuler
             </Button>
-            <Button type="submit" disabled={createOrderMutation.isPending}>
-              {createOrderMutation.isPending ? 'Création...' : 'Créer la commande'}
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer')}
             </Button>
           </div>
         </form>

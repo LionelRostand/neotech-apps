@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -91,7 +92,7 @@ const ContractsView = () => {
 
   return (
     <DashboardLayout hideHeader={true}>
-      <div className="pl-2 pr-6 py-6 space-y-4">
+      <div className="mt-24 px-6 space-y-4">
         <ContractsToolbar
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
@@ -115,3 +116,4 @@ const ContractsView = () => {
 };
 
 export default ContractsView;
+

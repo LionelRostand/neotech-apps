@@ -6,20 +6,17 @@ const COLLECTION = 'freight_orders';
 
 export const fetchOrders = async (): Promise<FreightOrder[]> => {
   try {
-    // Vérifier si db est correctement initialisé
     if (!db) {
       console.error('Firestore not initialized');
       throw new Error('Database not initialized');
     }
 
-    // Tenter d'accéder à la collection
     const ordersCollection = collection(db, COLLECTION);
     console.log('Attempting to fetch orders from collection:', COLLECTION);
 
     const querySnapshot = await getDocs(ordersCollection);
     console.log('Query executed, documents count:', querySnapshot.size);
 
-    // Mapper les documents avec plus de validation
     const orders = querySnapshot.docs.map(doc => {
       const data = doc.data();
       console.log('Document data:', { id: doc.id, ...data });
@@ -31,7 +28,6 @@ export const fetchOrders = async (): Promise<FreightOrder[]> => {
 
     return orders;
   } catch (error: any) {
-    // Log plus détaillé de l'erreur
     console.error('Detailed error while fetching orders:', {
       error: error,
       message: error.message,
@@ -43,6 +39,11 @@ export const fetchOrders = async (): Promise<FreightOrder[]> => {
 };
 
 export const createOrder = async (order: NewFreightOrder): Promise<FreightOrder> => {
+  if (!order || !order.client || !order.carrier || !order.transportType) {
+    console.error('Invalid order data:', order);
+    throw new Error('Données de commande invalides');
+  }
+
   const now = new Date().toISOString();
   const orderData = {
     ...order,
@@ -52,14 +53,30 @@ export const createOrder = async (order: NewFreightOrder): Promise<FreightOrder>
   };
 
   try {
-    const docRef = await addDoc(collection(db, COLLECTION), orderData);
-    console.log('Order created with ID:', docRef.id);
+    if (!db) {
+      console.error('Firestore not initialized');
+      throw new Error('Database not initialized');
+    }
+
+    console.log('Attempting to create order with data:', orderData);
+    const ordersCollection = collection(db, COLLECTION);
+    const docRef = await addDoc(ordersCollection, orderData);
+    console.log('Order created successfully with ID:', docRef.id);
+
     return {
       id: docRef.id,
       ...orderData,
     } as FreightOrder;
-  } catch (error) {
-    console.error('Error creating order:', error);
+  } catch (error: any) {
+    console.error('Detailed error creating order:', {
+      error: error,
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    if (error.code === 'permission-denied') {
+      throw new Error('Erreur de permissions Firebase - contactez l\'administrateur');
+    }
     throw new Error('Erreur lors de la création de la commande');
   }
 };

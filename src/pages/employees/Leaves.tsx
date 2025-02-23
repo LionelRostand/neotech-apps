@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
 interface Leave {
@@ -18,6 +19,13 @@ interface Leave {
   status: 'pending' | 'approved' | 'rejected';
   daysCount: number;
 }
+
+const leaveTypes = [
+  { id: 'sick', label: 'Congé maladie' },
+  { id: 'paid', label: 'Congés payés' },
+  { id: 'rtt-employee', label: 'RTT salarié' },
+  { id: 'rtt-employer', label: 'RTT Employeur' }
+];
 
 const mockLeaves: Leave[] = [
   {
@@ -190,12 +198,21 @@ const EmployeeLeaves = () => {
               <Label htmlFor="type" className="text-right">
                 Type de congé
               </Label>
-              <Input
-                id="type"
-                className="col-span-3"
+              <Select
                 value={newLeave.type}
-                onChange={(e) => setNewLeave({ ...newLeave, type: e.target.value })}
-              />
+                onValueChange={(value) => setNewLeave({ ...newLeave, type: value })}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Sélectionner un type de congé" />
+                </SelectTrigger>
+                <SelectContent>
+                  {leaveTypes.map((type) => (
+                    <SelectItem key={type.id} value={type.label}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="startDate" className="text-right">

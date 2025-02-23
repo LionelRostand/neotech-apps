@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash, FileText, Receipt, Check } from 'lucide-react';
@@ -18,11 +19,13 @@ import {
 } from "@/components/ui/sheet";
 import DeliveryNote from './DeliveryNote';
 import Invoice from './Invoice';
+import NewOrderDialog from './NewOrderDialog';
 
 const OrdersTable = () => {
   const queryClient = useQueryClient();
   const { role } = usePermissions();
   const canManageOrders = role === 'admin' || role === 'manager';
+  const [editingOrder, setEditingOrder] = useState<FreightOrder | null>(null);
 
   const { data: orders = [], isLoading, error } = useQuery({
     queryKey: ['freight-orders'],
@@ -46,9 +49,7 @@ const OrdersTable = () => {
       if (!canManageOrders) {
         throw new Error("Vous n'avez pas les permissions nécessaires");
       }
-      // Mettre à jour le statut de la commande
       await updateOrder(order.id, { status: 'completed' });
-      // Créer les écritures comptables
       await createFreightJournalEntries(order);
     },
     onSuccess: () => {
@@ -60,6 +61,14 @@ const OrdersTable = () => {
       toast.error('Erreur lors de la validation de la commande');
     },
   });
+
+  const handleEdit = (order: FreightOrder) => {
+    if (!canManageOrders) {
+      toast.error("Vous n'avez pas les permissions nécessaires");
+      return;
+    }
+    setEditingOrder(order);
+  };
 
   if (isLoading) {
     return (
@@ -231,14 +240,30 @@ const OrdersTable = () => {
 
                   {canManageOrders && (
                     <>
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        title="Modifier"
-                        className="hover:bg-gray-50"
-                      >
-                        <Edit className="w-4 h-4 text-gray-600" />
-                      </Button>
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            title="Modifier"
+                            className="hover:bg-gray-50"
+                            onClick={() => handleEdit(order)}
+                          >
+                            <Edit className="w-4 h-4 text-gray-600" />
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[800px] sm:w-[900px]">
+                          <SheetHeader>
+                            <SheetTitle>Modifier la commande</SheetTitle>
+                            <SheetDescription>
+                              Référence: {order.reference}
+                            </SheetDescription>
+                          </SheetHeader>
+                          <div className="mt-4">
+                            <NewOrderDialog isEditing order={order} onClose={() => setEditingOrder(null)} />
+                          </div>
+                        </SheetContent>
+                      </Sheet>
                       
                       <Button 
                         variant="outline" 
@@ -262,3 +287,4 @@ const OrdersTable = () => {
 };
 
 export default OrdersTable;
+

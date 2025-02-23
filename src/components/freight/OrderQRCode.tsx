@@ -1,6 +1,6 @@
 
 import React from 'react';
-import QRCode from 'qrcode.react';
+import { QRCode } from 'qrcode.react';
 import { FreightOrder } from '@/types/freight';
 
 interface OrderQRCodeProps {
@@ -24,3 +24,4 @@ const OrderQRCode = ({ order, size = 128 }: OrderQRCodeProps) => {
 };
 
 export default OrderQRCode;
+

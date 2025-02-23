@@ -11,8 +11,9 @@ interface InvoiceProps {
 const Invoice = ({ order }: InvoiceProps) => {
   const targetRef = useRef<HTMLDivElement>(null);
   const TVA = 0.20; // 20% TVA
-  const montantTVA = order.cost * TVA;
-  const total = order.cost + montantTVA;
+  const cost = order?.cost ?? 0; // Default to 0 if cost is undefined
+  const montantTVA = cost * TVA;
+  const total = cost + montantTVA;
 
   const handleDownload = async () => {
     if (targetRef.current) {
@@ -51,7 +52,7 @@ const Invoice = ({ order }: InvoiceProps) => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Transport - {order.transportType}</span>
-              <span>{order.cost.toFixed(2)}€</span>
+              <span>{cost.toFixed(2)}€</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>TVA ({(TVA * 100)}%)</span>

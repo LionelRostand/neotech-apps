@@ -7,9 +7,10 @@ import {
   onAuthStateChanged,
   User
 } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { auth, db } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { doc, setDoc } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
@@ -17,6 +18,19 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+}
+
+interface UserData {
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  displayName?: string;
+  avatarUrl?: string;
+  phoneNumber?: string;
+  department?: string;
+  position?: string;
+  status: 'active' | 'inactive';
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,6 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.success('Connexion réussie');
       navigate('/');
     } catch (error) {
+      console.error('Erreur de connexion:', error);
       toast.error('Erreur de connexion. Vérifiez vos identifiants.');
       throw error;
     }
@@ -48,10 +63,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const { user } = userCredential;
+      
+      // Créer le document utilisateur dans Firestore
+      const userData: UserData = {
+        email: user.email || '',
+        role: 'employee', // Rôle par défaut
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: 'active'
+      };
+
+      await setDoc(doc(db, 'users', user.uid), userData);
+      console.log("Document utilisateur créé avec succès");
+      
       toast.success('Inscription réussie');
       navigate('/');
     } catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
       toast.error('Erreur lors de l\'inscription. Cet email est peut-être déjà utilisé.');
       throw error;
     }
@@ -63,6 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.success('Déconnexion réussie');
       navigate('/auth');
     } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
       toast.error('Erreur lors de la déconnexion');
       throw error;
     }
@@ -82,3 +113,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

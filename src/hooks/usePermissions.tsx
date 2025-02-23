@@ -19,7 +19,7 @@ const PermissionsContext = createContext<PermissionsContextType | null>(null);
 export const PermissionsProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const [role, setRole] = useState<UserRole>('user');
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [permissions, setPermissions] = useState<Permission[]>(defaultPermissions.user);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -75,8 +75,16 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
   }, [user]);
 
   const hasPermission = (module: string, action: string): boolean => {
+    // If still loading, deny access
+    if (isLoading) return false;
+    
+    // If admin role, grant all permissions
     if (role === 'admin') return true;
-    return permissions.some(
+
+    // Ensure permissions is never undefined by using the current value or default to empty array
+    const currentPermissions = permissions || [];
+    
+    return currentPermissions.some(
       permission => 
         (permission.module === '*' || permission.module === module) && 
         permission.actions.includes(action as any)
@@ -136,4 +144,3 @@ export const usePermissions = () => {
   }
   return context;
 };
-

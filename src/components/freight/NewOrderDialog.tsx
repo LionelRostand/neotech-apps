@@ -59,11 +59,12 @@ const NewOrderDialog: React.FC<NewOrderProps> = ({
   };
 
   const mutation = useMutation({
-    mutationFn: (data: NewFreightOrder | FreightOrder) => {
+    mutationFn: async (data: NewFreightOrder | FreightOrder) => {
       if (isEditing && order) {
-        return updateOrder(order.id, data);
+        await updateOrder(order.id, data);
+      } else {
+        await createOrder(data);
       }
-      return createOrder(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['freight-orders'] });
@@ -200,3 +201,4 @@ const NewOrderDialog: React.FC<NewOrderProps> = ({
 };
 
 export default NewOrderDialog;
+

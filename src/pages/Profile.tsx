@@ -141,6 +141,7 @@ const Profile = () => {
                     <SelectContent>
                       <SelectItem value="admin">Administrateur</SelectItem>
                       <SelectItem value="manager">Manager</SelectItem>
+                      <SelectItem value="accountant">Comptable</SelectItem>
                       <SelectItem value="user">Employé</SelectItem>
                     </SelectContent>
                   </Select>

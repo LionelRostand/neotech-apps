@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Edit, Trash } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchOrders, deleteOrder } from '@/services/orderService';
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import { FreightOrder } from '@/types/freight';
 
 const OrdersTable = () => {
@@ -29,11 +29,28 @@ const OrdersTable = () => {
   });
 
   if (isLoading) {
-    return <div>Chargement...</div>;
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Erreur lors du chargement des commandes</div>;
+    console.error('Error in OrdersTable:', error);
+    return (
+      <div className="flex justify-center items-center p-8 text-red-500">
+        Erreur lors du chargement des commandes. Veuillez réessayer.
+      </div>
+    );
+  }
+
+  if (!orders.length) {
+    return (
+      <div className="text-center p-8 text-gray-500">
+        Aucune commande trouvée
+      </div>
+    );
   }
 
   return (

@@ -1,8 +1,7 @@
-
 import React, { useRef } from 'react';
 import { FreightOrder } from '@/types/freight';
 import OrderQRCode from './OrderQRCode';
-import { generatePDF } from 'react-to-pdf';
+import generatePDF from 'react-to-pdf';
 
 interface InvoiceProps {
   order: FreightOrder;

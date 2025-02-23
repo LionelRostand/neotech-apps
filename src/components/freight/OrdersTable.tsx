@@ -1,24 +1,15 @@
+
 import React, { useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Edit, Trash, FileText, Receipt, Check } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchOrders, deleteOrder, updateOrder } from '@/services/orderService';
 import { createFreightJournalEntries } from '@/services/journalService';
 import { toast } from "sonner";
 import { FreightOrder } from '@/types/freight';
 import { usePermissions } from '@/hooks/usePermissions';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import DeliveryNote from './DeliveryNote';
-import Invoice from './Invoice';
-import NewOrderDialog from './NewOrderDialog';
+import OrderStatusBadge from './table/OrderStatusBadge';
+import TransportTypeBadge from './table/TransportTypeBadge';
+import OrderActions from './table/OrderActions';
 
 const OrdersTable = () => {
   const queryClient = useQueryClient();
@@ -69,6 +60,17 @@ const OrdersTable = () => {
     setEditingOrder(order);
   };
 
+  const handlePrint = (content: React.ReactNode) => {
+    const timer = setTimeout(() => {
+      const downloadButton = document.querySelector('button[class="hidden"]') as HTMLButtonElement;
+      if (downloadButton) {
+        downloadButton.click();
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -92,17 +94,6 @@ const OrdersTable = () => {
       </div>
     );
   }
-
-  const handlePrint = (content: React.ReactNode) => {
-    const timer = setTimeout(() => {
-      const downloadButton = document.querySelector('button[class="hidden"]') as HTMLButtonElement;
-      if (downloadButton) {
-        downloadButton.click();
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border animate-fade-in">
@@ -131,22 +122,10 @@ const OrdersTable = () => {
               <TableCell>{order.client}</TableCell>
               <TableCell>{order.carrier}</TableCell>
               <TableCell>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-800">
-                  {order.transportType}
-                </span>
+                <TransportTypeBadge type={order.transportType} />
               </TableCell>
               <TableCell>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  order.status === 'completed' ? 'bg-green-50 text-green-800' :
-                  order.status === 'in_progress' ? 'bg-yellow-50 text-yellow-800' :
-                  order.status === 'cancelled' ? 'bg-red-50 text-red-800' :
-                  'bg-gray-50 text-gray-800'
-                }`}>
-                  {order.status === 'pending' ? 'En attente' :
-                   order.status === 'in_progress' ? 'En cours' :
-                   order.status === 'completed' ? 'Terminé' :
-                   'Annulé'}
-                </span>
+                <OrderStatusBadge status={order.status} />
               </TableCell>
               <TableCell className="text-gray-600">
                 {new Date(order.deliveryDate).toLocaleDateString('fr-FR')}
@@ -155,117 +134,15 @@ const OrdersTable = () => {
                 {typeof order.cost === 'number' ? `${order.cost.toLocaleString('fr-FR')}€` : 'N/A'}
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  {order.status !== 'completed' && canManageOrders && (
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => validateMutation.mutate(order)}
-                      title="Valider"
-                      className="hover:bg-green-50 hover:text-green-600 hover:border-green-200"
-                      disabled={validateMutation.isPending}
-                    >
-                      <Check className="w-4 h-4" />
-                    </Button>
-                  )}
-
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="icon"
-                        title="Bon de livraison"
-                        className="hover:bg-gray-50"
-                      >
-                        <FileText className="w-4 h-4 text-gray-600" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent className="w-[800px] sm:w-[900px]">
-                      <SheetHeader>
-                        <SheetTitle>Bon de livraison</SheetTitle>
-                        <SheetDescription>
-                          Référence: {order.reference}
-                        </SheetDescription>
-                      </SheetHeader>
-                      <div className="mt-4">
-                        <DeliveryNote order={order} />
-                        <div className="flex justify-end mt-4">
-                          <Button onClick={() => handlePrint(<DeliveryNote order={order} />)}>
-                            Imprimer
-                          </Button>
-                        </div>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="icon"
-                        title="Facture"
-                        className="hover:bg-gray-50"
-                      >
-                        <Receipt className="w-4 h-4 text-gray-600" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent className="w-[800px] sm:w-[900px]">
-                      <SheetHeader>
-                        <SheetTitle>Facture</SheetTitle>
-                        <SheetDescription>
-                          Référence: {order.reference}
-                        </SheetDescription>
-                      </SheetHeader>
-                      <div className="mt-4">
-                        <Invoice order={order} />
-                        <div className="flex justify-end mt-4">
-                          <Button onClick={() => handlePrint(<Invoice order={order} />)}>
-                            Imprimer
-                          </Button>
-                        </div>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-
-                  {canManageOrders && (
-                    <>
-                      <Sheet>
-                        <SheetTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="icon" 
-                            title="Modifier"
-                            className="hover:bg-gray-50"
-                            onClick={() => handleEdit(order)}
-                          >
-                            <Edit className="w-4 h-4 text-gray-600" />
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent className="w-[800px] sm:w-[900px]">
-                          <SheetHeader>
-                            <SheetTitle>Modifier la commande</SheetTitle>
-                            <SheetDescription>
-                              Référence: {order.reference}
-                            </SheetDescription>
-                          </SheetHeader>
-                          <div className="mt-4">
-                            <NewOrderDialog isEditing order={order} onClose={() => setEditingOrder(null)} />
-                          </div>
-                        </SheetContent>
-                      </Sheet>
-                      
-                      <Button 
-                        variant="outline" 
-                        size="icon"
-                        onClick={() => deleteMutation.mutate(order.id)}
-                        title="Supprimer"
-                        className="hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </Button>
-                    </>
-                  )}
-                </div>
+                <OrderActions
+                  order={order}
+                  canManageOrders={canManageOrders}
+                  onValidate={(order) => validateMutation.mutate(order)}
+                  onEdit={handleEdit}
+                  onDelete={(id) => deleteMutation.mutate(id)}
+                  handlePrint={handlePrint}
+                  validateMutationPending={validateMutation.isPending}
+                />
               </TableCell>
             </TableRow>
           ))}

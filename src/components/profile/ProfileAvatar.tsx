@@ -13,8 +13,9 @@ interface ProfileAvatarProps {
 
 export const ProfileAvatar = ({ email, avatarUrl, onAvatarChange }: ProfileAvatarProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = React.useState(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -27,12 +28,20 @@ export const ProfileAvatar = ({ email, avatarUrl, onAvatarChange }: ProfileAvata
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        onAvatarChange(e.target?.result as string);
-        toast.success("Photo de profil mise à jour");
-      };
-      reader.readAsDataURL(file);
+      setLoading(true);
+      try {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const dataUrl = e.target?.result as string;
+          await onAvatarChange(dataUrl);
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Erreur lors de la lecture du fichier:", error);
+        toast.error("Erreur lors du chargement de l'image");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -62,9 +71,10 @@ export const ProfileAvatar = ({ email, avatarUrl, onAvatarChange }: ProfileAvata
         variant="outline" 
         className="flex items-center gap-2"
         onClick={triggerFileInput}
+        disabled={loading}
       >
         <Camera className="w-4 h-4" />
-        Changer la photo
+        {loading ? "Chargement..." : "Changer la photo"}
       </Button>
       <input
         type="file"
@@ -76,4 +86,3 @@ export const ProfileAvatar = ({ email, avatarUrl, onAvatarChange }: ProfileAvata
     </div>
   );
 };
-

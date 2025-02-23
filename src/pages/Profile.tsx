@@ -8,10 +8,12 @@ import { toast } from "sonner"
 import { UserRole } from "@/types/auth"
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar"
 import { ProfileInformation } from "@/components/profile/ProfileInformation"
+import { useProfile } from "@/hooks/useProfile"
 
 const Profile = () => {
   const { user } = useAuth();
   const { role, updateUserRole } = usePermissions();
+  const { uploadAvatar, isLoading } = useProfile();
   const [currentRole, setCurrentRole] = useState<UserRole>(role);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -33,6 +35,16 @@ const Profile = () => {
     }
   };
 
+  const handleAvatarChange = async (dataUrl: string) => {
+    if (!user) return;
+    try {
+      const url = await uploadAvatar(user.uid, dataUrl);
+      setAvatarUrl(url);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'avatar:", error);
+    }
+  };
+
   const getRoleName = (role: UserRole): string => {
     switch (role) {
       case 'admin':
@@ -48,10 +60,6 @@ const Profile = () => {
     }
   };
 
-  console.log("Role dans Profile:", role);
-  console.log("Est-ce un admin ?", role === 'admin');
-  console.log("Email de l'utilisateur:", user?.email);
-
   return (
     <DashboardLayout>
       <div className="p-6">
@@ -62,7 +70,7 @@ const Profile = () => {
             <ProfileAvatar 
               email={user?.email}
               avatarUrl={avatarUrl}
-              onAvatarChange={setAvatarUrl}
+              onAvatarChange={handleAvatarChange}
             />
           </Card>
 
@@ -86,4 +94,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

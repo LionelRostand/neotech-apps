@@ -6,14 +6,15 @@ import Header from './Header';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  hideHeader?: boolean;
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = ({ children, hideHeader = false }: DashboardLayoutProps) => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
       <div className="flex-1 ml-64">
-        <Header />
+        {!hideHeader && <Header />}
         <motion.main 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

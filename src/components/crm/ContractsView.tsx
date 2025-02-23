@@ -1,6 +1,8 @@
+
 import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import DashboardLayout from '../layout/DashboardLayout';
 import ContractsToolbar from './contracts/ContractsToolbar';
 import ContractsTable from './contracts/ContractsTable';
 import ContractForm from './ContractForm';
@@ -79,13 +81,17 @@ const ContractsView = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Chargement...</div>;
+    return (
+      <DashboardLayout hideHeader={true}>
+        <div>Chargement...</div>
+      </DashboardLayout>
+    );
   }
 
   const contractsList = filteredContracts();
 
   return (
-    <div className="flex-1 ml-64">
+    <DashboardLayout hideHeader={true}>
       <div className="p-6 space-y-4">
         <ContractsToolbar
           searchTerm={searchTerm}
@@ -105,8 +111,9 @@ const ContractsView = () => {
           contract={selectedContract}
         />
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
 export default ContractsView;
+

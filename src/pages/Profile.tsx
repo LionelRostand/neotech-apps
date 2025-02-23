@@ -28,18 +28,18 @@ const Profile = () => {
 
   useEffect(() => {
     setCurrentRole(role);
-    console.log("Current role:", role); // Pour le débogage
+    console.log("Current role:", role);
   }, [role]);
 
   const handleRoleChange = async (newRole: UserRole) => {
     if (!user) return;
     try {
-      console.log("Updating role to:", newRole); // Pour le débogage
+      console.log("Updating role to:", newRole);
       await updateUserRole(user.uid, newRole);
       setCurrentRole(newRole);
       toast.success("Rôle mis à jour avec succès");
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du rôle:", error); // Pour le débogage
+      console.error("Erreur lors de la mise à jour du rôle:", error);
       toast.error("Erreur lors de la mise à jour du rôle");
     }
   };
@@ -74,7 +74,9 @@ const Profile = () => {
     return email?.charAt(0).toUpperCase() || '?';
   };
 
-  console.log("Is admin?", role === 'admin'); // Pour le débogage
+  console.log("Role dans Profile:", role);
+  console.log("Est-ce un admin ?", role === 'admin');
+  console.log("Email de l'utilisateur:", user?.email);
 
   return (
     <DashboardLayout>
@@ -126,7 +128,7 @@ const Profile = () => {
                 />
               </div>
 
-              {role === 'admin' && (
+              {role === 'admin' && user?.email === 'admin@neotech-consulting.com' && (
                 <div className="space-y-2">
                   <Label htmlFor="role">Rôle utilisateur</Label>
                   <Select
@@ -169,8 +171,7 @@ const Profile = () => {
         </div>
       </div>
     </DashboardLayout>
-  )
-}
+  );
+};
 
 export default Profile;
-

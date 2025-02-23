@@ -1,4 +1,3 @@
-
 import React from 'react';
 import DashboardLayout from '../layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { UserRole, defaultPermissions } from '@/types/auth';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'sonner';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';

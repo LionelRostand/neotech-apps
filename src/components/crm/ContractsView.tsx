@@ -2,11 +2,13 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { FileText, FileSignature, Users, Building2, CheckCircle2, Clock } from 'lucide-react';
 import DashboardLayout from '../layout/DashboardLayout';
 import ContractsToolbar from './contracts/ContractsToolbar';
 import ContractsTable from './contracts/ContractsTable';
 import ContractForm from './ContractForm';
 import type { Contract } from '../../types/crm';
+import { Card } from "@/components/ui/card";
 
 // Données de test pour le développement
 const mockContracts: Contract[] = [
@@ -92,18 +94,59 @@ const ContractsView = () => {
 
   return (
     <DashboardLayout hideHeader={true}>
-      <div className="mt-24 px-6 space-y-4">
-        <ContractsToolbar
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          onNewContract={() => setIsFormOpen(true)}
-        />
+      <div className="mt-24 px-6 space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Gestion des Contrats</h1>
+          <p className="mt-1 text-gray-500">Vue d'ensemble de vos contrats</p>
+        </div>
 
-        <ContractsTable
-          contracts={contractsList}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="p-6 space-y-2">
+            <div className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-blue-500" />
+              <h3 className="font-semibold">Contrats Actifs</h3>
+            </div>
+            <p className="text-2xl font-bold">{contracts.length}</p>
+          </Card>
+
+          <Card className="p-6 space-y-2">
+            <div className="flex items-center gap-2">
+              <FileSignature className="w-5 h-5 text-green-500" />
+              <h3 className="font-semibold">En attente de signature</h3>
+            </div>
+            <p className="text-2xl font-bold">3</p>
+          </Card>
+
+          <Card className="p-6 space-y-2">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-yellow-500" />
+              <h3 className="font-semibold">À renouveler</h3>
+            </div>
+            <p className="text-2xl font-bold">2</p>
+          </Card>
+
+          <Card className="p-6 space-y-2">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+              <h3 className="font-semibold">Complétés ce mois</h3>
+            </div>
+            <p className="text-2xl font-bold">5</p>
+          </Card>
+        </div>
+
+        <div className="space-y-4">
+          <ContractsToolbar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onNewContract={() => setIsFormOpen(true)}
+          />
+
+          <ContractsTable
+            contracts={contractsList}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
 
         <ContractForm
           isOpen={isFormOpen}

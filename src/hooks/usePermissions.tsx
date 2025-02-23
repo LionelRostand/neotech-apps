@@ -32,17 +32,19 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
       }
 
       try {
+        console.log('Fetching role for user:', user.email);
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         let userRole: UserRole = 'user';
 
         if (user.email === 'admin@neotech-consulting.com') {
-          // Attribution automatique du rôle admin pour admin@neotech-consulting.com
+          console.log('Admin user detected');
           userRole = 'admin';
           await setDoc(doc(db, 'users', user.uid), { role: 'admin' }, { merge: true });
         } else if (userDoc.exists()) {
           userRole = (userDoc.data()?.role as UserRole) || 'user';
         }
         
+        console.log('User role set to:', userRole);
         setRole(userRole);
         setPermissions(defaultPermissions[userRole]);
       } catch (error) {
@@ -57,13 +59,16 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
   }, [user]);
 
   const hasPermission = (module: string, action: string): boolean => {
+    console.log('Checking permission:', { module, action, role, permissions });
     if (role === 'admin') return true;
     
-    return permissions.some(
+    const hasAccess = permissions.some(
       permission => 
         (permission.module === '*' || permission.module === module) && 
         permission.actions.includes(action as any)
     );
+    console.log('Permission result:', hasAccess);
+    return hasAccess;
   };
 
   const updateUserRole = async (userId: string, newRole: UserRole) => {

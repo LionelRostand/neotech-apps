@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { UserRole, defaultPermissions } from '@/types/auth';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';

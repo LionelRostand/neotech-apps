@@ -3,8 +3,39 @@ import React from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchOrders, deleteOrder } from '@/services/orderService';
+import { toast } from 'sonner';
+import { FreightOrder } from '@/types/freight';
 
 const OrdersTable = () => {
+  const queryClient = useQueryClient();
+
+  const { data: orders = [], isLoading, error } = useQuery({
+    queryKey: ['freight-orders'],
+    queryFn: fetchOrders,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['freight-orders'] });
+      toast.success('Commande supprimée avec succès');
+    },
+    onError: (error) => {
+      console.error('Error deleting order:', error);
+      toast.error('Erreur lors de la suppression de la commande');
+    },
+  });
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
+
+  if (error) {
+    return <div>Erreur lors du chargement des commandes</div>;
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -20,27 +51,41 @@ const OrdersTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">TR-001</TableCell>
-          <TableCell>Société ABC</TableCell>
-          <TableCell>Transport Express</TableCell>
-          <TableCell>Camion</TableCell>
-          <TableCell>
-            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
-              En cours
-            </span>
-          </TableCell>
-          <TableCell>25/03/2024</TableCell>
-          <TableCell>450€</TableCell>
-          <TableCell className="flex gap-2">
-            <Button variant="outline" size="icon">
-              <Edit className="w-4 h-4" />
-            </Button>
-            <Button variant="outline" size="icon">
-              <Trash className="w-4 h-4" />
-            </Button>
-          </TableCell>
-        </TableRow>
+        {orders.map((order: FreightOrder) => (
+          <TableRow key={order.id}>
+            <TableCell className="font-medium">{order.reference}</TableCell>
+            <TableCell>{order.client}</TableCell>
+            <TableCell>{order.carrier}</TableCell>
+            <TableCell>{order.transportType}</TableCell>
+            <TableCell>
+              <span className={`px-2 py-1 rounded-full text-sm ${
+                order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                order.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' :
+                order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
+                {order.status === 'pending' ? 'En attente' :
+                 order.status === 'in_progress' ? 'En cours' :
+                 order.status === 'completed' ? 'Terminé' :
+                 'Annulé'}
+              </span>
+            </TableCell>
+            <TableCell>{new Date(order.deliveryDate).toLocaleDateString('fr-FR')}</TableCell>
+            <TableCell>{order.cost}€</TableCell>
+            <TableCell className="flex gap-2">
+              <Button variant="outline" size="icon">
+                <Edit className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={() => deleteMutation.mutate(order.id)}
+              >
+                <Trash className="w-4 h-4" />
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );

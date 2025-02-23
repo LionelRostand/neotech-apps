@@ -21,21 +21,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createOrder } from '@/services/orderService';
+import { NewFreightOrder } from '@/types/freight';
 
 interface NewOrderProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-// Simulation d'une base de données pour le dernier numéro de référence
 let lastReferenceNumber = 1;
 
 const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
-  const [newOrder, setNewOrder] = React.useState({
-    reference: '',
+  const queryClient = useQueryClient();
+  const [newOrder, setNewOrder] = React.useState<Omit<NewFreightOrder, 'reference'>>({
     client: '',
     carrier: '',
-    transportType: '',
+    transportType: 'truck',
     deliveryDate: '',
     receptionDate: '',
     cost: 0
@@ -47,24 +49,34 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
     return `TR-${referenceNumber}`;
   };
 
+  const createOrderMutation = useMutation({
+    mutationFn: createOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['freight-orders'] });
+      toast.success('Commande créée avec succès');
+      onOpenChange(false);
+      setNewOrder({
+        client: '',
+        carrier: '',
+        transportType: 'truck',
+        deliveryDate: '',
+        receptionDate: '',
+        cost: 0
+      });
+    },
+    onError: (error) => {
+      console.error('Error creating order:', error);
+      toast.error('Erreur lors de la création de la commande');
+    },
+  });
+
   const handleNewOrder = (e: React.FormEvent) => {
     e.preventDefault();
     const orderWithReference = {
       ...newOrder,
       reference: generateReference()
     };
-    console.log('Nouvelle commande:', orderWithReference);
-    toast.success('Commande créée avec succès');
-    onOpenChange(false);
-    setNewOrder({
-      reference: '',
-      client: '',
-      carrier: '',
-      transportType: '',
-      deliveryDate: '',
-      receptionDate: '',
-      cost: 0
-    });
+    createOrderMutation.mutate(orderWithReference);
   };
 
   const handleCalculatedCost = (cost: number) => {
@@ -113,7 +125,8 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
               <Label htmlFor="transportType">Type de Transport</Label>
               <Select
                 value={newOrder.transportType}
-                onValueChange={(value) => setNewOrder({...newOrder, transportType: value})}
+                onValueChange={(value: 'truck' | 'train' | 'ship' | 'plane') => 
+                  setNewOrder({...newOrder, transportType: value})}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Sélectionner un type de transport" />
@@ -154,8 +167,8 @@ const NewOrderDialog = ({ isOpen, onOpenChange }: NewOrderProps) => {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
             </Button>
-            <Button type="submit">
-              Créer la commande
+            <Button type="submit" disabled={createOrderMutation.isPending}>
+              {createOrderMutation.isPending ? 'Création...' : 'Créer la commande'}
             </Button>
           </div>
         </form>

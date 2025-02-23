@@ -131,7 +131,7 @@ const OrdersTable = () => {
                 {new Date(order.deliveryDate).toLocaleDateString('fr-FR')}
               </TableCell>
               <TableCell className="font-semibold text-gray-900">
-                {order.cost.toLocaleString('fr-FR')}€
+                {typeof order.cost === 'number' ? `${order.cost.toLocaleString('fr-FR')}€` : 'N/A'}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

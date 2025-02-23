@@ -2,14 +2,16 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { Permission, UserRole, defaultPermissions } from '../types/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { toast } from 'sonner';
 
 interface PermissionsContextType {
   role: UserRole;
   permissions: Permission[];
   hasPermission: (module: string, action: string) => boolean;
   isLoading: boolean;
+  updateUserRole: (userId: string, newRole: UserRole) => Promise<void>;
 }
 
 const PermissionsContext = createContext<PermissionsContextType | null>(null);
@@ -31,8 +33,15 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
 
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const userData = userDoc.data();
-        const userRole = (userData?.role as UserRole) || 'user';
+        let userRole: UserRole = 'user';
+
+        if (user.email === 'admin@neotech-consulting.com') {
+          // Attribution automatique du rôle admin pour admin@neotech-consulting.com
+          userRole = 'admin';
+          await setDoc(doc(db, 'users', user.uid), { role: 'admin' }, { merge: true });
+        } else if (userDoc.exists()) {
+          userRole = (userDoc.data()?.role as UserRole) || 'user';
+        }
         
         setRole(userRole);
         setPermissions(defaultPermissions[userRole]);
@@ -57,8 +66,25 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
     );
   };
 
+  const updateUserRole = async (userId: string, newRole: UserRole) => {
+    try {
+      await setDoc(doc(db, 'users', userId), { role: newRole }, { merge: true });
+      toast.success(`Rôle mis à jour avec succès`);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du rôle:', error);
+      toast.error(`Erreur lors de la mise à jour du rôle`);
+      throw error;
+    }
+  };
+
   return (
-    <PermissionsContext.Provider value={{ role, permissions, hasPermission, isLoading }}>
+    <PermissionsContext.Provider value={{ 
+      role, 
+      permissions, 
+      hasPermission, 
+      isLoading,
+      updateUserRole
+    }}>
       {children}
     </PermissionsContext.Provider>
   );

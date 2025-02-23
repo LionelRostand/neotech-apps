@@ -20,7 +20,8 @@ import { db } from '@/lib/firebase';
 import ProtectedRoute from '../auth/ProtectedRoute';
 
 export const GeneralSettings = () => {
-  const { role } = usePermissions();
+  const { role, updateUserRole } = usePermissions();
+  const { user } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -36,10 +37,9 @@ export const GeneralSettings = () => {
 
   const handleUserRoleChange = async (userId: string, newRole: UserRole) => {
     try {
-      await setDoc(doc(db, 'users', userId), { role: newRole }, { merge: true });
-      toast.success("Rôle modifié avec succès");
+      await updateUserRole(userId, newRole);
     } catch (error) {
-      toast.error("Erreur lors de la modification du rôle");
+      console.error('Erreur lors de la mise à jour du rôle:', error);
     }
   };
 

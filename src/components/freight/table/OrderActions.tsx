@@ -2,11 +2,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
-import { Edit, Trash, FileText, Receipt, Check } from 'lucide-react';
+import { Edit, Trash, Check } from 'lucide-react';
 import { FreightOrder } from '@/types/freight';
-import DeliveryNote from '../DeliveryNote';
-import Invoice from '../Invoice';
 import NewOrderDialog from '../NewOrderDialog';
+import DocumentViewer from '../DocumentViewer';
 
 interface OrderActionsProps {
   order: FreightOrder;
@@ -24,16 +23,8 @@ const OrderActions = ({
   onValidate,
   onEdit,
   onDelete,
-  handlePrint,
   validateMutationPending
 }: OrderActionsProps) => {
-  const triggerPdfDownload = () => {
-    const downloadButton = document.querySelector('button.hidden') as HTMLButtonElement;
-    if (downloadButton) {
-      downloadButton.click();
-    }
-  };
-
   return (
     <div className="flex items-center gap-2">
       {order.status !== 'completed' && canManageOrders && (
@@ -49,63 +40,7 @@ const OrderActions = ({
         </Button>
       )}
 
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="icon"
-            title="Bon de livraison"
-            className="hover:bg-gray-50"
-          >
-            <FileText className="w-4 h-4 text-gray-600" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent className="w-[800px] sm:w-[900px]">
-          <SheetHeader>
-            <SheetTitle>Bon de livraison</SheetTitle>
-            <SheetDescription>
-              Référence: {order.reference}
-            </SheetDescription>
-          </SheetHeader>
-          <div className="mt-4">
-            <DeliveryNote order={order} />
-            <div className="flex justify-end mt-4">
-              <Button onClick={triggerPdfDownload}>
-                Imprimer
-              </Button>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="icon"
-            title="Facture"
-            className="hover:bg-gray-50"
-          >
-            <Receipt className="w-4 h-4 text-gray-600" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent className="w-[800px] sm:w-[900px]">
-          <SheetHeader>
-            <SheetTitle>Facture</SheetTitle>
-            <SheetDescription>
-              Référence: {order.reference}
-            </SheetDescription>
-          </SheetHeader>
-          <div className="mt-4">
-            <Invoice order={order} />
-            <div className="flex justify-end mt-4">
-              <Button onClick={triggerPdfDownload}>
-                Imprimer
-              </Button>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <DocumentViewer order={order} />
 
       {canManageOrders && (
         <>
@@ -149,4 +84,3 @@ const OrderActions = ({
 };
 
 export default OrderActions;
-

@@ -74,6 +74,21 @@ const Profile = () => {
     return email?.charAt(0).toUpperCase() || '?';
   };
 
+  const getRoleName = (role: UserRole): string => {
+    switch (role) {
+      case 'admin':
+        return 'Administrateur';
+      case 'manager':
+        return 'Manager';
+      case 'accountant':
+        return 'Comptable';
+      case 'user':
+        return 'Employé';
+      default:
+        return 'Employé';
+    }
+  };
+
   console.log("Role dans Profile:", role);
   console.log("Est-ce un admin ?", role === 'admin');
   console.log("Email de l'utilisateur:", user?.email);
@@ -95,6 +110,10 @@ const Profile = () => {
                   </AvatarFallback>
                 )}
               </Avatar>
+              <div className="text-center">
+                <div className="font-medium text-lg">{user?.email}</div>
+                <div className="text-sm text-muted-foreground">{getRoleName(currentRole)}</div>
+              </div>
               <Button 
                 variant="outline" 
                 className="flex items-center gap-2"
@@ -128,9 +147,19 @@ const Profile = () => {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="role">Rôle actuel</Label>
+                <Input
+                  id="role"
+                  value={getRoleName(currentRole)}
+                  readOnly
+                  className="bg-gray-50"
+                />
+              </div>
+
               {role === 'admin' && user?.email === 'admin@neotech-consulting.com' && (
                 <div className="space-y-2">
-                  <Label htmlFor="role">Rôle utilisateur</Label>
+                  <Label htmlFor="roleSelect">Changer le rôle</Label>
                   <Select
                     value={currentRole}
                     onValueChange={handleRoleChange}
@@ -176,3 +205,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

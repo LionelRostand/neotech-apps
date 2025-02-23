@@ -11,9 +11,12 @@ export const useProfile = () => {
   const uploadAvatar = async (userId: string, avatarDataUrl: string) => {
     setIsLoading(true);
     try {
-      // 1. Upload image to Storage
+      // 1. Upload image to Storage with metadata
       const storageRef = ref(storage, `avatars/${userId}`);
-      await uploadString(storageRef, avatarDataUrl, 'data_url');
+      await uploadString(storageRef, avatarDataUrl, 'data_url', {
+        contentType: 'image/jpeg',
+      });
+      
       const downloadUrl = await getDownloadURL(storageRef);
       
       // 2. Update Firestore document
@@ -25,9 +28,13 @@ export const useProfile = () => {
 
       toast.success("Photo de profil mise à jour avec succès");
       return downloadUrl;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la mise à jour de l\'avatar:', error);
-      toast.error("Erreur lors de la mise à jour de la photo de profil");
+      if (error.code === 'storage/unauthorized') {
+        toast.error("Erreur d'autorisation lors de l'upload de l'image");
+      } else {
+        toast.error("Erreur lors de la mise à jour de la photo de profil");
+      }
       throw error;
     } finally {
       setIsLoading(false);
@@ -54,3 +61,4 @@ export const useProfile = () => {
     isLoading
   };
 };
+

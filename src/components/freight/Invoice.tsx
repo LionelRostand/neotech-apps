@@ -25,7 +25,7 @@ const Invoice = ({ order }: InvoiceProps) => {
 
   return (
     <>
-      <div ref={targetRef} className="p-8 max-w-4xl mx-auto">
+      <div ref={targetRef} className="p-8 max-w-4xl mx-auto bg-white">
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-2xl font-bold mb-2">Facture</h1>
@@ -64,11 +64,9 @@ const Invoice = ({ order }: InvoiceProps) => {
           </div>
         </div>
       </div>
-      {!targetRef.current && (
-        <button onClick={handleDownload} className="hidden">
-          Télécharger PDF
-        </button>
-      )}
+      <button onClick={handleDownload} className="hidden print:hidden">
+        Télécharger PDF
+      </button>
     </>
   );
 };

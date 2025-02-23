@@ -22,7 +22,7 @@ const DeliveryNote = ({ order }: DeliveryNoteProps) => {
 
   return (
     <>
-      <div ref={targetRef} className="p-8 max-w-4xl mx-auto">
+      <div ref={targetRef} className="p-8 max-w-4xl mx-auto bg-white">
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-2xl font-bold mb-2">Bon de Livraison</h1>
@@ -57,11 +57,9 @@ const DeliveryNote = ({ order }: DeliveryNoteProps) => {
           </div>
         </div>
       </div>
-      {!targetRef.current && (
-        <button onClick={handleDownload} className="hidden">
-          Télécharger PDF
-        </button>
-      )}
+      <button onClick={handleDownload} className="hidden print:hidden">
+        Télécharger PDF
+      </button>
     </>
   );
 };

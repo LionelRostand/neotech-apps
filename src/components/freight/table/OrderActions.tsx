@@ -27,6 +27,13 @@ const OrderActions = ({
   handlePrint,
   validateMutationPending
 }: OrderActionsProps) => {
+  const triggerPdfDownload = () => {
+    const downloadButton = document.querySelector('button.hidden') as HTMLButtonElement;
+    if (downloadButton) {
+      downloadButton.click();
+    }
+  };
+
   return (
     <div className="flex items-center gap-2">
       {order.status !== 'completed' && canManageOrders && (
@@ -63,7 +70,7 @@ const OrderActions = ({
           <div className="mt-4">
             <DeliveryNote order={order} />
             <div className="flex justify-end mt-4">
-              <Button onClick={() => handlePrint(<DeliveryNote order={order} />)}>
+              <Button onClick={triggerPdfDownload}>
                 Imprimer
               </Button>
             </div>
@@ -92,7 +99,7 @@ const OrderActions = ({
           <div className="mt-4">
             <Invoice order={order} />
             <div className="flex justify-end mt-4">
-              <Button onClick={() => handlePrint(<Invoice order={order} />)}>
+              <Button onClick={triggerPdfDownload}>
                 Imprimer
               </Button>
             </div>
@@ -109,7 +116,6 @@ const OrderActions = ({
                 size="icon" 
                 title="Modifier"
                 className="hover:bg-gray-50"
-                onClick={() => onEdit(order)}
               >
                 <Edit className="w-4 h-4 text-gray-600" />
               </Button>
@@ -143,3 +149,4 @@ const OrderActions = ({
 };
 
 export default OrderActions;
+

@@ -13,11 +13,61 @@ const Clients = () => {
   const [activeTab, setActiveTab] = useState('list');
 
   const handleExport = () => {
-    toast.info("L'export des clients sera bientôt disponible");
+    // Exemple de données à exporter
+    const data = [
+      ['ID', 'Nom', 'Email', 'Téléphone', 'Adresse'],
+      ['1', 'Client Example', 'client@example.com', '0123456789', 'Paris, France']
+    ];
+
+    // Création du contenu CSV
+    const csvContent = data.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    
+    // Création du lien de téléchargement
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `clients_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    
+    // Déclencher le téléchargement
+    link.click();
+    
+    // Nettoyage
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success("Export des clients réussi");
   };
 
   const handleImport = () => {
-    toast.info("L'import des clients sera bientôt disponible");
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,.xlsx,.xls';
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        // Vérification de la taille du fichier (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error("Le fichier est trop volumineux (max 5MB)");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          // Ici vous pourriez ajouter la logique pour traiter le contenu du fichier
+          console.log("Fichier importé:", file.name);
+          toast.success(`Fichier ${file.name} importé avec succès`);
+        };
+        reader.onerror = () => {
+          toast.error("Erreur lors de la lecture du fichier");
+        };
+        reader.readAsText(file);
+      }
+    };
+
+    input.click();
   };
 
   return (

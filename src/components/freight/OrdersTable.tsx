@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -95,24 +94,14 @@ const OrdersTable = () => {
   }
 
   const handlePrint = (content: React.ReactNode) => {
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Impression</title>
-            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-          </head>
-          <body>
-            <div id="print-content">
-              ${content}
-            </div>
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
+    const timer = setTimeout(() => {
+      const downloadButton = document.querySelector('button[class="hidden"]') as HTMLButtonElement;
+      if (downloadButton) {
+        downloadButton.click();
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   };
 
   return (
@@ -287,4 +276,3 @@ const OrdersTable = () => {
 };
 
 export default OrdersTable;
-

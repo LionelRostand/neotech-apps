@@ -23,7 +23,7 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const initializeAdminUser = async () => {
+    const initializeUserPermissions = async () => {
       if (!user) {
         setRole('user');
         setPermissions(defaultPermissions.user);
@@ -32,52 +32,46 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
       }
 
       try {
-        if (user.email === 'admin@neotech-consulting.com') {
-          const userRef = doc(db, 'users', user.uid);
-          
-          // Vérifier d'abord si le document existe
-          const docSnap = await getDoc(userRef);
-          
-          // Mettre à jour ou créer le document avec le rôle admin
-          await setDoc(userRef, {
-            role: 'admin',
-            email: user.email
-          }, { merge: true });
-
-          console.log('Admin role set for:', user.email);
-          setRole('admin');
-          setPermissions(defaultPermissions.admin);
-          setIsLoading(false);
-          return;
-        }
-
-        // Pour les autres utilisateurs
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
-        
-        if (userDoc.exists()) {
-          const userRole = userDoc.data()?.role as UserRole || 'user';
+
+        if (user.email === 'admin@neotech-consulting.com') {
+          await setDoc(userRef, {
+            role: 'admin',
+            email: user.email,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+
+          setRole('admin');
+          setPermissions(defaultPermissions.admin);
+        } else if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const userRole = userData?.role as UserRole || 'user';
           setRole(userRole);
           setPermissions(defaultPermissions[userRole]);
         } else {
+          // For new users, create their document with default role
           const defaultRole: UserRole = 'user';
-          await setDoc(userRef, { 
+          await setDoc(userRef, {
             role: defaultRole,
-            email: user.email 
+            email: user.email,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           });
           setRole(defaultRole);
           setPermissions(defaultPermissions[defaultRole]);
         }
-      } catch (error) {
-        console.error('Erreur lors de l\'initialisation des permissions:', error);
-        // En cas d'erreur, définir un rôle par défaut
+      } catch (error: any) {
+        console.error('Error initializing permissions:', error);
+        // Set default permissions if there's an error
         setRole('user');
         setPermissions(defaultPermissions.user);
+        toast.error("Erreur lors de l'initialisation des permissions");
       }
       setIsLoading(false);
     };
 
-    initializeAdminUser();
+    initializeUserPermissions();
   }, [user]);
 
   const hasPermission = (module: string, action: string): boolean => {
@@ -90,22 +84,34 @@ export const PermissionsProvider = ({ children }: { children: React.ReactNode })
   };
 
   const updateUserRole = async (userId: string, newRole: UserRole) => {
+    if (!user) {
+      toast.error("Vous devez être connecté pour effectuer cette action");
+      return;
+    }
+
+    // Only admins can change roles
+    if (role !== 'admin' && user.email !== 'admin@neotech-consulting.com') {
+      toast.error("Vous n'avez pas les permissions nécessaires");
+      return;
+    }
+
     try {
       const userRef = doc(db, 'users', userId);
       await setDoc(userRef, { 
         role: newRole,
-        email: user?.email
+        email: user.email,
+        updatedAt: new Date().toISOString()
       }, { merge: true });
       
-      if (user?.uid === userId) {
+      if (user.uid === userId) {
         setRole(newRole);
         setPermissions(defaultPermissions[newRole]);
       }
       
-      toast.success(`Rôle mis à jour avec succès`);
-    } catch (error) {
+      toast.success("Rôle mis à jour avec succès");
+    } catch (error: any) {
       console.error('Erreur lors de la mise à jour du rôle:', error);
-      toast.error(`Erreur lors de la mise à jour du rôle`);
+      toast.error("Erreur lors de la mise à jour du rôle");
       throw error;
     }
   };
@@ -130,3 +136,4 @@ export const usePermissions = () => {
   }
   return context;
 };
+

@@ -22,14 +22,17 @@ const Profile = () => {
   }, [role]);
 
   const handleRoleChange = async (newRole: UserRole) => {
-    if (!user) return;
+    if (!user) {
+      toast.error("Vous devez être connecté pour effectuer cette action");
+      return;
+    }
+    
     try {
       await updateUserRole(user.uid, newRole);
       setCurrentRole(newRole);
-      toast.success("Rôle mis à jour avec succès");
     } catch (error) {
       console.error("Erreur lors de la mise à jour du rôle:", error);
-      toast.error("Erreur lors de la mise à jour du rôle");
+      // Error toast is handled in updateUserRole
     }
   };
 
@@ -40,7 +43,7 @@ const Profile = () => {
       setAvatarUrl(url);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'avatar:", error);
-      toast.error("Erreur lors de la mise à jour de la photo de profil");
+      // Error toast is handled in uploadAvatar
     }
   };
 
@@ -93,3 +96,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

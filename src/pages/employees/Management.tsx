@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
 interface Employee {
@@ -21,6 +22,7 @@ interface Employee {
   birthDate: string;
   address: string;
   city: string;
+  contractType: 'CDI' | 'CDD';
 }
 
 const mockEmployees: Employee[] = [
@@ -34,7 +36,8 @@ const mockEmployees: Employee[] = [
     startDate: '2022-01-15',
     birthDate: '1985-06-15',
     address: '123 rue de la Paix',
-    city: 'Paris'
+    city: 'Paris',
+    contractType: 'CDI'
   },
   {
     id: '2',
@@ -46,7 +49,8 @@ const mockEmployees: Employee[] = [
     startDate: '2021-06-01',
     birthDate: '1990-03-22',
     address: '45 avenue des Champs-Élysées',
-    city: 'Paris'
+    city: 'Paris',
+    contractType: 'CDI'
   },
   {
     id: '3',
@@ -58,7 +62,8 @@ const mockEmployees: Employee[] = [
     startDate: '2023-03-10',
     birthDate: '1988-11-30',
     address: '78 boulevard Saint-Michel',
-    city: 'Paris'
+    city: 'Paris',
+    contractType: 'CDD'
   },
 ];
 
@@ -74,7 +79,8 @@ const EmployeeManagement = () => {
     startDate: '',
     birthDate: '',
     address: '',
-    city: ''
+    city: '',
+    contractType: 'CDI' as const
   });
 
   const [sortConfig, setSortConfig] = useState<{
@@ -127,7 +133,8 @@ const EmployeeManagement = () => {
       startDate: '',
       birthDate: '',
       address: '',
-      city: ''
+      city: '',
+      contractType: 'CDI'
     });
     toast.success("Employé ajouté avec succès");
   };
@@ -171,6 +178,7 @@ const EmployeeManagement = () => {
                   <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('department')}>
                     Département {sortConfig?.key === 'department' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
                   </TableHead>
+                  <TableHead className="font-semibold">Type de contrat</TableHead>
                   <TableHead className="font-semibold">Date d'entrée</TableHead>
                   <TableHead className="font-semibold">Statut</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -187,6 +195,7 @@ const EmployeeManagement = () => {
                     </TableCell>
                     <TableCell>{employee.position}</TableCell>
                     <TableCell>{employee.department}</TableCell>
+                    <TableCell>{employee.contractType}</TableCell>
                     <TableCell>{new Date(employee.startDate).toLocaleDateString('fr-FR')}</TableCell>
                     <TableCell>
                       <Badge 
@@ -208,7 +217,7 @@ const EmployeeManagement = () => {
                 ))}
                 {filteredEmployees.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                       Aucun employé trouvé
                     </TableCell>
                   </TableRow>
@@ -268,6 +277,23 @@ const EmployeeManagement = () => {
                 value={newEmployee.department}
                 onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="contractType" className="text-right">
+                Type de contrat
+              </Label>
+              <Select
+                value={newEmployee.contractType}
+                onValueChange={(value: 'CDI' | 'CDD') => setNewEmployee({ ...newEmployee, contractType: value })}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Sélectionner le type de contrat" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="CDI">CDI</SelectItem>
+                  <SelectItem value="CDD">CDD</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="birthDate" className="text-right">
@@ -331,3 +357,4 @@ const EmployeeManagement = () => {
 };
 
 export default EmployeeManagement;
+

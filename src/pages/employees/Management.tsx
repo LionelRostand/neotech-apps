@@ -1,12 +1,13 @@
 
 import { useState } from 'react';
-import { UserPlus, Search, Edit, Trash2 } from 'lucide-react';
+import { UserPlus, Search, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
 interface Employee {
@@ -76,6 +77,26 @@ const EmployeeManagement = () => {
     city: ''
   });
 
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Employee;
+    direction: 'asc' | 'desc';
+  } | null>(null);
+
+  const sortData = (key: keyof Employee) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+
+    const sortedEmployees = [...employees].sort((a, b) => {
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    setEmployees(sortedEmployees);
+  };
+
   const filteredEmployees = employees.filter(employee =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -112,70 +133,91 @@ const EmployeeManagement = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <UserPlus className="w-6 h-6 text-neotech-600" />
-        <h2 className="text-xl font-semibold">Gestion des Employés</h2>
-      </div>
+    <div className="space-y-6 p-6 animate-fade-in">
+      <Card className="border-none shadow-md">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+            <UserPlus className="w-6 h-6 text-neotech-600" />
+            Liste des Employés
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+              <Input
+                placeholder="Rechercher un employé..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8 w-full"
+              />
+            </div>
+            <Button onClick={() => setIsNewEmployeeDialogOpen(true)} className="w-full sm:w-auto">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Nouvel employé
+            </Button>
+          </div>
 
-      <div className="mb-6 flex justify-between items-center">
-        <div className="relative w-64">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-          <Input
-            placeholder="Rechercher un employé..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-        <Button onClick={() => setIsNewEmployeeDialogOpen(true)}>
-          <UserPlus className="w-4 h-4 mr-2" />
-          Nouvel employé
-        </Button>
-      </div>
-
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nom complet</TableHead>
-              <TableHead>Poste</TableHead>
-              <TableHead>Département</TableHead>
-              <TableHead>Date d'entrée</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredEmployees.map((employee) => (
-              <TableRow key={employee.id}>
-                <TableCell>
-                  <div>
-                    <div className="font-medium">{employee.name}</div>
-                    <div className="text-sm text-gray-500">{employee.firstName}</div>
-                  </div>
-                </TableCell>
-                <TableCell>{employee.position}</TableCell>
-                <TableCell>{employee.department}</TableCell>
-                <TableCell>{new Date(employee.startDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>
-                  <Badge variant={employee.status === 'active' ? 'default' : 'secondary'}>
-                    {employee.status === 'active' ? 'Actif' : 'Inactif'}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="icon" className="mr-2">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-red-500">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          <div className="border rounded-lg overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50 hover:bg-gray-50">
+                  <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('name')}>
+                    Nom complet {sortConfig?.key === 'name' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
+                  </TableHead>
+                  <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('position')}>
+                    Poste {sortConfig?.key === 'position' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
+                  </TableHead>
+                  <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('department')}>
+                    Département {sortConfig?.key === 'department' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
+                  </TableHead>
+                  <TableHead className="font-semibold">Date d'entrée</TableHead>
+                  <TableHead className="font-semibold">Statut</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredEmployees.map((employee) => (
+                  <TableRow key={employee.id} className="hover:bg-gray-50">
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{employee.name}</div>
+                        <div className="text-sm text-gray-500">{employee.firstName}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{employee.position}</TableCell>
+                    <TableCell>{employee.department}</TableCell>
+                    <TableCell>{new Date(employee.startDate).toLocaleDateString('fr-FR')}</TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={employee.status === 'active' ? 'default' : 'secondary'}
+                        className="font-medium"
+                      >
+                        {employee.status === 'active' ? 'Actif' : 'Inactif'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" className="mr-2 hover:text-primary">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {filteredEmployees.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      Aucun employé trouvé
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
 
       <Dialog open={isNewEmployeeDialogOpen} onOpenChange={setIsNewEmployeeDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">

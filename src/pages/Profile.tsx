@@ -8,7 +8,7 @@ import { useAuth } from "../hooks/useAuth"
 import { usePermissions } from "../hooks/usePermissions"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Camera } from "lucide-react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { toast } from "sonner"
 import { 
   Select,
@@ -22,15 +22,24 @@ import { UserRole } from "@/types/auth"
 const Profile = () => {
   const { user } = useAuth();
   const { role, updateUserRole } = usePermissions();
+  const [currentRole, setCurrentRole] = useState<UserRole>(role);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setCurrentRole(role);
+    console.log("Current role:", role); // Pour le débogage
+  }, [role]);
 
   const handleRoleChange = async (newRole: UserRole) => {
     if (!user) return;
     try {
+      console.log("Updating role to:", newRole); // Pour le débogage
       await updateUserRole(user.uid, newRole);
+      setCurrentRole(newRole);
       toast.success("Rôle mis à jour avec succès");
     } catch (error) {
+      console.error("Erreur lors de la mise à jour du rôle:", error); // Pour le débogage
       toast.error("Erreur lors de la mise à jour du rôle");
     }
   };
@@ -64,6 +73,8 @@ const Profile = () => {
   const getInitials = (email: string) => {
     return email?.charAt(0).toUpperCase() || '?';
   };
+
+  console.log("Is admin?", role === 'admin'); // Pour le débogage
 
   return (
     <DashboardLayout>
@@ -119,8 +130,8 @@ const Profile = () => {
                 <div className="space-y-2">
                   <Label htmlFor="role">Rôle utilisateur</Label>
                   <Select
-                    value={role}
-                    onValueChange={(value: UserRole) => handleRoleChange(value)}
+                    value={currentRole}
+                    onValueChange={handleRoleChange}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Sélectionnez un rôle" />
@@ -162,3 +173,4 @@ const Profile = () => {
 }
 
 export default Profile;
+

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Scale, Package, Calculator, Truck } from 'lucide-react';
+import { Scale, Package, Calculator, Truck, EuroIcon } from 'lucide-react';
 import { calculateFreightCost } from '@/services/freightCalculator';
 import { toast } from "sonner";
 
@@ -16,22 +16,24 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
   const [weight, setWeight] = useState<number>(0);
   const [size, setSize] = useState<'S' | 'M' | 'L' | 'XL'>('M');
   const [distance, setDistance] = useState<number>(0);
+  const [basePrice, setBasePrice] = useState<number>(0);
   const [cost, setCost] = useState<number | null>(null);
   const [initialCost, setInitialCost] = useState<number | null>(null);
 
-  // Calcul du coût initial basé uniquement sur le poids
+  // Calcul du coût initial basé uniquement sur le poids et le prix de base
   useEffect(() => {
-    if (weight > 0) {
+    if (weight > 0 && basePrice > 0) {
       const baseInitialCost = calculateFreightCost({ 
         weight, 
         size: 'M', // Taille moyenne par défaut
-        distance: 1 // Distance minimale pour le calcul initial
+        distance: 1, // Distance minimale pour le calcul initial
+        basePrice 
       });
       setInitialCost(baseInitialCost);
     } else {
       setInitialCost(null);
     }
-  }, [weight]);
+  }, [weight, basePrice]);
 
   const handleCalculate = () => {
     if (weight <= 0 || distance <= 0) {
@@ -39,7 +41,7 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
       return;
     }
 
-    const calculatedCost = calculateFreightCost({ weight, size, distance });
+    const calculatedCost = calculateFreightCost({ weight, size, distance, basePrice });
     setCost(calculatedCost);
     onCalculate?.(calculatedCost);
     toast.success(`Coût calculé: ${calculatedCost}€`);
@@ -58,6 +60,22 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="basePrice" className="flex items-center gap-2">
+              <EuroIcon className="h-4 w-4" />
+              Prix de base
+            </Label>
+            <Input
+              id="basePrice"
+              type="number"
+              min="0"
+              step="0.1"
+              value={basePrice}
+              onChange={(e) => setBasePrice(Number(e.target.value))}
+              placeholder="Prix de base"
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="weight" className="flex items-center gap-2">
               <Scale className="h-4 w-4" />
@@ -130,4 +148,3 @@ const FreightCalculator = ({ onCalculate }: FreightCalculatorProps) => {
 };
 
 export default FreightCalculator;
-

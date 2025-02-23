@@ -3,11 +3,12 @@ export interface FreightCalculation {
   weight: number;
   size: 'S' | 'M' | 'L' | 'XL';
   distance: number;
+  basePrice?: number;
 }
 
-export const calculateFreightCost = ({ weight, size, distance }: FreightCalculation): number => {
-  // Base de prix au km
-  const baseRatePerKm = 0.5;
+export const calculateFreightCost = ({ weight, size, distance, basePrice = 0.5 }: FreightCalculation): number => {
+  // Base de prix au km (utilise le prix de base fourni ou la valeur par défaut de 0.5)
+  const baseRatePerKm = basePrice;
   
   // Multiplicateur selon la taille
   const sizeMultiplier = {

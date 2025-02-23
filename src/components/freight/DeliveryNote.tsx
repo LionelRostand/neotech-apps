@@ -1,7 +1,8 @@
+
 import React, { useRef } from 'react';
 import { FreightOrder } from '@/types/freight';
 import OrderQRCode from './OrderQRCode';
-import generatePDF from 'react-to-pdf';
+import { toPDF } from 'react-to-pdf';
 
 interface DeliveryNoteProps {
   order: FreightOrder;
@@ -11,10 +12,12 @@ const DeliveryNote = ({ order }: DeliveryNoteProps) => {
   const targetRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
-    await generatePDF({
-      filename: `bon-livraison-${order.reference}.pdf`,
-      element: targetRef.current,
-    });
+    if (targetRef.current) {
+      await toPDF(targetRef, {
+        method: 'save',
+        fileName: `bon-livraison-${order.reference}.pdf`
+      });
+    }
   };
 
   return (

@@ -1,7 +1,8 @@
+
 import React, { useRef } from 'react';
 import { FreightOrder } from '@/types/freight';
 import OrderQRCode from './OrderQRCode';
-import generatePDF from 'react-to-pdf';
+import { toPDF } from 'react-to-pdf';
 
 interface InvoiceProps {
   order: FreightOrder;
@@ -14,10 +15,12 @@ const Invoice = ({ order }: InvoiceProps) => {
   const total = order.cost + montantTVA;
 
   const handleDownload = async () => {
-    await generatePDF({
-      filename: `facture-${order.reference}.pdf`,
-      element: targetRef.current,
-    });
+    if (targetRef.current) {
+      await toPDF(targetRef, {
+        method: 'save',
+        fileName: `facture-${order.reference}.pdf`
+      });
+    }
   };
 
   return (

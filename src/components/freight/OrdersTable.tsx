@@ -2,9 +2,10 @@
 import React from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash, FileText, Receipt } from 'lucide-react';
+import { Edit, Trash, FileText, Receipt, Check } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchOrders, deleteOrder } from '@/services/orderService';
+import { fetchOrders, deleteOrder, updateOrder } from '@/services/orderService';
+import { createFreightJournalEntries } from '@/services/journalService';
 import { toast } from "sonner";
 import { FreightOrder } from '@/types/freight';
 import {
@@ -35,6 +36,23 @@ const OrdersTable = () => {
     onError: (error) => {
       console.error('Error deleting order:', error);
       toast.error('Erreur lors de la suppression de la commande');
+    },
+  });
+
+  const validateMutation = useMutation({
+    mutationFn: async (order: FreightOrder) => {
+      // Mettre à jour le statut de la commande
+      await updateOrder(order.id, { status: 'completed' });
+      // Créer les écritures comptables
+      await createFreightJournalEntries(order);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['freight-orders'] });
+      toast.success('Commande validée et écritures comptables créées');
+    },
+    onError: (error) => {
+      console.error('Error validating order:', error);
+      toast.error('Erreur lors de la validation de la commande');
     },
   });
 
@@ -135,6 +153,19 @@ const OrdersTable = () => {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
+                  {order.status !== 'completed' && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => validateMutation.mutate(order)}
+                      title="Valider"
+                      className="hover:bg-green-50 hover:text-green-600 hover:border-green-200"
+                      disabled={validateMutation.isPending}
+                    >
+                      <Check className="w-4 h-4" />
+                    </Button>
+                  )}
+
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button 

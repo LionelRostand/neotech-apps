@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import { fetchOrders, deleteOrder, updateOrder } from '@/services/orderService';
 import { createFreightJournalEntries } from '@/services/journalService';
 import { toast } from "sonner";
 import { FreightOrder } from '@/types/freight';
+import { usePermissions } from '@/hooks/usePermissions';
 import {
   Sheet,
   SheetContent,
@@ -21,6 +21,8 @@ import Invoice from './Invoice';
 
 const OrdersTable = () => {
   const queryClient = useQueryClient();
+  const { role } = usePermissions();
+  const canManageOrders = role === 'admin' || role === 'manager';
 
   const { data: orders = [], isLoading, error } = useQuery({
     queryKey: ['freight-orders'],
@@ -41,6 +43,9 @@ const OrdersTable = () => {
 
   const validateMutation = useMutation({
     mutationFn: async (order: FreightOrder) => {
+      if (!canManageOrders) {
+        throw new Error("Vous n'avez pas les permissions nécessaires");
+      }
       // Mettre à jour le statut de la commande
       await updateOrder(order.id, { status: 'completed' });
       // Créer les écritures comptables
@@ -153,7 +158,7 @@ const OrdersTable = () => {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  {order.status !== 'completed' && (
+                  {order.status !== 'completed' && canManageOrders && (
                     <Button
                       variant="outline"
                       size="icon"
@@ -224,24 +229,28 @@ const OrdersTable = () => {
                     </SheetContent>
                   </Sheet>
 
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
-                    title="Modifier"
-                    className="hover:bg-gray-50"
-                  >
-                    <Edit className="w-4 h-4 text-gray-600" />
-                  </Button>
-                  
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    onClick={() => deleteMutation.mutate(order.id)}
-                    title="Supprimer"
-                    className="hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-                  >
-                    <Trash className="w-4 h-4" />
-                  </Button>
+                  {canManageOrders && (
+                    <>
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        title="Modifier"
+                        className="hover:bg-gray-50"
+                      >
+                        <Edit className="w-4 h-4 text-gray-600" />
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="icon"
+                        onClick={() => deleteMutation.mutate(order.id)}
+                        title="Supprimer"
+                        className="hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
@@ -253,4 +262,3 @@ const OrdersTable = () => {
 };
 
 export default OrdersTable;
-

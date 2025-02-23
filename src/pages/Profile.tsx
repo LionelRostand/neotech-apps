@@ -5,15 +5,35 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import DashboardLayout from "../components/layout/DashboardLayout"
 import { useAuth } from "../hooks/useAuth"
+import { usePermissions } from "../hooks/usePermissions"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Camera } from "lucide-react"
 import { useState, useRef } from "react"
 import { toast } from "sonner"
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue, 
+} from "@/components/ui/select"
+import { UserRole } from "@/types/auth"
 
 const Profile = () => {
   const { user } = useAuth();
+  const { role, updateUserRole } = usePermissions();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleRoleChange = async (newRole: UserRole) => {
+    if (!user) return;
+    try {
+      await updateUserRole(user.uid, newRole);
+      toast.success("Rôle mis à jour avec succès");
+    } catch (error) {
+      toast.error("Erreur lors de la mise à jour du rôle");
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -94,6 +114,25 @@ const Profile = () => {
                   className="bg-gray-50"
                 />
               </div>
+
+              {role === 'admin' && (
+                <div className="space-y-2">
+                  <Label htmlFor="role">Rôle utilisateur</Label>
+                  <Select
+                    value={role}
+                    onValueChange={(value: UserRole) => handleRoleChange(value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sélectionnez un rôle" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">Administrateur</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
+                      <SelectItem value="user">Employé</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="created">Membre depuis</Label>

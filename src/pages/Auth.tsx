@@ -34,7 +34,7 @@ const Auth = () => {
         className="glass-card p-8 w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">NEOTECH</h1>
+          <h1 className="text-2xl font-bold text-gray-900">NEOTECH-ERP</h1>
           <p className="mt-2 text-gray-600">
             {isLogin ? 'Connectez-vous à votre compte' : 'Créez votre compte'}
           </p>
@@ -102,3 +102,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

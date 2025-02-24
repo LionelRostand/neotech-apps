@@ -27,19 +27,20 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <PermissionsProvider>
-          <PrivateRoute>
-            <Outlet />
-          </PrivateRoute>
-        </PermissionsProvider>
-      </AuthProvider>
-    </TooltipProvider>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <TooltipProvider>
+        <AuthProvider>
+          <PermissionsProvider>
+            <Toaster />
+            <Sonner />
+            <PrivateRoute>
+              <Outlet />
+            </PrivateRoute>
+          </PermissionsProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
 export default App;
-

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { UserModuleAccess } from '@/components/settings/UserModuleAccess';
-import DashboardLayout from '@/components/layout/DashboardLayout';
 
 const Management = () => {
   return (

@@ -24,14 +24,22 @@ export const CompanyManagement = () => {
 
   const fetchCompanies = async () => {
     try {
-      const companiesSnapshot = await getDocs(collection(db, 'companies'));
+      console.log('Tentative de récupération des entreprises...');
+      const companiesCollection = collection(db, 'companies');
+      console.log('Collection référencée:', companiesCollection);
+      
+      const companiesSnapshot = await getDocs(companiesCollection);
+      console.log('Snapshot reçu:', companiesSnapshot.size, 'documents');
+      
       const companiesData = companiesSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Company[];
+      
+      console.log('Données des entreprises:', companiesData);
       setCompanies(companiesData);
     } catch (error) {
-      console.error('Erreur lors de la récupération des entreprises:', error);
+      console.error('Erreur détaillée lors de la récupération des entreprises:', error);
       if (error instanceof Error) {
         toast.error(`Erreur lors de la récupération des entreprises: ${error.message}`);
       }
@@ -40,11 +48,13 @@ export const CompanyManagement = () => {
 
   const handleCreateCompany = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Début de la création de l\'entreprise');
     setIsLoading(true);
 
     try {
       if (!newCompany.name) {
         toast.error('Le nom de l\'entreprise est requis');
+        setIsLoading(false);
         return;
       }
 
@@ -55,15 +65,20 @@ export const CompanyManagement = () => {
         updatedAt: now
       };
       
-      console.log('Tentative de création de l\'entreprise:', companyData);
-      const docRef = await addDoc(collection(db, 'companies'), companyData);
+      console.log('Données de l\'entreprise à créer:', companyData);
+      console.log('Tentative d\'accès à la collection companies...');
+      
+      const companiesCollection = collection(db, 'companies');
+      console.log('Collection référencée, tentative d\'ajout du document...');
+      
+      const docRef = await addDoc(companiesCollection, companyData);
       console.log('Entreprise créée avec succès, ID:', docRef.id);
       
       toast.success('Entreprise créée avec succès');
       setNewCompany({ name: '', address: '', phone: '', email: '' });
-      fetchCompanies();
+      await fetchCompanies();
     } catch (error) {
-      console.error('Erreur lors de la création de l\'entreprise:', error);
+      console.error('Erreur détaillée lors de la création de l\'entreprise:', error);
       if (error instanceof Error) {
         toast.error(`Erreur lors de la création de l'entreprise: ${error.message}`);
       }
@@ -133,4 +148,3 @@ export const CompanyManagement = () => {
     </Card>
   );
 };
-

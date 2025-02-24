@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { doc, collection, getDocs, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, auth } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 import { toast } from 'sonner';
 
@@ -37,6 +37,14 @@ export const useModulePermissions = (selectedUserId: string) => {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      // Vérifier si un utilisateur est connecté
+      if (!auth.currentUser) {
+        console.log('Aucun utilisateur connecté');
+        setError('Veuillez vous connecter pour accéder aux permissions');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
@@ -72,6 +80,12 @@ export const useModulePermissions = (selectedUserId: string) => {
     const fetchUserPermissions = async () => {
       if (!selectedUserId) {
         console.log('Aucun utilisateur sélectionné');
+        return;
+      }
+
+      if (!auth.currentUser) {
+        console.log('Aucun utilisateur connecté');
+        setError('Veuillez vous connecter pour accéder aux permissions');
         return;
       }
       
@@ -116,6 +130,11 @@ export const useModulePermissions = (selectedUserId: string) => {
     type: 'active' | 'read' | 'write' | 'manage',
     checked: boolean
   ) => {
+    if (!auth.currentUser) {
+      toast.error('Veuillez vous connecter pour modifier les permissions');
+      return;
+    }
+
     try {
       console.log('Mise à jour des permissions:', { userId, module, type, checked });
       

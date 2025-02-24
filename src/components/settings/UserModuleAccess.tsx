@@ -10,14 +10,36 @@ import { ModulePermissionItem } from './ModulePermissionItem';
 export const UserModuleAccess = () => {
   const { role } = usePermissions();
   const [selectedUserId, setSelectedUserId] = useState<string>('');
-  const { users, userPermissions, loading, handlePermissionChange } = useModulePermissions(selectedUserId);
+  const { users, userPermissions, loading, error, handlePermissionChange } = useModulePermissions(selectedUserId);
 
   if (role !== 'admin' && role !== 'manager') {
     return null;
   }
 
-  if (loading) {
-    return <div>Chargement...</div>;
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Erreur</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-red-500">{error}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (loading && !selectedUserId) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Chargement...</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Chargement des utilisateurs...</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -45,18 +67,22 @@ export const UserModuleAccess = () => {
           </Select>
         </div>
 
-        {selectedUserId && userPermissions[selectedUserId] && (
-          <div className="space-y-4">
-            {Object.entries(userPermissions[selectedUserId]).map(([moduleName, modulePerms]) => (
-              <ModulePermissionItem
-                key={moduleName}
-                moduleName={moduleName}
-                modulePerms={modulePerms}
-                selectedUserId={selectedUserId}
-                onPermissionChange={handlePermissionChange}
-              />
-            ))}
-          </div>
+        {loading && selectedUserId ? (
+          <p>Chargement des permissions...</p>
+        ) : (
+          selectedUserId && userPermissions[selectedUserId] && (
+            <div className="space-y-4">
+              {Object.entries(userPermissions[selectedUserId]).map(([moduleName, modulePerms]) => (
+                <ModulePermissionItem
+                  key={moduleName}
+                  moduleName={moduleName}
+                  modulePerms={modulePerms}
+                  selectedUserId={selectedUserId}
+                  onPermissionChange={handlePermissionChange}
+                />
+              ))}
+            </div>
+          )
         )}
       </CardContent>
     </Card>

@@ -33,19 +33,35 @@ export const useModulePermissions = (selectedUserId: string) => {
   const [users, setUsers] = useState<User[]>([]);
   const [userPermissions, setUserPermissions] = useState<UserPermissionsData>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        console.log('Début de la récupération des utilisateurs');
+        
         const usersSnapshot = await getDocs(collection(db, 'users'));
+        if (usersSnapshot.empty) {
+          console.log('Aucun utilisateur trouvé');
+          setUsers([]);
+          return;
+        }
+
         const usersData = usersSnapshot.docs.map(doc => ({
           uid: doc.id,
           ...doc.data()
         })) as User[];
+        
+        console.log('Utilisateurs récupérés:', usersData.length);
         setUsers(usersData);
       } catch (error) {
         console.error('Erreur lors de la récupération des utilisateurs:', error);
+        setError('Erreur lors de la récupération des utilisateurs');
         toast.error('Erreur lors de la récupération des utilisateurs');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -54,31 +70,44 @@ export const useModulePermissions = (selectedUserId: string) => {
 
   useEffect(() => {
     const fetchUserPermissions = async () => {
-      if (!selectedUserId) return;
+      if (!selectedUserId) {
+        console.log('Aucun utilisateur sélectionné');
+        return;
+      }
       
       try {
+        setLoading(true);
+        setError(null);
+        console.log('Récupération des permissions pour l\'utilisateur:', selectedUserId);
+        
         const userPermissionsRef = doc(db, 'userModulePermissions', selectedUserId);
         const docSnap = await getDoc(userPermissionsRef);
         
         if (docSnap.exists()) {
+          console.log('Permissions trouvées pour l\'utilisateur');
           setUserPermissions(prev => ({
             ...prev,
             [selectedUserId]: docSnap.data() as UserModulePermissions
           }));
         } else {
+          console.log('Aucune permission trouvée, utilisation des permissions par défaut');
           setUserPermissions(prev => ({
             ...prev,
             [selectedUserId]: defaultModules
           }));
         }
-        setLoading(false);
       } catch (error) {
         console.error('Erreur lors de la récupération des permissions:', error);
+        setError('Erreur lors de la récupération des permissions');
         toast.error('Erreur lors de la récupération des permissions');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserPermissions();
+    if (selectedUserId) {
+      fetchUserPermissions();
+    }
   }, [selectedUserId]);
 
   const handlePermissionChange = async (
@@ -88,6 +117,8 @@ export const useModulePermissions = (selectedUserId: string) => {
     checked: boolean
   ) => {
     try {
+      console.log('Mise à jour des permissions:', { userId, module, type, checked });
+      
       const newPermissions = {
         ...userPermissions[userId],
         [module]: {
@@ -113,6 +144,7 @@ export const useModulePermissions = (selectedUserId: string) => {
       const userPermissionsRef = doc(db, 'userModulePermissions', userId);
       await setDoc(userPermissionsRef, newPermissions);
 
+      console.log('Permissions mises à jour avec succès');
       toast.success('Permissions mises à jour avec succès');
     } catch (error) {
       console.error('Erreur lors de la mise à jour des permissions:', error);
@@ -124,6 +156,7 @@ export const useModulePermissions = (selectedUserId: string) => {
     users,
     userPermissions,
     loading,
+    error,
     handlePermissionChange
   };
 };

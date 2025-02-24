@@ -29,9 +29,9 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
+        <Toaster />
+        <Sonner />
         <PermissionsProvider>
-          <Toaster />
-          <Sonner />
           <PrivateRoute>
             <Outlet />
           </PrivateRoute>
@@ -42,3 +42,4 @@ const App = () => (
 );
 
 export default App;
+

@@ -1,44 +1,62 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
-import { PermissionsProvider } from "./hooks/usePermissions";
-import { Outlet, Navigate } from "react-router-dom";
-import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { purchaseRoutes } from './routes/purchaseRoutes';
+import { accountingRoutes } from './routes/accountingRoutes';
+import { freightRoutes } from './routes/freightRoutes';
+import { calendarRoutes } from './routes/calendarRoutes';
+import { employeeRoutes } from './routes/employeeRoutes';
+import { companyRoutes } from './routes/companyRoutes';
+import CRM from './pages/CRM';
+import Clients from './pages/Clients';
+import Sales from './pages/Sales';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
+import Index from './pages/Index';
+import { AuthProvider } from './hooks/useAuth';
+import { PermissionsProvider } from './hooks/usePermissions';
+import './App.css';
 
-const queryClient = new QueryClient();
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Index />,
+  },
+  {
+    path: "/crm",
+    element: <CRM />,
+  },
+  {
+    path: "/clients",
+    element: <Clients />,
+  },
+  {
+    path: "/sales",
+    element: <Sales />,
+  },
+  purchaseRoutes,
+  accountingRoutes,
+  freightRoutes,
+  calendarRoutes,
+  employeeRoutes,
+  companyRoutes,
+  {
+    path: "/reports",
+    element: <Reports />,
+  },
+  {
+    path: "/settings",
+    element: <Settings />,
+  },
+]);
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return <div>Chargement...</div>;
-  }
-  
-  if (!user) {
-    return <Navigate to="/auth" />;
-  }
-  
-  return children;
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <PermissionsProvider>
-          <Toaster />
-          <Sonner />
-          <PrivateRoute>
-            <Outlet />
-          </PrivateRoute>
-        </PermissionsProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <AuthProvider>
+      <PermissionsProvider>
+        <RouterProvider router={router} />
+      </PermissionsProvider>
+    </AuthProvider>
+  );
+}
 
 export default App;

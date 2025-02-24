@@ -33,7 +33,8 @@ import {
   Video,
   MessageCircle,
   CalendarCheck,
-  BellRing
+  BellRing,
+  Building
 } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
@@ -53,6 +54,15 @@ export interface SubMenuItem {
 
 export const menuItems: MenuItem[] = [
   { icon: Home, label: 'Dashboard', path: '/' },
+  { 
+    icon: Building, 
+    label: 'Société', 
+    path: '/companies',
+    subItems: [
+      { icon: Building, label: 'Gestion des entreprises', path: '/companies/management', description: 'Créer et gérer les entreprises' },
+      { icon: UserPlus, label: 'Gestion des employés', path: '/companies/employees', description: 'Gérer les employés des entreprises' }
+    ]
+  },
   { icon: Users, label: 'CRM', path: '/crm' },
   { icon: UserCircle, label: 'Clients', path: '/clients' },
   { icon: ShoppingCart, label: 'Ventes', path: '/sales' },

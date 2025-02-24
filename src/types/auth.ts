@@ -18,14 +18,17 @@ export const defaultPermissions: Record<UserRole, Permission[]> = {
   manager: [
     { module: 'accounting', actions: ['read', 'write', 'manage'] },
     { module: 'crm', actions: ['read', 'write', 'manage'] },
-    { module: 'employees', actions: ['read', 'write'] }
+    { module: 'employees', actions: ['read', 'write'] },
+    { module: 'companies', actions: ['read', 'write', 'manage'] }
   ],
   accountant: [
     { module: 'accounting', actions: ['read', 'write'] },
-    { module: 'crm', actions: ['read'] }
+    { module: 'crm', actions: ['read'] },
+    { module: 'companies', actions: ['read'] }
   ],
   user: [
     { module: 'accounting', actions: ['read'] },
-    { module: 'crm', actions: ['read'] }
+    { module: 'crm', actions: ['read'] },
+    { module: 'companies', actions: ['read'] }
   ]
 };

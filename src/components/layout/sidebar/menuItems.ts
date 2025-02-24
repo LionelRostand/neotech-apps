@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Users, 
@@ -33,9 +32,9 @@ import {
   Video,
   MessageCircle,
   CalendarCheck,
-  BellRing
+  BellRing,
+  Building
 } from 'lucide-react';
-import { LucideIcon } from 'lucide-react';
 
 export interface MenuItem {
   icon: LucideIcon;
@@ -53,8 +52,26 @@ export interface SubMenuItem {
 
 export const menuItems: MenuItem[] = [
   { icon: Home, label: 'Dashboard', path: '/' },
+  { 
+    icon: Building, 
+    label: 'Entreprises', 
+    path: '/companies',
+    subItems: [
+      { 
+        icon: Store, 
+        label: 'Gestion des entreprises', 
+        path: '/companies/management', 
+        description: 'Créer et gérer les entreprises' 
+      },
+      { 
+        icon: Users, 
+        label: 'Assignation employés', 
+        path: '/companies/assignments', 
+        description: 'Gérer les assignations employés-entreprises' 
+      }
+    ]
+  },
   { icon: Users, label: 'CRM', path: '/crm' },
-  { icon: UserCircle, label: 'Clients', path: '/clients' },
   { icon: ShoppingCart, label: 'Ventes', path: '/sales' },
   { 
     icon: Calendar, 

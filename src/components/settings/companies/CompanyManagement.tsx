@@ -88,12 +88,9 @@ export const CompanyManagement = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Gestion des Entreprises</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleCreateCompany} className="space-y-4">
+    <div className="space-y-6">
+      <form onSubmit={handleCreateCompany} className="grid gap-4 p-4 bg-white rounded-lg shadow-sm">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium mb-1">Nom de l'entreprise</label>
             <Input
@@ -101,6 +98,7 @@ export const CompanyManagement = () => {
               value={newCompany.name}
               onChange={(e) => setNewCompany(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Nom de l'entreprise"
+              className="w-full"
             />
           </div>
           <div>
@@ -109,6 +107,7 @@ export const CompanyManagement = () => {
               value={newCompany.address}
               onChange={(e) => setNewCompany(prev => ({ ...prev, address: e.target.value }))}
               placeholder="Adresse"
+              className="w-full"
             />
           </div>
           <div>
@@ -117,6 +116,7 @@ export const CompanyManagement = () => {
               value={newCompany.phone}
               onChange={(e) => setNewCompany(prev => ({ ...prev, phone: e.target.value }))}
               placeholder="Téléphone"
+              className="w-full"
             />
           </div>
           <div>
@@ -126,25 +126,40 @@ export const CompanyManagement = () => {
               value={newCompany.email}
               onChange={(e) => setNewCompany(prev => ({ ...prev, email: e.target.value }))}
               placeholder="Email"
+              className="w-full"
             />
           </div>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Création en cours...' : 'Créer l\'entreprise'}
-          </Button>
-        </form>
+        </div>
+        <Button type="submit" disabled={isLoading} className="mt-4">
+          {isLoading ? 'Création en cours...' : 'Créer l\'entreprise'}
+        </Button>
+      </form>
 
-        <div className="mt-8 space-y-4">
-          <h3 className="font-semibold">Entreprises existantes</h3>
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold mb-4">Entreprises existantes</h3>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {companies.map((company) => (
-            <div key={company.id} className="p-4 border rounded">
-              <h4 className="font-medium">{company.name}</h4>
-              {company.address && <p className="text-sm text-gray-600">{company.address}</p>}
-              {company.phone && <p className="text-sm text-gray-600">{company.phone}</p>}
-              {company.email && <p className="text-sm text-gray-600">{company.email}</p>}
+            <div key={company.id} className="p-4 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <h4 className="font-medium text-lg mb-2">{company.name}</h4>
+              {company.address && (
+                <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
+                  <span className="w-4 h-4">📍</span> {company.address}
+                </p>
+              )}
+              {company.phone && (
+                <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
+                  <span className="w-4 h-4">📞</span> {company.phone}
+                </p>
+              )}
+              {company.email && (
+                <p className="text-sm text-gray-600 flex items-center gap-2">
+                  <span className="w-4 h-4">📧</span> {company.email}
+                </p>
+              )}
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

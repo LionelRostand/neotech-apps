@@ -6,8 +6,8 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 const CompaniesPage = () => {
   return (
     <DashboardLayout>
-      <div className="container mx-auto p-6">
-        <div className="bg-white rounded-lg shadow">
+      <div className="container mx-auto p-4">
+        <div className="w-full bg-white rounded-lg shadow-sm p-6">
           <Outlet />
         </div>
       </div>

@@ -6,7 +6,6 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'sonner';
 import ProtectedRoute from '../auth/ProtectedRoute';
-import { CompanyInformation } from './CompanyInformation';
 import { RolesPermissions } from './RolesPermissions';
 import { LocalizationSettings } from './LocalizationSettings';
 import { ModuleAccess } from './ModuleAccess';
@@ -54,7 +53,6 @@ export const GeneralSettings = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="grid gap-6">
-            <CompanyInformation />
             <RolesPermissions />
             <LocalizationSettings />
             <ModuleAccess />
@@ -74,4 +72,3 @@ export const GeneralSettings = () => {
 };
 
 export default GeneralSettings;
-

@@ -1,6 +1,16 @@
 
 export type UserRole = 'admin' | 'manager' | 'accountant' | 'user';
 
+export interface Company {
+  id: string;
+  name: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Permission {
   module: string;
   actions: ('read' | 'write' | 'delete' | 'manage')[];
@@ -9,6 +19,13 @@ export interface Permission {
 export interface UserPermissions {
   role: UserRole;
   permissions: Permission[];
+}
+
+export interface User {
+  id: string;
+  email: string;
+  role: UserRole;
+  companyId?: string;
 }
 
 export const defaultPermissions: Record<UserRole, Permission[]> = {

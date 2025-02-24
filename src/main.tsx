@@ -21,15 +21,14 @@ import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
 import { GeneralSettings } from './components/settings/GeneralSettings';
 import EmployeeReports from './pages/employees/Reports';
-import Reports from './pages/Reports';
-import Settings from './pages/Settings';
 
 import { accountingRoutes } from './routes/accountingRoutes';
 import { employeeRoutes } from './routes/employeeRoutes';
 import { freightRoutes } from './routes/freightRoutes';
 import { purchaseRoutes } from './routes/purchaseRoutes';
 import { calendarRoutes } from './routes/calendarRoutes';
-import { companyRoutes } from './routes/companyRoutes';
+
+import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -60,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: "reports",
-        element: <Reports />
+        element: <EmployeeReports />
       },
       {
         path: "crm",
@@ -76,14 +75,13 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <Settings />
+        element: <GeneralSettings />
       },
       accountingRoutes,
       employeeRoutes,
       freightRoutes,
       purchaseRoutes,
-      calendarRoutes,
-      companyRoutes
+      calendarRoutes
     ]
   },
   {

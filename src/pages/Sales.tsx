@@ -1,13 +1,13 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, TrendingUp, DollarSign, ShoppingCart } from 'lucide-react';
+import { FileText, TrendingUp, DollarSign, Settings, ShoppingCart } from 'lucide-react';
 import QuotesView from '@/components/sales/QuotesView';
 import { getQuotes } from '@/services';
 import type { Quote } from '@/types/sales';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { GeneralSettings } from '../components/settings/GeneralSettings';
 import QuoteTemplatesList from '@/components/sales/templates/QuoteTemplatesList';
 
 const Sales = () => {
@@ -117,12 +117,19 @@ const Sales = () => {
               <ShoppingCart className="h-4 w-4" />
               Modèles
             </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Paramètres
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="quotes" className="space-y-4">
             <QuotesView />
           </TabsContent>
           <TabsContent value="templates" className="space-y-4">
             <QuoteTemplatesList />
+          </TabsContent>
+          <TabsContent value="settings">
+            <GeneralSettings />
           </TabsContent>
         </Tabs>
       </div>
@@ -131,4 +138,3 @@ const Sales = () => {
 };
 
 export default Sales;
-

@@ -27,6 +27,7 @@ import { employeeRoutes } from './routes/employeeRoutes';
 import { freightRoutes } from './routes/freightRoutes';
 import { purchaseRoutes } from './routes/purchaseRoutes';
 import { calendarRoutes } from './routes/calendarRoutes';
+import { companyRoutes } from './routes/companyRoutes';
 
 import './index.css';
 
@@ -81,7 +82,8 @@ const router = createBrowserRouter([
       employeeRoutes,
       freightRoutes,
       purchaseRoutes,
-      calendarRoutes
+      calendarRoutes,
+      companyRoutes
     ]
   },
   {

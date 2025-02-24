@@ -10,6 +10,7 @@ import { Company } from '@/types/auth';
 
 export const CompanyManagement = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [newCompany, setNewCompany] = useState({
     name: '',
     address: '',
@@ -31,13 +32,22 @@ export const CompanyManagement = () => {
       setCompanies(companiesData);
     } catch (error) {
       console.error('Erreur lors de la récupération des entreprises:', error);
-      toast.error('Erreur lors de la récupération des entreprises');
+      if (error instanceof Error) {
+        toast.error(`Erreur lors de la récupération des entreprises: ${error.message}`);
+      }
     }
   };
 
   const handleCreateCompany = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
+      if (!newCompany.name) {
+        toast.error('Le nom de l\'entreprise est requis');
+        return;
+      }
+
       const now = new Date().toISOString();
       const companyData = {
         ...newCompany,
@@ -45,13 +55,20 @@ export const CompanyManagement = () => {
         updatedAt: now
       };
       
+      console.log('Tentative de création de l\'entreprise:', companyData);
       const docRef = await addDoc(collection(db, 'companies'), companyData);
+      console.log('Entreprise créée avec succès, ID:', docRef.id);
+      
       toast.success('Entreprise créée avec succès');
       setNewCompany({ name: '', address: '', phone: '', email: '' });
       fetchCompanies();
     } catch (error) {
       console.error('Erreur lors de la création de l\'entreprise:', error);
-      toast.error('Erreur lors de la création de l\'entreprise');
+      if (error instanceof Error) {
+        toast.error(`Erreur lors de la création de l'entreprise: ${error.message}`);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,7 +113,9 @@ export const CompanyManagement = () => {
               placeholder="Email"
             />
           </div>
-          <Button type="submit">Créer l'entreprise</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'Création en cours...' : 'Créer l\'entreprise'}
+          </Button>
         </form>
 
         <div className="mt-8 space-y-4">
@@ -114,3 +133,4 @@ export const CompanyManagement = () => {
     </Card>
   );
 };
+

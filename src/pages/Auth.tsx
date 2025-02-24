@@ -4,21 +4,16 @@ import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      if (isLogin) {
-        await signIn(email, password);
-      } else {
-        await signUp(email, password);
-      }
+      await signIn(email, password);
     } catch (error) {
       console.error('Erreur:', error);
     } finally {
@@ -36,7 +31,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">NEOTECH-ERP</h1>
           <p className="mt-2 text-gray-600">
-            {isLogin ? 'Connectez-vous à votre compte' : 'Créez votre compte'}
+            Connectez-vous à votre compte
           </p>
         </div>
 
@@ -74,18 +69,9 @@ const Auth = () => {
             className="w-full bg-neotech-600 text-white py-2 px-4 rounded-lg hover:bg-neotech-700 transition-colors duration-200 disabled:opacity-50"
             disabled={loading}
           >
-            {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : 'S\'inscrire')}
+            {loading ? 'Chargement...' : 'Se connecter'}
           </button>
         </form>
-
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-neotech-600 hover:text-neotech-700 text-sm font-medium"
-          >
-            {isLogin ? 'Pas encore de compte ? Inscrivez-vous' : 'Déjà un compte ? Connectez-vous'}
-          </button>
-        </div>
 
         <p className="mt-4 text-center text-sm text-gray-500">
           Un problème de connexion ?{' '}
@@ -102,4 +88,3 @@ const Auth = () => {
 };
 
 export default Auth;
-

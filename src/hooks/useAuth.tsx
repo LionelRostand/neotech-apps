@@ -16,7 +16,6 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -34,6 +33,30 @@ interface UserData {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
+
+// Cette fonction est maintenant interne au contexte et n'est plus exportée
+const createUserDocument = async (user: User) => {
+  try {
+    const userData: UserData = {
+      email: user.email || '',
+      role: 'employee',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      status: 'active'
+    };
+
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, userData);
+    console.log("Document utilisateur créé avec succès:", user.uid);
+    return true;
+  } catch (error: any) {
+    console.error("Erreur lors de la création du document utilisateur:", error);
+    if (error.code === 'permission-denied') {
+      console.error("Erreur de permission Firestore. Vérifiez les règles de sécurité.");
+    }
+    throw error;
+  }
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -61,51 +84,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createUserDocument = async (user: User) => {
-    try {
-      const userData: UserData = {
-        email: user.email || '',
-        role: 'employee',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'active'
-      };
-
-      const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, userData);
-      console.log("Document utilisateur créé avec succès:", user.uid);
-      return true;
-    } catch (error: any) {
-      console.error("Erreur lors de la création du document utilisateur:", error);
-      if (error.code === 'permission-denied') {
-        console.error("Erreur de permission Firestore. Vérifiez les règles de sécurité.");
-      }
-      throw error;
-    }
-  };
-
-  const signUp = async (email: string, password: string) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("Compte créé avec succès, création du document utilisateur...");
-      
-      await createUserDocument(userCredential.user);
-      
-      toast.success('Inscription réussie');
-      navigate('/');
-    } catch (error: any) {
-      console.error('Erreur lors de l\'inscription:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        toast.error('Cet email est déjà utilisé.');
-      } else if (error.code === 'permission-denied') {
-        toast.error('Erreur de permission lors de la création du profil.');
-      } else {
-        toast.error('Erreur lors de l\'inscription.');
-      }
-      throw error;
-    }
-  };
-
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
@@ -119,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
       {!loading && children}
     </AuthContext.Provider>
   );

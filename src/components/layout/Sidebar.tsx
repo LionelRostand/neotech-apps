@@ -1,55 +1,12 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import MenuItem from './sidebar/MenuItem';
 import { menuItems } from './sidebar/menuItems';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { usePermissions } from '@/hooks/usePermissions';
-
-interface ModulePermission {
-  active: boolean;
-  read: boolean;
-  write: boolean;
-  manage: boolean;
-}
-
-interface ModulePermissions {
-  [key: string]: ModulePermission;
-}
 
 const Sidebar = () => {
   const location = useLocation();
-  const { role } = usePermissions();
-  const [modulePermissions, setModulePermissions] = useState<ModulePermissions | null>(null);
-  
-  useEffect(() => {
-    const fetchModulePermissions = async () => {
-      try {
-        const modulePermissionsRef = doc(db, 'settings', 'modulePermissions');
-        const docSnap = await getDoc(modulePermissionsRef);
-        
-        if (docSnap.exists()) {
-          setModulePermissions(docSnap.data() as ModulePermissions);
-        }
-      } catch (error) {
-        console.error('Erreur lors de la récupération des permissions:', error);
-      }
-    };
-
-    fetchModulePermissions();
-  }, []);
-
-  const filteredMenuItems = menuItems.filter(item => {
-    if (role === 'admin') return true;
-    if (!modulePermissions) return true;
-    
-    const moduleName = item.path.split('/')[1] || 'dashboard';
-    const permissions = modulePermissions[moduleName];
-    
-    return permissions?.active && permissions?.read;
-  });
   
   return (
     <motion.aside 
@@ -59,12 +16,12 @@ const Sidebar = () => {
     >
       <div className="p-6">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-neotech-600 to-neotech-400 bg-clip-text text-transparent">
-          NEOTECH-ERP
+          NEOTECH
         </h1>
       </div>
       
       <nav className="mt-4 h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
-        {filteredMenuItems.map((item, index) => (
+        {menuItems.map((item, index) => (
           <MenuItem
             key={index}
             {...item}
@@ -79,3 +36,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

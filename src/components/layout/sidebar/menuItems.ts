@@ -63,13 +63,21 @@ export const menuItems: MenuItem[] = [
         label: 'Gestion des entreprises', 
         path: '/companies/management', 
         description: 'Créer et gérer les entreprises' 
-      },
-      { 
-        icon: Users, 
-        label: 'Assignation employés', 
-        path: '/companies/assignments', 
-        description: 'Gérer les assignations employés-entreprises' 
       }
+    ]
+  },
+  { 
+    icon: UserCog, 
+    label: 'Employés', 
+    path: '/employees',
+    subItems: [
+      { icon: UserPlus, label: 'Gestion employés', path: '/employees/management', description: 'Création et gestion des employés' },
+      { icon: FileSignature, label: 'Contrats', path: '/employees/contracts', description: 'Gestion des contrats de travail' },
+      { icon: Calendar, label: 'Congés', path: '/employees/leaves', description: 'Gestion des absences et congés' },
+      { icon: Clock, label: 'Présences', path: '/employees/attendance', description: 'Suivi du temps et des présences' },
+      { icon: Medal, label: 'Performance', path: '/employees/performance', description: 'Évaluation et objectifs' },
+      { icon: DollarSign, label: 'Salaires', path: '/employees/payroll', description: 'Gestion des salaires et avantages' },
+      { icon: FileBarChart, label: 'Rapports RH', path: '/employees/reports', description: 'Reporting et statistiques' }
     ]
   },
   { icon: Users, label: 'CRM', path: '/crm' },
@@ -99,20 +107,6 @@ export const menuItems: MenuItem[] = [
       { icon: Box, label: 'Stocks', path: '/purchases/inventory', description: 'Gestion des stocks' },
       { icon: Calculator, label: 'Comptabilité', path: '/purchases/accounting', description: 'Intégration comptable' },
       { icon: FileBarChart, label: 'Analyses', path: '/purchases/analytics', description: 'Rapports et analyses' }
-    ]
-  },
-  { 
-    icon: UserCog, 
-    label: 'Employés', 
-    path: '/employees',
-    subItems: [
-      { icon: UserPlus, label: 'Gestion employés', path: '/employees/management', description: 'Création et gestion des employés' },
-      { icon: FileSignature, label: 'Contrats', path: '/employees/contracts', description: 'Gestion des contrats de travail' },
-      { icon: Calendar, label: 'Congés', path: '/employees/leaves', description: 'Gestion des absences et congés' },
-      { icon: Clock, label: 'Présences', path: '/employees/attendance', description: 'Suivi du temps et des présences' },
-      { icon: Medal, label: 'Performance', path: '/employees/performance', description: 'Évaluation et objectifs' },
-      { icon: DollarSign, label: 'Salaires', path: '/employees/payroll', description: 'Gestion des salaires et avantages' },
-      { icon: FileBarChart, label: 'Rapports RH', path: '/employees/reports', description: 'Reporting et statistiques' }
     ]
   },
   { 

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { UserPlus, Search, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import CompanySelect from '@/components/company/CompanySelect';
+import ManagerSelect from '@/components/employees/ManagerSelect';
 
 interface Employee {
   id: string;
@@ -23,6 +24,8 @@ interface Employee {
   address: string;
   city: string;
   contractType: 'CDI' | 'CDD';
+  companyId: string; // Nouveau champ
+  managerId: string; // Nouveau champ
 }
 
 const mockEmployees: Employee[] = [
@@ -37,7 +40,9 @@ const mockEmployees: Employee[] = [
     birthDate: '1985-06-15',
     address: '123 rue de la Paix',
     city: 'Paris',
-    contractType: 'CDI'
+    contractType: 'CDI',
+    companyId: '',
+    managerId: ''
   },
   {
     id: '2',
@@ -50,7 +55,9 @@ const mockEmployees: Employee[] = [
     birthDate: '1990-03-22',
     address: '45 avenue des Champs-Élysées',
     city: 'Paris',
-    contractType: 'CDI'
+    contractType: 'CDI',
+    companyId: '',
+    managerId: ''
   },
   {
     id: '3',
@@ -63,7 +70,9 @@ const mockEmployees: Employee[] = [
     birthDate: '1988-11-30',
     address: '78 boulevard Saint-Michel',
     city: 'Paris',
-    contractType: 'CDD'
+    contractType: 'CDD',
+    companyId: '',
+    managerId: ''
   },
 ];
 
@@ -80,7 +89,9 @@ const EmployeeManagement = () => {
     birthDate: '',
     address: '',
     city: '',
-    contractType: 'CDI'  // Remove the 'as const' assertion
+    contractType: 'CDI',
+    companyId: '', // Nouveau champ
+    managerId: '' // Nouveau champ
   });
 
   const [sortConfig, setSortConfig] = useState<{
@@ -112,7 +123,7 @@ const EmployeeManagement = () => {
   const handleCreateEmployee = () => {
     if (!newEmployee.firstName || !newEmployee.name || !newEmployee.position || 
         !newEmployee.department || !newEmployee.startDate || !newEmployee.birthDate || 
-        !newEmployee.address || !newEmployee.city) {
+        !newEmployee.address || !newEmployee.city || !newEmployee.companyId) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
@@ -134,7 +145,9 @@ const EmployeeManagement = () => {
       birthDate: '',
       address: '',
       city: '',
-      contractType: 'CDI'
+      contractType: 'CDI',
+      companyId: '',
+      managerId: ''
     });
     toast.success("Employé ajouté avec succès");
   };
@@ -257,6 +270,29 @@ const EmployeeManagement = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="company" className="text-right">
+                Entreprise
+              </Label>
+              <div className="col-span-3">
+                <CompanySelect
+                  value={newEmployee.companyId}
+                  onValueChange={(value) => setNewEmployee({ ...newEmployee, companyId: value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="manager" className="text-right">
+                Manager
+              </Label>
+              <div className="col-span-3">
+                <ManagerSelect
+                  value={newEmployee.managerId}
+                  onValueChange={(value) => setNewEmployee({ ...newEmployee, managerId: value })}
+                  companyId={newEmployee.companyId}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="position" className="text-right">
                 Poste
               </Label>
@@ -357,4 +393,3 @@ const EmployeeManagement = () => {
 };
 
 export default EmployeeManagement;
-

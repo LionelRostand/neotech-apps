@@ -77,7 +77,7 @@ export const menuItems: MenuItem[] = [
       { icon: Clock, label: 'Présences', path: '/employees/attendance', description: 'Suivi du temps et des présences' },
       { icon: Medal, label: 'Performance', path: '/employees/performance', description: 'Évaluation et objectifs' },
       { icon: DollarSign, label: 'Salaires', path: '/employees/payroll', description: 'Gestion des salaires et avantages' },
-      { icon: FileBarChart, label: 'Rapports RH', path: '/employees/reports', description: 'Reporting et statistiques' }
+      { icon: FileBarChart, label: 'Rapports RH', path: '/employees/reports', description: 'Rapports et statistiques RH' }
     ]
   },
   { icon: Users, label: 'CRM', path: '/crm' },

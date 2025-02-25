@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { UserPlus, ArrowUpDown } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import EmployeeTable from '@/components/employees/EmployeeTable';
 import EmployeeDialog from '@/components/employees/EmployeeDialog';
 import EmployeeSearch from '@/components/employees/EmployeeSearch';
+import OrganizationChart from '@/components/employees/OrganizationChart';
 import { Employee } from '@/types/employees';
 
 const mockEmployees: Employee[] = [
@@ -13,8 +14,8 @@ const mockEmployees: Employee[] = [
     id: '1',
     firstName: 'Jean',
     name: 'Dupont',
-    position: 'Développeur Senior',
-    department: 'IT',
+    position: 'Directeur',
+    department: 'Direction',
     status: 'active',
     startDate: '2022-01-15',
     birthDate: '1985-06-15',
@@ -37,7 +38,7 @@ const mockEmployees: Employee[] = [
     city: 'Paris',
     contractType: 'CDI',
     companyId: '',
-    managerId: ''
+    managerId: '1'
   },
   {
     id: '3',
@@ -52,7 +53,7 @@ const mockEmployees: Employee[] = [
     city: 'Paris',
     contractType: 'CDD',
     companyId: '',
-    managerId: ''
+    managerId: '2'
   },
 ];
 
@@ -162,6 +163,12 @@ const EmployeeManagement = () => {
             sortConfig={sortConfig}
             onSort={sortData}
           />
+        </CardContent>
+      </Card>
+
+      <Card className="border-none shadow-md">
+        <CardContent>
+          <OrganizationChart employees={employees} />
         </CardContent>
       </Card>
 

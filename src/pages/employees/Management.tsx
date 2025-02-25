@@ -1,32 +1,12 @@
 import { useState } from 'react';
-import { UserPlus, Search, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { UserPlus, ArrowUpDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import CompanySelect from '@/components/company/CompanySelect';
-import ManagerSelect from '@/components/employees/ManagerSelect';
-
-interface Employee {
-  id: string;
-  firstName: string;
-  name: string;
-  position: string;
-  department: string;
-  status: 'active' | 'inactive';
-  startDate: string;
-  birthDate: string;
-  address: string;
-  city: string;
-  contractType: 'CDI' | 'CDD';
-  companyId: string; // Nouveau champ
-  managerId: string; // Nouveau champ
-}
+import EmployeeTable from '@/components/employees/EmployeeTable';
+import EmployeeDialog from '@/components/employees/EmployeeDialog';
+import EmployeeSearch from '@/components/employees/EmployeeSearch';
+import { Employee } from '@/types/employees';
 
 const mockEmployees: Employee[] = [
   {
@@ -90,8 +70,8 @@ const EmployeeManagement = () => {
     address: '',
     city: '',
     contractType: 'CDI',
-    companyId: '', // Nouveau champ
-    managerId: '' // Nouveau champ
+    companyId: '',
+    managerId: ''
   });
 
   const [sortConfig, setSortConfig] = useState<{
@@ -152,6 +132,10 @@ const EmployeeManagement = () => {
     toast.success("Employé ajouté avec succès");
   };
 
+  const handleEmployeeChange = (field: keyof Omit<Employee, 'id' | 'status'>, value: string) => {
+    setNewEmployee({ ...newEmployee, [field]: value });
+  };
+
   return (
     <div className="space-y-6 p-6 animate-fade-in">
       <Card className="border-none shadow-md">
@@ -163,231 +147,31 @@ const EmployeeManagement = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                placeholder="Rechercher un employé..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 w-full"
-              />
-            </div>
+            <EmployeeSearch 
+              value={searchTerm}
+              onChange={setSearchTerm}
+            />
             <Button onClick={() => setIsNewEmployeeDialogOpen(true)} className="w-full sm:w-auto">
               <UserPlus className="w-4 h-4 mr-2" />
               Nouvel employé
             </Button>
           </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-50 hover:bg-gray-50">
-                  <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('name')}>
-                    Nom complet {sortConfig?.key === 'name' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
-                  </TableHead>
-                  <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('position')}>
-                    Poste {sortConfig?.key === 'position' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
-                  </TableHead>
-                  <TableHead className="font-semibold cursor-pointer" onClick={() => sortData('department')}>
-                    Département {sortConfig?.key === 'department' && <ArrowUpDown className="inline w-4 h-4 ml-1" />}
-                  </TableHead>
-                  <TableHead className="font-semibold">Type de contrat</TableHead>
-                  <TableHead className="font-semibold">Date d'entrée</TableHead>
-                  <TableHead className="font-semibold">Statut</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredEmployees.map((employee) => (
-                  <TableRow key={employee.id} className="hover:bg-gray-50">
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{employee.name}</div>
-                        <div className="text-sm text-gray-500">{employee.firstName}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>{employee.department}</TableCell>
-                    <TableCell>{employee.contractType}</TableCell>
-                    <TableCell>{new Date(employee.startDate).toLocaleDateString('fr-FR')}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={employee.status === 'active' ? 'default' : 'secondary'}
-                        className="font-medium"
-                      >
-                        {employee.status === 'active' ? 'Actif' : 'Inactif'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" className="mr-2 hover:text-primary">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {filteredEmployees.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                      Aucun employé trouvé
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <EmployeeTable 
+            employees={filteredEmployees}
+            sortConfig={sortConfig}
+            onSort={sortData}
+          />
         </CardContent>
       </Card>
 
-      <Dialog open={isNewEmployeeDialogOpen} onOpenChange={setIsNewEmployeeDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Nouvel employé</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Nom
-              </Label>
-              <Input
-                id="name"
-                className="col-span-3"
-                value={newEmployee.name}
-                onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firstName" className="text-right">
-                Prénom
-              </Label>
-              <Input
-                id="firstName"
-                className="col-span-3"
-                value={newEmployee.firstName}
-                onChange={(e) => setNewEmployee({ ...newEmployee, firstName: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="company" className="text-right">
-                Entreprise
-              </Label>
-              <div className="col-span-3">
-                <CompanySelect
-                  value={newEmployee.companyId}
-                  onValueChange={(value) => setNewEmployee({ ...newEmployee, companyId: value })}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="manager" className="text-right">
-                Manager
-              </Label>
-              <div className="col-span-3">
-                <ManagerSelect
-                  value={newEmployee.managerId}
-                  onValueChange={(value) => setNewEmployee({ ...newEmployee, managerId: value })}
-                  companyId={newEmployee.companyId}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="position" className="text-right">
-                Poste
-              </Label>
-              <Input
-                id="position"
-                className="col-span-3"
-                value={newEmployee.position}
-                onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="department" className="text-right">
-                Département
-              </Label>
-              <Input
-                id="department"
-                className="col-span-3"
-                value={newEmployee.department}
-                onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="contractType" className="text-right">
-                Type de contrat
-              </Label>
-              <Select
-                value={newEmployee.contractType}
-                onValueChange={(value: 'CDI' | 'CDD') => setNewEmployee({ ...newEmployee, contractType: value })}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Sélectionner le type de contrat" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CDI">CDI</SelectItem>
-                  <SelectItem value="CDD">CDD</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="birthDate" className="text-right">
-                Date de naissance
-              </Label>
-              <Input
-                id="birthDate"
-                type="date"
-                className="col-span-3"
-                value={newEmployee.birthDate}
-                onChange={(e) => setNewEmployee({ ...newEmployee, birthDate: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="startDate" className="text-right">
-                Date d'entrée
-              </Label>
-              <Input
-                id="startDate"
-                type="date"
-                className="col-span-3"
-                value={newEmployee.startDate}
-                onChange={(e) => setNewEmployee({ ...newEmployee, startDate: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="address" className="text-right">
-                Adresse
-              </Label>
-              <Input
-                id="address"
-                className="col-span-3"
-                value={newEmployee.address}
-                onChange={(e) => setNewEmployee({ ...newEmployee, address: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="city" className="text-right">
-                Ville
-              </Label>
-              <Input
-                id="city"
-                className="col-span-3"
-                value={newEmployee.city}
-                onChange={(e) => setNewEmployee({ ...newEmployee, city: e.target.value })}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsNewEmployeeDialogOpen(false)}>
-              Annuler
-            </Button>
-            <Button type="button" onClick={handleCreateEmployee}>
-              Créer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EmployeeDialog
+        open={isNewEmployeeDialogOpen}
+        onOpenChange={setIsNewEmployeeDialogOpen}
+        newEmployee={newEmployee}
+        onEmployeeChange={handleEmployeeChange}
+        onCreateEmployee={handleCreateEmployee}
+      />
     </div>
   );
 };

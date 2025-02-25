@@ -1,17 +1,9 @@
+
 import { useState } from 'react';
-import { FileBarChart, BarChart as BarChartIcon, PieChart as PieChartIcon, LineChart as LineChartIcon, Download, Mail, Calendar, Filter, Save, Check } from 'lucide-react';
+import { FileBarChart, Download, Mail, Calendar, Filter, Save } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -23,47 +15,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import AdvancedFilters, { FilterCondition } from '@/components/employees/AdvancedFilters';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  LineChart,
-  Line,
-  Legend,
-  Cell
-} from 'recharts';
-
-const COLORS = ['#9b87f5', '#7E69AB', '#6E59A5', '#8E9196'];
-
-const departmentData = [
-  { name: 'R&D', value: 30 },
-  { name: 'Marketing', value: 20 },
-  { name: 'Ventes', value: 25 },
-  { name: 'RH', value: 15 },
-];
-
-const positionData = [
-  { name: 'Ingénieur', value: 40 },
-  { name: 'Manager', value: 15 },
-  { name: 'Designer', value: 20 },
-  { name: 'Analyste', value: 25 },
-];
-
-const evolutionData = [
-  { month: 'Jan', employees: 100 },
-  { month: 'Fév', employees: 110 },
-  { month: 'Mar', employees: 115 },
-  { month: 'Avr', employees: 125 },
-  { month: 'Mai', employees: 130 },
-  { month: 'Juin', employees: 140 },
-];
+import DepartmentChart from '@/components/employees/reports/DepartmentChart';
+import PositionChart from '@/components/employees/reports/PositionChart';
+import EvolutionChart from '@/components/employees/reports/EvolutionChart';
+import SaveTemplateDialog from '@/components/employees/reports/SaveTemplateDialog';
+import ReportScheduleDialog from '@/components/employees/reports/ReportScheduleDialog';
 
 const availableColumns = [
   { id: 'department', label: 'Département' },
@@ -100,20 +56,12 @@ const EmployeeReports = () => {
     });
   };
 
-  const handleScheduleReport = () => {
-    setShowScheduleDialog(true);
-  };
-
   const handleSaveSchedule = () => {
     toast({
       title: "Rapport planifié",
       description: `Le rapport sera envoyé ${scheduleFrequency} à ${scheduleEmail}`,
     });
     setShowScheduleDialog(false);
-  };
-
-  const handleSaveTemplate = () => {
-    setShowSaveTemplateDialog(true);
   };
 
   const handleConfirmSaveTemplate = () => {
@@ -195,14 +143,14 @@ const EmployeeReports = () => {
                   <Mail className="w-4 h-4 mr-2" />
                   Envoyer par email
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleScheduleReport}>
+                <DropdownMenuItem onClick={() => setShowScheduleDialog(true)}>
                   <Calendar className="w-4 h-4 mr-2" />
                   Planifier l'envoi
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="outline" onClick={handleSaveTemplate}>
+            <Button variant="outline" onClick={() => setShowSaveTemplateDialog(true)}>
               <Save className="w-4 h-4 mr-2" />
               Sauvegarder le modèle
             </Button>
@@ -224,180 +172,28 @@ const EmployeeReports = () => {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChartIcon className="w-5 h-5" />
-                  Effectifs par département
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={departmentData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="value" fill="#9b87f5">
-                        {departmentData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PieChartIcon className="w-5 h-5" />
-                  Distribution des postes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={positionData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={100}
-                        fill="#9b87f5"
-                        dataKey="value"
-                      >
-                        {positionData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <LineChartIcon className="w-5 h-5" />
-                  Évolution des effectifs
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={evolutionData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="employees"
-                        name="Employés"
-                        stroke="#9b87f5"
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+            <DepartmentChart />
+            <PositionChart />
+            <EvolutionChart />
           </div>
 
-          <Dialog open={showSaveTemplateDialog} onOpenChange={setShowSaveTemplateDialog}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Sauvegarder le modèle</DialogTitle>
-                <DialogDescription>
-                  Donnez un nom à votre modèle de rapport pour pouvoir le réutiliser ultérieurement.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="template-name" className="text-right">
-                    Nom du modèle
-                  </Label>
-                  <Input
-                    id="template-name"
-                    value={templateName}
-                    onChange={(e) => setTemplateName(e.target.value)}
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowSaveTemplateDialog(false)}>
-                  Annuler
-                </Button>
-                <Button onClick={handleConfirmSaveTemplate}>
-                  <Save className="w-4 h-4 mr-2" />
-                  Sauvegarder
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <SaveTemplateDialog
+            open={showSaveTemplateDialog}
+            onOpenChange={setShowSaveTemplateDialog}
+            templateName={templateName}
+            setTemplateName={setTemplateName}
+            onSave={handleConfirmSaveTemplate}
+          />
 
-          <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Planifier l'envoi du rapport</DialogTitle>
-                <DialogDescription>
-                  Configurez la fréquence d'envoi et l'adresse email de destination.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="schedule-email" className="text-right">
-                    Email
-                  </Label>
-                  <Input
-                    id="schedule-email"
-                    type="email"
-                    value={scheduleEmail}
-                    onChange={(e) => setScheduleEmail(e.target.value)}
-                    className="col-span-3"
-                    placeholder="exemple@entreprise.com"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="schedule-frequency" className="text-right">
-                    Fréquence
-                  </Label>
-                  <Select
-                    value={scheduleFrequency}
-                    onValueChange={setScheduleFrequency}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Sélectionnez une fréquence" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">Quotidien</SelectItem>
-                      <SelectItem value="weekly">Hebdomadaire</SelectItem>
-                      <SelectItem value="monthly">Mensuel</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowScheduleDialog(false)}>
-                  Annuler
-                </Button>
-                <Button onClick={handleSaveSchedule}>
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Planifier
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <ReportScheduleDialog
+            open={showScheduleDialog}
+            onOpenChange={setShowScheduleDialog}
+            scheduleEmail={scheduleEmail}
+            setScheduleEmail={setScheduleEmail}
+            scheduleFrequency={scheduleFrequency}
+            setScheduleFrequency={setScheduleFrequency}
+            onSave={handleSaveSchedule}
+          />
         </CardContent>
       </Card>
     </div>
